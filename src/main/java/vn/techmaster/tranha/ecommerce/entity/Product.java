@@ -25,6 +25,8 @@ public class Product extends BaseEntity {
     @Column(length = 5000)
     String prices;
 
+    String images;
+
     int stockQuantity;
     String origin; //Xuất xứ sản phẩm
     LocalDate expiryDate; //Hạn sử dụng

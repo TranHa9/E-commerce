@@ -46,7 +46,7 @@ public class User extends BaseEntity {
 
     String avatar;
 
-    LocalDateTime deletedDateTime;
+    //LocalDateTime deletedDateTime;
 
     LocalDateTime activationMailSentAt;
 
@@ -54,7 +54,7 @@ public class User extends BaseEntity {
 
     LocalDateTime forgotPasswordMailSentAt;
 
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     Shop shop;
 
 }

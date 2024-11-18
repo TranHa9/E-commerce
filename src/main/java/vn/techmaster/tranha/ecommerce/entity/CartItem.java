@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "cart_item")
+@Table(name = "cart_items")
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartItem extends BaseEntity {
@@ -32,6 +32,6 @@ public class CartItem extends BaseEntity {
     int quantity;
 
     Double unitPrice;
-    
+
     Double totalPrice;
 }

@@ -8,29 +8,20 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_items")
+@Table(name = "conversations")
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderItem extends BaseEntity {
+public class Conversation extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    Order order;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    Product product;
-
-    String variants;
-
-    int quantity;
-
-    Double unitPrice;
-
-    Double totalPrice;
+    @JoinColumn(name = "latsMessageSent_id")
+    User user;
+    LocalDateTime lastMessage;
 }

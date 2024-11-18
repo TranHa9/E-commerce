@@ -13,14 +13,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "rating_shops")
+@Table(name = "raing_products")
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RatingShop extends BaseEntity {
+public class ProductRating extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "shop_id")
-    Shop shop;
+    @JoinColumn(name = "product_id")
+    Product product;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -30,5 +30,5 @@ public class RatingShop extends BaseEntity {
 
     String comment;
 
-    String mediaUrl;
+    String mediaUrls;
 }

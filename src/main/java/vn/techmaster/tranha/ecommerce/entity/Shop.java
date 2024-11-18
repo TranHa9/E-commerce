@@ -27,6 +27,6 @@ public class Shop extends BaseEntity {
     String logo;
 
     @OneToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    User owner;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    User user;
 }

@@ -4,26 +4,25 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import vn.techmaster.tranha.ecommerce.statics.MessageRole;
 
 @Data
 @Entity
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "message_participants")
+@Table(name = "conversation_participants")
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MessageParticipant extends BaseEntity {
+public class ConversationParticipant extends BaseEntity {
+
 
     @ManyToOne
-    @JoinColumn(name = "message_id")
-    Message message;
+    @JoinColumn(name = "conversation_id")
+    Conversation conversation;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
 
-    @Enumerated(EnumType.STRING)
-    MessageRole role;
+    boolean sent = false;
 }

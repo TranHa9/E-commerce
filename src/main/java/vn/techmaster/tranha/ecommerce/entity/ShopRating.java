@@ -13,18 +13,22 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_item_vouchers")
+@Table(name = "rating_shops")
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Order_item_voucher extends BaseEntity {
+public class ShopRating extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "order_item_id")
-    OrderItem orderItem;
+    @JoinColumn(name = "shop_id")
+    Shop shop;
 
     @ManyToOne
-    @JoinColumn(name = "voucher_id")
-    Voucher voucher;
+    @JoinColumn(name = "user_id")
+    User user;
 
-    Double discountAmount;
+    int rating;
+
+    String comment;
+
+    String mediaUrls;
 }

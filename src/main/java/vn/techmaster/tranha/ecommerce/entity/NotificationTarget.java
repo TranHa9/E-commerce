@@ -21,11 +21,11 @@ public class NotificationTarget extends BaseEntity {
     Notification notification;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "target_id")
     User user;
 
     @Enumerated(EnumType.STRING)
     NotifictionTargetType targetType;
 
-    boolean isRead;
+    boolean read;
 }
