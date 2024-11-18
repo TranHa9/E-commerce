@@ -3467,12 +3467,12 @@ a.text-brand-3:hover {
 
 .header .main-header .header-left .header-nav {
     display: inline-block;
-    width: 45%;
+    width: 25%;
     text-align: center;
 }
 
 .header .main-header .header-left .header-search {
-    width: 35%;
+    width: 75%;
 }
 
 .header .main-header .header-left .header-search .box-header-search {
