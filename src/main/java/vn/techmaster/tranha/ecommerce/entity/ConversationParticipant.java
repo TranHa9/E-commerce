@@ -15,14 +15,13 @@ import lombok.experimental.SuperBuilder;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ConversationParticipant extends BaseEntity {
 
-
     @ManyToOne
     @JoinColumn(name = "conversation_id")
     Conversation conversation;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
 
-    boolean sent = false;
 }

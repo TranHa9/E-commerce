@@ -1,13 +1,12 @@
 package vn.techmaster.tranha.ecommerce.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import vn.techmaster.tranha.ecommerce.statics.MessageStatus;
+
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -19,8 +18,15 @@ import vn.techmaster.tranha.ecommerce.statics.MessageStatus;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Message extends BaseEntity {
 
+    @ManyToOne
+    @JoinColumn(name = "conversation_id")
+    Conversation conversation;
+    
     String content;
 
-    @Enumerated(EnumType.STRING)
-    MessageStatus status;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    User sender;
+
+    LocalDateTime sentAt;
 }

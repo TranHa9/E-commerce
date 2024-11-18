@@ -21,7 +21,8 @@ import java.time.LocalDateTime;
 public class Conversation extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "latsMessageSent_id")
-    User user;
+    @JoinColumn(name = "lats_message_sent_id")
+    User latsMessageSent;
+    
     LocalDateTime lastMessage;
 }

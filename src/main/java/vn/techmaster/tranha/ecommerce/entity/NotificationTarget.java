@@ -22,7 +22,7 @@ public class NotificationTarget extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "target_id")
-    User user;
+    User target;
 
     @Enumerated(EnumType.STRING)
     NotifictionTargetType targetType;
