@@ -10,12 +10,12 @@ public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        return "index";
+        return "manage/product/page-products-list";
     }
 
-//    @GetMapping("/jd-page")
-//    public String jdPage() {
-//        return "jd-page";
-//    }
+    @GetMapping("/page-login.html")
+    public String jdPage() {
+        return "page-login";
+    }
 
 }

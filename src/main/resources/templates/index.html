@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="msapplication-TileColor" content="#0E0E0E">
-    <meta name="template-color" content="#0E0E0E">
-    <meta name="description" content="Index page">
-    <meta name="keywords" content="index, page">
-    <meta name="author" content="">
-    <link rel="shortcut icon" type="image/x-icon" href="img/template/favicon.svg">
-    <link href="css/style.css?v=3.0.0" rel="stylesheet">
-    <title>Ecom - Ecom Marketplace Template</title>
-</head>
+<head th:replace="~{fragments/common/head :: html_head(pageTitle='Ecom - Ecom Marketplace Template')}">
 <body>
 <div id="preloader-active">
     <div class="preloader d-flex align-items-center justify-content-center">
@@ -24,7 +12,7 @@
     </div>
 </div>
 
-<div th:insert="fragments/header :: header"></div>
+<div th:insert="fragments/common/header :: header"></div>
 
 <div class="mobile-header-active mobile-header-wrapper-style perfect-scrollbar">
     <div class="mobile-header-wrapper-inner">
@@ -3354,28 +3342,7 @@
         </div>
     </div>
 </main>
-<div th:insert="fragments/footer" :: footer></div>
-<script src="js/vendors/modernizr-3.6.0.min.js"></script>
-<script src="js/vendors/jquery-3.6.0.min.js"></script>
-<script src="js/vendors/jquery-migrate-3.3.0.min.js"></script>
-<script src="js/vendors/bootstrap.bundle.min.js"></script>
-<script src="js/vendors/waypoints.js"></script>
-<script src="js/vendors/wow.js"></script>
-<script src="js/vendors/magnific-popup.js"></script>
-<script src="js/vendors/perfect-scrollbar.min.js"></script>
-<script src="js/vendors/select2.min.js"></script>
-<script src="js/vendors/isotope.js"></script>
-<script src="js/vendors/scrollup.js"></script>
-<script src="js/vendors/swiper-bundle.min.js"></script>
-<script src="js/vendors/noUISlider.js"></script>
-<script src="js/vendors/slider.js"></script>
-<!-- Count down-->
-<script src="js/vendors/counterup.js"></script>
-<script src="js/vendors/jquery.countdown.min.js"></script>
-<!-- Count down-->
-<script src="js/vendors/jquery.elevatezoom.js"></script>
-<script src="js/vendors/slick.js"></script>
-<script src="js/main.js?v=3.0.0"></script>
-<script src="js/shop.js?v=1.2.1"></script>
+<div th:insert="fragments/common/footer" :: footer></div>
+<div th:insert="fragments/common/scripts" :: scripts></div>
 </body>
 </html>
