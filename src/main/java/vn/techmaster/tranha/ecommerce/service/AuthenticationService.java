@@ -77,8 +77,10 @@ public class AuthenticationService {
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         User user = User.builder()
+                .fullName(registrationRequest.getFullName())
                 .username(registrationRequest.getUsername())
                 .password(passwordEncoder.encode(registrationRequest.getPassword()))
+                .phone(registrationRequest.getPhone())
                 .roles(roles)
                 .status(UserStatus.CREATED)
                 .createdBy(Constant.DEFAULT_CREATOR)

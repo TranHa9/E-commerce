@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:replace="~{fragments/common/head :: html_head(pageTitle='Login - Ecom Marketplace Template')}">
+<head th:replace="~{fragments/common/head :: html_head(pageTitle='Register - Ecom Marketplace Template')}">
 <body>
 <div id="preloader-active">
     <div class="preloader d-flex align-items-center justify-content-center">
@@ -15,15 +15,15 @@
 <div class="mobile-header-active mobile-header-wrapper-style perfect-scrollbar">
     <div class="mobile-header-wrapper-inner">
         <div class="mobile-header-content-area">
-            <div class="mobile-logo"><a class="d-flex" href="index.html"><img alt="Ecom"
-                                                                              src="img/template/logo.svg"></a></div>
+            <div class="mobile-logo"><a class="d-flex" href="../index.html"><img alt="Ecom"
+                                                                                 src="img/template/logo.svg"></a></div>
             <div class="perfect-scroll">
                 <div class="mobile-menu-wrap mobile-header-border">
                     <nav class="mt-15">
                         <ul class="mobile-menu font-heading">
-                            <li class="has-children"><a class="active" href="index.html">Home</a>
+                            <li class="has-children"><a class="active" href="../index.html">Home</a>
                                 <ul class="sub-menu">
-                                    <li><a href="index.html">Homepage - 1</a></li>
+                                    <li><a href="../index.html">Homepage - 1</a></li>
                                     <li><a href="index-2.html">Homepage - 2</a></li>
                                     <li><a href="index-3.html">Homepage - 3</a></li>
                                     <li><a href="index-4.html">Homepage - 4</a></li>
@@ -66,7 +66,7 @@
                                     <li><a href="page-term.html">Term and Condition</a></li>
                                     <li><a href="page-register.html">Register</a></li>
                                     <li><a href="page-login.html">Login</a></li>
-                                    <li><a href="page-404.html">Error 404</a></li>
+                                    <li><a href="../page-404.html">Error 404</a></li>
                                 </ul>
                             </li>
                             <li class="has-children"><a href="blog.html">Blog</a>
@@ -315,15 +315,15 @@
 <div class="mobile-header-active mobile-header-wrapper-style perfect-scrollbar">
     <div class="mobile-header-wrapper-inner">
         <div class="mobile-header-content-area">
-            <div class="mobile-logo"><a class="d-flex" href="index.html"><img alt="Ecom"
-                                                                              src="img/template/logo.svg"></a></div>
+            <div class="mobile-logo"><a class="d-flex" href="../index.html"><img alt="Ecom"
+                                                                                 src="img/template/logo.svg"></a></div>
             <div class="perfect-scroll">
                 <div class="mobile-menu-wrap mobile-header-border">
                     <nav class="mt-15">
                         <ul class="mobile-menu font-heading">
-                            <li class="has-children"><a class="active" href="index.html">Home</a>
+                            <li class="has-children"><a class="active" href="../index.html">Home</a>
                                 <ul class="sub-menu">
-                                    <li><a href="index.html">Homepage - 1</a></li>
+                                    <li><a href="../index.html">Homepage - 1</a></li>
                                     <li><a href="index-2.html">Homepage - 2</a></li>
                                     <li><a href="index-3.html">Homepage - 3</a></li>
                                     <li><a href="index-4.html">Homepage - 4</a></li>
@@ -366,7 +366,7 @@
                                     <li><a href="page-term.html">Term and Condition</a></li>
                                     <li><a href="page-register.html">Register</a></li>
                                     <li><a href="page-login.html">Login</a></li>
-                                    <li><a href="page-404.html">Error 404</a></li>
+                                    <li><a href="../page-404.html">Error 404</a></li>
                                 </ul>
                             </li>
                             <li class="has-children"><a href="blog.html">Blog</a>
@@ -422,39 +422,48 @@
             <div class="row mb-100">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-5">
-                    <h3>Member Login</h3>
-                    <p class="font-md color-gray-500">Welcome back!</p>
+                    <h3>Tạo tài khoản</h3>
+<!--                    <p class="font-md color-gray-500">Access to all features. No credit card required.</p>-->
                     <div class="form-register mt-30 mb-30">
+                        <form id="register-form">
                         <div class="form-group">
-                            <label class="mb-5 font-sm color-gray-700">Email / Phone / Username *</label>
-                            <input class="form-control" type="text" placeholder="stevenjob@gmail.com">
+                            <label for="fullName" class="mb-5 font-sm color-gray-700">Họ và tên *</label>
+                            <input class="form-control" type="text" id="fullName" placeholder="Trần Văn A" name="fullName">
                         </div>
                         <div class="form-group">
-                            <label class="mb-5 font-sm color-gray-700">Password *</label>
-                            <input class="form-control" type="password" placeholder="******************">
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="color-gray-500 font-xs">
-                                        <input class="checkagree" type="checkbox">Remember me
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 text-end">
-                                <div class="form-group"><a class="font-xs color-gray-500" href="#">Forgot your
-                                    password?</a></div>
-                            </div>
+                            <label for="username" class="mb-5 font-sm color-gray-700">Email *</label>
+                            <input class="form-control" type="text" id="username" placeholder="trantv@gmail.com" name="username">
                         </div>
                         <div class="form-group">
-                            <input class="font-md-bold btn btn-buy" type="submit" value="Sign Up">
+                            <label for="password" class="mb-5 font-sm color-gray-700">Mật khẩu *</label>
+                            <input class="form-control" type="password" id="password" placeholder="***************" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="mb-5 font-sm color-gray-700">Số điện thoại *</label>
+                            <input class="form-control" type="number" id="phone" placeholder="0912345678" name="phone">
+                        </div>
+                        </form>
+                        <div class="form-group">
+                            <button class="font-md-bold btn btn-buy" id="btn-create" type="button">Đăng ký</button>
                         </div>
                         <div class="mt-20"><span
-                                class="font-xs color-gray-500 font-medium">Have not an account?</span><a
-                                class="font-xs color-brand-3 font-medium" href="page-register.html">Sign Up</a></div>
+                                class="font-xs color-gray-500 font-medium">Đã có tài khoản</span><a
+                                class="font-xs color-brand-3 font-medium" href="logins">Đăng nhập</a></div>
                     </div>
                 </div>
-                <div class="col-lg-5"></div>
+                <div class="col-lg-5">
+                    <div class="box-login-social pt-65 pl-50">
+                        <h5 class="text-center">Use Social Network Account</h5>
+                        <div class="box-button-login mt-25"><a class="btn btn-login font-md-bold color-brand-3 mb-15">Sign
+                            up with<img src="img/page/account/google.svg" alt="Ecom"></a><a
+                                class="btn btn-login font-md-bold color-brand-3 mb-15">Sign up with<span
+                                class="color-blue font-md-bold">Facebook</span></a><a
+                                class="btn btn-login font-md-bold color-brand-3 mb-15">Sign up with<img
+                                src="img/page/account/amazon.svg" alt="Ecom"></a></div>
+                        <div class="mt-10 text-center"><span class="font-xs color-gray-900">Buying for work?</span><a
+                                class="color-brand-1 font-xs" href="#">Create a free business account</a></div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

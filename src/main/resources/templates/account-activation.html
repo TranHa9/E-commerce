@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head th:replace="~{fragments/common/head :: html_head(pageTitle='Activation')}">
+</head>
+<body>
+<h1>Kích hoạt tài khoản</h1>
+<input type="hidden" id="userId" th:value="${userId}">
+<div th:insert="fragments/common/scripts" :: scripts></div>
+<script src="/js/authentication/activation.js"></script>
+</body>
+</html>
