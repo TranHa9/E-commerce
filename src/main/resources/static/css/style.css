@@ -11498,6 +11498,14 @@ a:hover span {
         width: 55%;
     }
 
+    #user-info {
+        white-space: nowrap; /* Không cho chữ xuống dòng */
+        overflow: hidden; /* Ẩn phần nội dung thừa */
+        text-overflow: ellipsis; /* Thay phần nội dung bị thừa bằng "..." */
+        max-width: 150px; /* Đặt độ rộng tối đa để giới hạn nội dung */
+        display: inline-block; /* Hiển thị trên cùng một hàng */
+    }
+
     .list-products-5.list-products-3 .card-grid-style-3 {
         width: 100%;
     }

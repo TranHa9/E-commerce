@@ -122,7 +122,8 @@ public class AuthenticationService {
                 .jwt(jwt)
                 .refreshToken(refreshToken)
                 .id(userDetails.getId())
-                .username(userDetails.getUsername())
+                .email(userDetails.getEmail())
+                .name(userDetails.getUsername())
                 .roles(roles)
                 .build();
     }
@@ -155,7 +156,8 @@ public class AuthenticationService {
                                     .jwt(jwtToken)
                                     .refreshToken(refreshToken)
                                     .id(userDetails.getId())
-                                    .username(userDetails.getUsername())
+                                    .email(userDetails.getEmail())
+                                    .name(userDetails.getUsername())
                                     .roles(userDetails.getAuthorities().stream()
                                             .map(GrantedAuthority::getAuthority)
                                             .collect(Collectors.toSet()))

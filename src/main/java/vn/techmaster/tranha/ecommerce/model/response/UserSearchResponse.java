@@ -12,7 +12,7 @@ public class UserSearchResponse {
 
     Long id;
 
-    String username;
+    String email;
 
     String status;
 

@@ -12,7 +12,8 @@ $(document).ready(function () {
                 localStorage.setItem("refreshToken", data?.refreshToken);
                 const user = {
                     id: data?.id,
-                    username: data?.username,
+                    email: data?.email,
+                    name: data?.name,
                     role: data?.roles?.[0]
                 };
                 localStorage.setItem("user", JSON.stringify(user));

@@ -24,6 +24,7 @@ public class CustomUserDetails implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -31,6 +32,10 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
+        return user.getName();
+    }
+
+    public String getEmail() {
         return user.getEmail();
     }
 

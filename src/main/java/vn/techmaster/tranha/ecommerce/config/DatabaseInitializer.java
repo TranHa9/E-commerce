@@ -54,6 +54,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             Optional<User> admin = userRepository.findByEmail(adminEmail);
             if (admin.isEmpty()) {
                 User user = new User();
+                user.setName("admin");
                 user.setEmail(adminEmail);
                 user.setPassword(passwordEncoder.encode(adminPassword)); // Encrypt the password
                 Set<Role> roles = new HashSet<>();
