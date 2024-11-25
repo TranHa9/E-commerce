@@ -9,10 +9,26 @@ $(document).ready(function (){
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             success: function (data) {
+                $("#success").remove();
+                $("#error").remove();
                 showToast("Đăng ký thành công", "success");
+                const successHtml = `
+                    <div id="success" class="form-group text-success">
+                        <p>Đăng ký thành công! Kiểm tra email để kích hoạt tài khoản. Nếu không thấy email hãy 
+                        <a href="http://localhost:8080/api/v1/accounts/${data.id}/activation_emails">bấm vào đây</a>.
+                        </p>
+                    </div>`;
+                $(".form-register").append(successHtml);
             },
             error: function (data) {
+                $("#success").remove();
+                $("#error").remove();
                 showToast(data.responseJSON.message, "error");
+                const errorHtml = `
+                    <div id="error" class="form-group text-danger">
+                        <p>Đăng ký thất bại! Kiểm tra lại email và mật khẩu.</p>
+                    </div>`;
+                $(".form-register").append(errorHtml);
             }
         });
     })

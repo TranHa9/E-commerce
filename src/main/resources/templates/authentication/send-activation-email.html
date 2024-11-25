@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head th:replace="~{fragments/common/head :: html_head(pageTitle='Send-Activation-Emalo')}">
+</head>
+<body>
+<h1>Gửi lại email</h1>
+<input type="hidden" id="userId" th:value="${userId}">
+<div th:insert="fragments/common/scripts" :: scripts></div>
+<script src="/js/authentication/send-activation-email.js"></script>
+</body>
+</html>

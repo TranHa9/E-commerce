@@ -13,6 +13,11 @@ public class AccountController {
     @GetMapping("/{id}/activations")
     public String activateAccount(@PathVariable Long id, Model model) {
         model.addAttribute("userId", id);
-        return "account-activation";
+        return "authentication/account-activation";
+    }
+    @GetMapping("/{id}/activation_emails")
+    public String sendActivationEmail(@PathVariable Long id, Model model) {
+        model.addAttribute("userId", id);
+        return "authentication/send-activation-email";
     }
 }
