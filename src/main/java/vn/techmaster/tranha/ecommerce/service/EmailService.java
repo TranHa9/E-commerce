@@ -34,7 +34,7 @@ public class EmailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setFrom(fromEmail);
-        mimeMessageHelper.setTo(user.getUsername());
+        mimeMessageHelper.setTo(user.getEmail());
 
         String url = activationLink.replace("{id}", user.getId().toString());
         String content = "<div>" +
@@ -53,7 +53,7 @@ public class EmailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setFrom(fromEmail);
-        mimeMessageHelper.setTo(user.getUsername());
+        mimeMessageHelper.setTo(user.getEmail());
 
         String url = passwordForgottenLink.replace("{id}", user.getId().toString());
         String content = "<div>" +

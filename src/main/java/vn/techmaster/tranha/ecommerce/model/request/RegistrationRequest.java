@@ -5,18 +5,17 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.validator.constraints.Length;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegistrationRequest {
 
-    @NotBlank(message = "fullName cannot be blank")
-    String fullName;
+    @NotBlank(message = "name cannot be blank")
+    String name;
 
-    @NotBlank(message = "User cannot be blank")
-    @Email
-    String username;
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không đúng định dạng")
+    String email;
 
     @NotBlank(message = "Password cannot be blank")
     String password;

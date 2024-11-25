@@ -231,33 +231,35 @@
                     <p class="font-md color-gray-500">Chào mừng bạn trở lại</p>
                     <div class="form-register mt-30 mb-30">
                         <form id="login-form">
-                        <div class="form-group">
-                            <label for="username" class="mb-5 font-sm color-gray-700">Email*</label>
-                            <input class="form-control" id="username" name="username" type="text" placeholder="hatv@gmail.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="password" class="mb-5 font-sm color-gray-700">Password *</label>
-                            <input class="form-control" id="password" name="password" type="password" placeholder="************">
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="color-gray-500 font-xs">
-                                        <input class="checkagree" type="checkbox">Ghi nhớ
-                                    </label>
+                            <div class="form-group">
+                                <label for="email" class="mb-5 font-sm color-gray-700">Email*</label>
+                                <input class="form-control" id="email" name="email" type="text"
+                                       placeholder="hatv@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="mb-5 font-sm color-gray-700">Password *</label>
+                                <input class="form-control" id="password" name="password" type="password"
+                                       placeholder="************">
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="color-gray-500 font-xs">
+                                            <input class="checkagree" type="checkbox">Ghi nhớ
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 text-end">
+                                    <div class="form-group">
+                                        <a class="font-xs color-gray-500"
+                                           href="http://localhost:8080/api/v1/accounts/${data.id}/password_forgotten">
+                                            Bạn quên mật khẩu?
+                                        </a></div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 text-end">
-                                <div class="form-group">
-                                    <a class="font-xs color-gray-500"
-                                       href="http://localhost:8080/api/v1/accounts/${data.id}/password_forgotten">
-                                        Bạn quên mật khẩu?
-                                </a></div>
+                            <div class="form-group">
+                                <button class="font-md-bold btn btn-buy" id="btn-login" type="button">Đăng nhập</button>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <button class="font-md-bold btn btn-buy" id="btn-login" type="button">Đăng nhập</button>
-                        </div>
                         </form>
                         <div class="mt-20"><span
                                 class="font-xs color-gray-500 font-medium">Bạn chưa có tài khoản? </span><a

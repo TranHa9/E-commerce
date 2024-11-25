@@ -22,9 +22,9 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends BaseEntity {
 
-    String fullName;
+    String name;
 
-    String username;
+    String email;
 
     String password;
 
@@ -53,8 +53,5 @@ public class User extends BaseEntity {
     Integer activationMailSentCount;
 
     LocalDateTime forgotPasswordMailSentAt;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    Shop shop;
 
 }

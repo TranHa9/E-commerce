@@ -51,7 +51,7 @@ public class UserService {
 
 
     public UserResponse createUser(CreateUserRequest request) throws ExistedUserException {
-        Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
         if (userOptional.isPresent()) {
             throw new ExistedUserException("Username existed");
         }
@@ -59,7 +59,7 @@ public class UserService {
         Set<Role> roles = roleRepository.findByName(Roles.USER).stream().collect(Collectors.toSet());
 
         User user = User.builder()
-                .username(request.getUsername())
+                .email(request.getEmail())
                 .password(passwordEncoder.encode("123")) // TODO: change to random password
                 .roles(roles)
                 .status(UserStatus.ACTIVATED)

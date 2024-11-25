@@ -81,7 +81,7 @@ public class AccountService {
         // TODO - cần check so lần gửi tối đa trong 1 khoag thơi gian (vi du chi duoc gui toi da 3 mail trong vong 1h)
 
         // cần check xem email có tồn tại trong hệ thống không
-        User user = userRepository.findByUsername(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
 
         // gửi mail

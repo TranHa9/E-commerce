@@ -68,7 +68,7 @@ public class AuthenticationService {
 
     public UserResponse registerUser(RegistrationRequest registrationRequest)
             throws ObjectNotFoundException, ExistedUserException, MessagingException {
-        Optional<User> userOptional = userRepository.findByUsernameAndStatus(registrationRequest.getUsername(), UserStatus.ACTIVATED);
+        Optional<User> userOptional = userRepository.findByEmailAndStatus(registrationRequest.getEmail(), UserStatus.ACTIVATED);
         if (userOptional.isPresent()) {
             throw new ExistedUserException("Username existed");
         }
@@ -77,8 +77,8 @@ public class AuthenticationService {
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         User user = User.builder()
-                .fullName(registrationRequest.getFullName())
-                .username(registrationRequest.getUsername())
+                .name(registrationRequest.getName())
+                .email(registrationRequest.getEmail())
                 .password(passwordEncoder.encode(registrationRequest.getPassword()))
                 .phone(registrationRequest.getPhone())
                 .roles(roles)
@@ -97,7 +97,7 @@ public class AuthenticationService {
 
     public JwtResponse authenticate(LoginRequest request) throws ObjectNotFoundException {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtService.generateJwtToken(authentication);
