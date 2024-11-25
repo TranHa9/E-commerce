@@ -1,5 +1,7 @@
 package vn.techmaster.tranha.ecommerce.config;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import vn.techmaster.tranha.ecommerce.entity.Role;
 import vn.techmaster.tranha.ecommerce.entity.User;
 import vn.techmaster.tranha.ecommerce.repository.RoleRepository;
@@ -19,15 +21,21 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DatabaseInitializer implements CommandLineRunner {
 
-    UserRepository userRepository;
+    final UserRepository userRepository;
 
-    RoleRepository roleRepository;
+    final RoleRepository roleRepository;
 
-    PasswordEncoder passwordEncoder;
+    final PasswordEncoder passwordEncoder;
+
+    @Value("${application.account.admin.email}")
+    String adminEmail;
+
+    @Value("${application.account.admin.password}")
+    String adminPassword;
 
     @Override
     public void run(String... args) {
@@ -43,11 +51,11 @@ public class DatabaseInitializer implements CommandLineRunner {
             Role adminRole = Role.builder().name(Roles.ADMIN).build();
             roleRepository.save(adminRole);
 
-            Optional<User> admin = userRepository.findByEmail("admin");
+            Optional<User> admin = userRepository.findByEmail(adminEmail);
             if (admin.isEmpty()) {
                 User user = new User();
-                user.setEmail("admin");
-                user.setPassword(passwordEncoder.encode("admin123")); // Encrypt the password
+                user.setEmail(adminEmail);
+                user.setPassword(passwordEncoder.encode(adminPassword)); // Encrypt the password
                 Set<Role> roles = new HashSet<>();
                 roles.add(adminRole);
                 user.setRoles(roles);
