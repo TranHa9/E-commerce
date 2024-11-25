@@ -99,10 +99,11 @@ public class SecurityConfig {
                         // authentication end
 
                         // account start
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/accounts/{id}/password").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/accounts/{id}/password").permitAll()
                         .requestMatchers(
                                 "/api/v1/accounts/{id}/activations",
                                 "/api/v1/accounts/{id}/activation_emails",
+                                "/api/v1/accounts/password_forget",
                                 "/api/v1/accounts/password_forgotten_emails",
                                 "/api/v1/accounts/{id}/password_forgotten"
                         ).permitAll()

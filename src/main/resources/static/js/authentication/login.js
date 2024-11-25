@@ -17,12 +17,12 @@ $(document).ready(function () {
                 };
                 localStorage.setItem("user", JSON.stringify(user));
                 showToast("Đăng nhập thành công", "success");
-                // setTimeout(() => {
-                //     window.location.href = "/";
-                // }, 1000);
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 1000);
             },
             error: function (data) {
-                showToast(data.responseJSON.message, "error");
+                showToast("Thất bại", "error");
             }
         });
     })

@@ -15,9 +15,21 @@ public class AccountController {
         model.addAttribute("userId", id);
         return "authentication/account-activation";
     }
+
     @GetMapping("/{id}/activation_emails")
     public String sendActivationEmail(@PathVariable Long id, Model model) {
         model.addAttribute("userId", id);
         return "authentication/send-activation-email";
+    }
+
+    @GetMapping("/password_forget")
+    public String sendforgotPasswordEmail() {
+        return "authentication/send-password-email";
+    }
+
+    @GetMapping("/{id}/password_forgotten")
+    public String forgotPasswordEmail(@PathVariable Long id, Model model) {
+        model.addAttribute("userId", id);
+        return "authentication/forgot-password";
     }
 }

@@ -1,4 +1,4 @@
-$(document).ready(function (){
+$(document).ready(function () {
     const userId = $("#userId").val()
     $.ajax({
         url: `/api/v1/accounts/${userId}/activation_emails`,
@@ -8,7 +8,7 @@ $(document).ready(function (){
             showToast("Thành công! Vui lòng kiếm tra email", "success");
             setTimeout(() => {
                 window.location.href = "/registers";
-            }, 2000);
+            }, 1000);
         },
         error: function () {
             showToast("Thất bại", "error");
