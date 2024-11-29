@@ -15,7 +15,7 @@ public class UserCustomRepository extends BaseRepository {
 
     public List<SearchUserDto> searchUser(UserSearchRequest request) {
         String query = "with raw_data as (\n" +
-                "    select id, username, status\n" +
+                "    select id, email, status\n" +
                 "    from users\n" +
                 "    where 1 = 1\n" +
                 "   {{search_condition}}\n" +
@@ -36,7 +36,7 @@ public class UserCustomRepository extends BaseRepository {
 //        }
 
         if (request.getName() != null && !request.getName().trim().isEmpty()) {
-            query += " and lower(u.username) like :name";
+            query += " and lower(u.email) like :name";
             parameters.put("name", "%" + request.getName().toLowerCase() + "%");
         }
 

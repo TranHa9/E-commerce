@@ -32,11 +32,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getName();
+        return user.getEmail();
     }
 
-    public String getEmail() {
-        return user.getEmail();
+    public String getName() {
+        return user.getName();
     }
 
     public Long getId() {
