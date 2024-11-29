@@ -1,6 +1,5 @@
 $(document).ready(function () {
     const accessToken = localStorage.getItem("accessToken");
-
     // Kiểm tra token ngay khi trang được tải
     if (accessToken && isTokenExpired(accessToken)) {
         localStorage.removeItem("user");
@@ -41,18 +40,12 @@ $(document).ready(function () {
         $.ajax({
             url: "/api/v1/authentications/logout",
             method: "POST",
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            },
             success: function (response) {
                 showToast("Đăng xuất thành công", "success");
                 localStorage.removeItem("user");
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
                 window.location.href = "/logins";
-            },
-            error: function (error) {
-                showToast("Thất bại", "error");
             }
         });
     });
@@ -67,9 +60,6 @@ $(document).ready(function () {
             method: "POST",
             data: JSON.stringify({refreshToken: refreshToken}),
             contentType: "application/json",
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            },
             success: function (data) {
                 localStorage.setItem("accessToken", data?.jwt);
                 localStorage.setItem("refreshToken", data?.refreshToken);
@@ -81,9 +71,6 @@ $(document).ready(function () {
                 };
                 localStorage.setItem("user", JSON.stringify(user));
                 setRefreshTimer();
-            },
-            error: function (error) {
-                showToast("Thất bại", "error");
             }
         });
     }

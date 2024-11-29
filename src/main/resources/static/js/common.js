@@ -26,3 +26,29 @@ function showToast(message, type) {
         // onClick: function(){} // Callback after click
     }).showToast();
 }
+
+const accessToken = localStorage.getItem("accessToken");
+$.ajaxSetup({
+    headers: {
+        "Authorization": `Bearer ${accessToken}`
+    },
+    error: function (jqXHR) {
+        console.log(jqXHR)
+        if (jqXHR.status === 401) {
+            showToast("Phiên làm việc hết hạn, vui lòng đăng nhập lại.", "error");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("user");
+            window.location.href = "/logins";
+        } else if (jqXHR.status === 404) {
+            showToast("Trang không tồn tại.", "warning");
+            window.location.href = "/not-founds";
+        } else {
+            showToast(`Có lỗi`, "error");
+        }
+    }
+});
+
+
+
+
