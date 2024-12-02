@@ -5,8 +5,9 @@ $(document).ready(function () {
         localStorage.removeItem("user");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user-info");
     }
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user-info"));
     if (user && user.name) {
         $("#user-info").text(` ${user.name}`);
         let dropdownMenu = `
@@ -45,6 +46,7 @@ $(document).ready(function () {
                 localStorage.removeItem("user");
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
+                localStorage.removeItem("user-info");
                 window.location.href = "/logins";
             }
         });

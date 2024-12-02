@@ -28,10 +28,7 @@ function showToast(message, type) {
 }
 
 const accessToken = localStorage.getItem("accessToken");
-$.ajaxSetup({
-    headers: {
-        "Authorization": `Bearer ${accessToken}`
-    },
+const ajaxSetupObj = {
     error: function (jqXHR) {
         if (jqXHR.status === 401) {
             showToast("Phiên làm việc hết hạn, vui lòng đăng nhập lại.", "error");
@@ -46,8 +43,12 @@ $.ajaxSetup({
             showToast(`Có lỗi`, "error");
         }
     }
-});
-
-
+}
+if (accessToken) {
+    ajaxSetupObj["headers"] = {
+        "Authorization": `Bearer ${accessToken}`
+    }
+}
+$.ajaxSetup(ajaxSetupObj);
 
 

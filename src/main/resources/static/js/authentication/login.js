@@ -1,7 +1,6 @@
 $(document).ready(function () {
     $("#btn-login").click(function () {
         const data = getDataForm()
-
         $.ajax({
             url: '/api/v1/authentications/login',
             type: 'POST',
@@ -17,13 +16,18 @@ $(document).ready(function () {
                     role: data?.roles?.[0]
                 };
                 localStorage.setItem("user", JSON.stringify(user));
+                $.ajax({
+                    url: `/api/v1/users/${user.id}`,
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        localStorage.setItem("user-info", JSON.stringify(response));
+                    }
+                });
                 showToast("Đăng nhập thành công", "success");
                 setTimeout(() => {
                     window.location.href = "/";
                 }, 1000);
-            },
-            error: function (data) {
-                showToast("Thất bại", "error");
             }
         });
     })
@@ -36,16 +40,5 @@ $(document).ready(function () {
         });
         return user;
     }
-    function getUserDetail(id) {
-        let user = null;
-        $.ajax({
-            url: `/api/v1/users/${id}`,
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            success: function (response) {
-                user = response;
-            },
-        });
-        return user;
-    }
+
 })
