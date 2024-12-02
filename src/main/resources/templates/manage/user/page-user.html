@@ -61,65 +61,60 @@
     </header>
     <section class="content-main">
         <div class="content-header">
-            <h2 class="content-title">Profile setting</h2>
+            <h2 class="content-title">Thông tin cá nhân</h2>
         </div>
         <div class="card">
             <div class="card-body">
                 <div class="row gx-5">
-                    <aside class="col-lg-3 border-end">
-                        <nav class="nav nav-pills flex-lg-column mb-4"><a class="nav-link active" aria-current="page"
-                                                                          href="#">General</a><a class="nav-link"
-                                                                                                 href="#">Moderators</a><a
-                                class="nav-link" href="#">Admin account</a><a class="nav-link" href="#">SEO settings</a><a
-                                class="nav-link" href="#">Mail settings</a><a class="nav-link" href="#">Newsletter</a>
-                        </nav>
-                    </aside>
                     <div class="col-lg-9">
                         <section class="content-body p-xl-4">
-                            <form>
+                            <form id="form-info">
                                 <div class="row">
                                     <div class="col-lg-8">
                                         <div class="row gx-3">
                                             <div class="col-6 mb-3">
-                                                <label class="form-label">First name</label>
-                                                <input class="form-control" type="text" placeholder="Type here">
-                                            </div>
-                                            <!-- col .//-->
-                                            <div class="col-6 mb-3">
-                                                <label class="form-label">Last name</label>
-                                                <input class="form-control" type="text" placeholder="Type here">
+                                                <label for="name" class="form-label">Họ và tên </label>
+                                                <input class="form-control" id="name" name="name" type="text"
+                                                       placeholder="Trần Văn A">
                                             </div>
                                             <!-- col .//-->
                                             <div class="col-lg-6 mb-3">
-                                                <label class="form-label">Email</label>
-                                                <input class="form-control" type="email" placeholder="example@mail.com">
+                                                <label for="email" class="form-label">Email</label>
+                                                <input class="form-control" id="email" name="email" type="email"
+                                                       placeholder="a@mail.com">
                                             </div>
                                             <!-- col .//-->
                                             <div class="col-lg-6 mb-3">
-                                                <label class="form-label">Phone</label>
-                                                <input class="form-control" type="tel" placeholder="+1234567890">
+                                                <label for="phone" class="form-label">Số điện thoại</label>
+                                                <input class="form-control" id="phone" name="phone" type="text"
+                                                       placeholder="0123456789">
                                             </div>
-                                            <!-- col .//-->
-                                            <div class="col-lg-12 mb-3">
-                                                <label class="form-label">Address</label>
-                                                <input class="form-control" type="text" placeholder="Type here">
+
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="gender" class="form-label">Giới tính</label>
+                                                <select class="form-select" id="gender" name="gender">
+                                                    <option selected value="MALE">Nam</option>
+                                                    <option value="FEMALE">Nữ</option>
+                                                    <option value="OTHER">Khác</option>
+                                                </select>
                                             </div>
+
                                             <!-- col .//-->
                                             <div class="col-lg-6 mb-3">
-                                                <label class="form-label">Birthday</label>
-                                                <input class="form-control" type="date">
+                                                <label for="dob" class="form-label">Ngày sinh</label>
+                                                <input class="form-control" id="dob" name="dob" type="date">
                                             </div>
-                                            <!-- col .//-->
-                                            <!-- row.//-->
-                                            <!-- col.//-->
                                         </div>
                                     </div>
                                     <aside class="col-lg-4">
                                         <figure class="text-lg-center"><img class="img-lg mb-3 img-avatar"
-                                                                            src="/img/people/avatar1.jpg"
+                                                                            src="/img/people/avatar-default.jpg"
                                                                             alt="User Photo">
-                                            <figcaption><a class="btn btn-light rounded font-md" href="#"><i
-                                                    class="icons material-icons md-backup font-md"></i> Upload</a>
+                                            <figcaption>
+                                                <input type="file" hidden="hidden" id="avatar-input" name="avatar"/>
+                                                <button class="btn btn-sm btn-secondary icons material-icons md-backup font-md change-avatar-btn">
+                                                    Tải ảnh
+                                                </button>
                                             </figcaption>
                                         </figure>
                                     </aside>
@@ -127,8 +122,8 @@
                                     <!-- row.//-->
                                 </div>
                                 <br>
-                                <button class="btn btn-primary" type="submit">Save changes</button>
                             </form>
+                            <button class="btn btn-primary" id="btn-user-save" type="button">Lưu</button>
                             <hr class="my-5">
                             <div class="row" style="max-width:920px">
                                 <div class="col-md">
@@ -172,5 +167,6 @@
     </footer>
 </main>
 <div th:insert="fragments/common/manage/scripts" :: scripts></div>
+<script src="/js/users/user.js"></script>
 </body>
 </html>

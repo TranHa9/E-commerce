@@ -81,11 +81,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll() // Allow access to H2 Console
                         .requestMatchers("/swagger-ui/index.html").permitAll() // Allow access to Swagger UI
-                        .requestMatchers("/users").authenticated()
 
                         // user start
                         .requestMatchers(HttpMethod.GET, "/api/v1/users", "/api/v1/users/{id}").hasAnyAuthority(Roles.USER.toString(), Roles.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAnyAuthority(Roles.ADMIN.toString())
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/{id}").authenticated()
                         // user end
 
                         // authentication start

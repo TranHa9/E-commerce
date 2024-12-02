@@ -36,4 +36,16 @@ $(document).ready(function () {
         });
         return user;
     }
+    function getUserDetail(id) {
+        let user = null;
+        $.ajax({
+            url: `/api/v1/users/${id}`,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                user = response;
+            },
+        });
+        return user;
+    }
 })

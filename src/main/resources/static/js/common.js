@@ -33,7 +33,6 @@ $.ajaxSetup({
         "Authorization": `Bearer ${accessToken}`
     },
     error: function (jqXHR) {
-        console.log(jqXHR)
         if (jqXHR.status === 401) {
             showToast("Phiên làm việc hết hạn, vui lòng đăng nhập lại.", "error");
             localStorage.removeItem("accessToken");

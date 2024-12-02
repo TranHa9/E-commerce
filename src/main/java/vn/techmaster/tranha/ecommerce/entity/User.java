@@ -44,7 +44,9 @@ public class User extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    String avatar;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    byte[] avatar;
 
     //LocalDateTime deletedDateTime;
 

@@ -1,12 +1,15 @@
 package vn.techmaster.tranha.ecommerce.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.dto.SearchUserDto;
 import vn.techmaster.tranha.ecommerce.entity.Role;
 import vn.techmaster.tranha.ecommerce.entity.User;
 import vn.techmaster.tranha.ecommerce.exception.ExistedUserException;
 import vn.techmaster.tranha.ecommerce.exception.ObjectNotFoundException;
 import vn.techmaster.tranha.ecommerce.model.request.CreateUserRequest;
+import vn.techmaster.tranha.ecommerce.model.request.UpdateUserRequest;
 import vn.techmaster.tranha.ecommerce.model.request.UserSearchRequest;
 import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
 import vn.techmaster.tranha.ecommerce.model.response.UserResponse;
@@ -22,6 +25,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -91,4 +95,23 @@ public class UserService {
                 .build();
     }
 
+    public UserResponse updateUser(Long id, MultipartFile avatar, UpdateUserRequest request) throws ObjectNotFoundException {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("User not found"));
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        user.setGender(request.getGender());
+        user.setDob(request.getDob());
+        if (avatar != null && !avatar.isEmpty()) {
+            try {
+                byte[] avatarBytes = avatar.getBytes();
+                user.setAvatar(avatarBytes);
+            } catch (IOException e) {
+                throw new RuntimeException("Error while processing avatar file", e);
+            }
+        }
+        userRepository.save(user);
+        return objectMapper.convertValue(user, UserResponse.class);
+    }
 }
