@@ -1,5 +1,7 @@
 package vn.techmaster.tranha.ecommerce.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.exception.ExistedUserException;
 import vn.techmaster.tranha.ecommerce.exception.ObjectNotFoundException;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.techmaster.tranha.ecommerce.statics.Gender;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 @RestController
@@ -27,6 +30,8 @@ import java.time.LocalDate;
 public class UserResource {
 
     UserService userService;
+
+    ObjectMapper objectMapper;
 
     @GetMapping
     public CommonSearchResponse<?> search(UserSearchRequest request) {
@@ -46,16 +51,15 @@ public class UserResource {
 
     @PutMapping("/{id}")
     public UserResponse updateUser(@PathVariable Long id,
-                                   @RequestParam(value = "avatar", required = false) MultipartFile avatar,
-                                   @RequestParam("name") String name,
-                                   @RequestParam("email") String email,
-                                   @RequestParam("phone") String phone,
-                                   @RequestParam(value = "gender", required = false) Gender gender,
-                                   @RequestParam(value = "dob", required = false) LocalDate dob
-                                  ) throws ObjectNotFoundException {
-        UpdateUserRequest request = new UpdateUserRequest(name, email, phone, gender, dob);
-        UserResponse userResponse = userService.updateUser(id, avatar, request);
-        return userResponse;
+                                   @RequestPart("request") String updateUserRequest,
+                                   @RequestPart(value = "avatar", required = false) MultipartFile avatar
+    ) throws ObjectNotFoundException, IOException {
+        try {
+            UpdateUserRequest request = objectMapper.readValue(updateUserRequest, UpdateUserRequest.class);
+            return userService.updateUser(id, avatar, request);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Dữ liệu JSON không hợp lệ", e);
+        }
     }
 
 }

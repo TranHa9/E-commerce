@@ -1893,6 +1893,23 @@ a.text-brand-3:hover {
     line-height: 18px;
 }
 
+.password-wrapper {
+    position: relative;
+}
+
+.icon-password {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+}
+
+
 .box-swiper {
     position: relative;
     width: 100%;

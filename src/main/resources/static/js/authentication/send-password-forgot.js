@@ -3,7 +3,36 @@ $(document).ready(function () {
         window.location.href = "/logins";
     });
 
+    $("#forgot-form").validate({
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        rules: {
+            "email": {
+                required: true,
+                maxlength: 100,
+                email: true
+            }
+        },
+        messages: {
+            "email": {
+                required: "Email bắt buộc nhập",
+                maxlength: "Email tối đa 100 ký tự",
+                email: "Vui lòng nhập đúng định dạng email"
+            }
+
+        },
+    });
+    $("#forgot-form .form-control").on("focus", function () {
+        $(this).siblings(".error").text(""); // Xóa lỗi của trường input này
+        $(this).removeClass("error");
+    });
+
     $("#btn-password-forgot").click(function () {
+        const isValidForm = $("#forgot-form").valid();
+        if (!isValidForm) {
+            return;
+        }
         const email = $("#email").val().trim();
 
         $.ajax({

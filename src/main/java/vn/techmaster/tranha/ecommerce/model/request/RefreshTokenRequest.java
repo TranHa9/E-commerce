@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RefreshTokenRequest {
 
-    @NotBlank
+    @NotBlank(message = "refreshToken không được để trống")
     String refreshToken;
 
 }

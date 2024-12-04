@@ -69,6 +69,12 @@ public class AccountService {
     public void sendActivationEmail(Long id) throws MessagingException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Kiểm tra xem tài khoản đã được kích hoạt chưa
+        if (user.getStatus() == UserStatus.ACTIVATED) {
+            throw new MessagingException("Account is already activated");
+        }
+        // Kiểm tra số lần gửi email kích hoạt
         if (user.getActivationMailSentCount() > activationMailMaxSentCount) {
             throw new MessagingException("Activation email has been sent over " + activationMailMaxSentCount + " times");
         }

@@ -1,10 +1,7 @@
 package vn.techmaster.tranha.ecommerce.model.request;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.entity.Role;
@@ -21,16 +18,21 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateUserRequest {
 
-    @NotBlank(message = "Name không được trống")
+    @NotBlank(message = "Tên không được để trống")
+    @Size(max = 150, message = "Tên không được vượt quá 150 ký tự")
     String name;
 
-    @Email(message = "Email phải đúng định dạng")
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không đúng định dạng")
+    @Size(max = 100, message = "Email không được vượt quá 100 ký tự")
     String email;
-
-    @NotBlank(message = "Số điện thoại không để trống")
+    
+    @Pattern(regexp = "^0\\d{9}$", message = "Số điện thoại phải có 10 ký tự, bắt đầu bằng số 0 và chỉ chứa chữ số")
     String phone;
 
+    @Pattern(regexp = "^(MALE|FEMALE|OTHER)?$", message = "Giới tính không hợp lệ, phải là MALE, FEMALE hoặc OTHER")
     Gender gender;
 
+    @PastOrPresent(message = "Ngày sinh phải là ngày trong quá khứ hoặc ngày hôm nay")
     LocalDate dob;
 }

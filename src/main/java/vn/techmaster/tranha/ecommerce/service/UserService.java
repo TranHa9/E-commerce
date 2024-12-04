@@ -2,6 +2,7 @@ package vn.techmaster.tranha.ecommerce.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.dto.SearchUserDto;
 import vn.techmaster.tranha.ecommerce.entity.Role;
@@ -25,7 +26,12 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +39,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
@@ -46,6 +53,7 @@ public class UserService {
     final ObjectMapper objectMapper;
 
     final UserCustomRepository userCustomRepository;
+
 
     public UserResponse getDetail(Long id) throws ObjectNotFoundException {
         return userRepository.findById(id)
@@ -95,7 +103,7 @@ public class UserService {
                 .build();
     }
 
-    public UserResponse updateUser(Long id, MultipartFile avatar, UpdateUserRequest request) throws ObjectNotFoundException {
+    public UserResponse updateUser(Long id, MultipartFile avatar, UpdateUserRequest request) throws ObjectNotFoundException, IOException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("User not found"));
         user.setName(request.getName());
@@ -103,15 +111,31 @@ public class UserService {
         user.setPhone(request.getPhone());
         user.setGender(request.getGender());
         user.setDob(request.getDob());
+
         if (avatar != null && !avatar.isEmpty()) {
-            try {
-                byte[] avatarBytes = avatar.getBytes();
-                user.setAvatar(avatarBytes);
-            } catch (IOException e) {
-                throw new RuntimeException("Error while processing avatar file", e);
-            }
+            String fileName = saveAvatar(avatar);
+            user.setAvatar(fileName);
         }
         userRepository.save(user);
         return objectMapper.convertValue(user, UserResponse.class);
+    }
+
+    private String saveAvatar(MultipartFile avatar) throws IOException {
+        // Đường dẫn thư mục "images/user"
+        String uploadDir = System.getProperty("user.dir") + File.separator + "images" + File.separator + "user";
+        File dir = new File(uploadDir);
+        // Kiểm tra nếu thư mục không tồn tại thì tạo mới
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        String fileName = System.currentTimeMillis() + "_" + avatar.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir + File.separator + fileName);
+        try {
+            Files.copy(avatar.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            return fileName;
+        } catch (IOException e) {
+            log.error("Error while saving avatar", e);
+            throw new IOException("Could not save avatar image", e);
+        }
     }
 }

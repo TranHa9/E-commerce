@@ -1,5 +1,6 @@
 package vn.techmaster.tranha.ecommerce.resource;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import vn.techmaster.tranha.ecommerce.exception.ExpiredEmailActivationUrlException;
 import vn.techmaster.tranha.ecommerce.exception.ExpiredPasswordForgottenUrlException;
 import vn.techmaster.tranha.ecommerce.exception.ObjectNotFoundException;
@@ -41,8 +42,14 @@ public class AccountResource {
     @PostMapping("/{id}/activation_emails")
     public ResponseEntity<?> sendActivationEmail(@PathVariable Long id)
             throws MessagingException {
-        accountService.sendActivationEmail(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        try {
+            accountService.sendActivationEmail(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/password_forgotten_emails")

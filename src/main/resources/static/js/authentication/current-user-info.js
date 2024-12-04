@@ -1,13 +1,12 @@
 $(document).ready(function () {
     const accessToken = localStorage.getItem("accessToken");
-    // Kiểm tra token ngay khi trang được tải
-    if (accessToken && isTokenExpired(accessToken)) {
+
+    if (!accessToken || isTokenExpired(accessToken)) {
         localStorage.removeItem("user");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user-info");
     }
-    const user = JSON.parse(localStorage.getItem("user-info"));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user && user.name) {
         $("#user-info").text(` ${user.name}`);
         let dropdownMenu = `
@@ -41,12 +40,16 @@ $(document).ready(function () {
         $.ajax({
             url: "/api/v1/authentications/logout",
             method: "POST",
-            success: function (response) {
-                showToast("Đăng xuất thành công", "success");
+            success: function () {
                 localStorage.removeItem("user");
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
-                localStorage.removeItem("user-info");
+                window.location.href = "/logins";
+            },
+            error: function () {
+                localStorage.removeItem("user");
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
                 window.location.href = "/logins";
             }
         });
@@ -79,6 +82,9 @@ $(document).ready(function () {
 
     // Kiểm tra xem token có hết hạn không
     function isTokenExpired(token) {
+        if (!token) {
+            return true;
+        }
         const decodedToken = parseJwt(token);
         if (!decodedToken || !decodedToken.exp) return true;
         const expTime = decodedToken.exp * 1000;
@@ -87,7 +93,7 @@ $(document).ready(function () {
 
     // Hàm giải mã JWT (token) để lấy payload
     function parseJwt(token) {
-        if (!token) return null;
+        if (!token || token.split('.').length !== 3) return null;
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {

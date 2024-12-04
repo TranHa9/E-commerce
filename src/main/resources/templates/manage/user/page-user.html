@@ -66,7 +66,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row gx-5">
-                    <div class="col-lg-9">
+                    <div class="col">
                         <section class="content-body p-xl-4">
                             <form id="form-info">
                                 <div class="row">
@@ -81,7 +81,7 @@
                                             <div class="col-lg-6 mb-3">
                                                 <label for="email" class="form-label">Email</label>
                                                 <input class="form-control" id="email" name="email" type="email"
-                                                       placeholder="a@mail.com">
+                                                       placeholder="a@mail.com" readonly>
                                             </div>
                                             <!-- col .//-->
                                             <div class="col-lg-6 mb-3">
@@ -111,10 +111,12 @@
                                                                             src="/img/people/avatar-default.jpg"
                                                                             alt="User Photo">
                                             <figcaption>
-                                                <input type="file" hidden="hidden" id="avatar-input" name="avatar"/>
+                                                <input type="file" hidden="hidden" id="avatar-input" name="avatar"
+                                                       accept="image/jpeg, image/png, image/gif"/>
                                                 <button class="btn btn-sm btn-secondary icons material-icons md-backup font-md change-avatar-btn">
                                                     Tải ảnh
                                                 </button>
+                                                <p id="avtar-error" class="error" for="avtar"></p>
                                             </figcaption>
                                         </figure>
                                     </aside>
