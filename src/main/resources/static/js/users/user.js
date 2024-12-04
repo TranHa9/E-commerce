@@ -120,9 +120,9 @@ $(document).ready(function () {
         if (!file) {
             return;
         }
-        const maxSize = 10 * 1024; // 10KB
+        const maxSize = 10 * 1024 * 1024; // 10MB
         if (file.size > maxSize) {
-            $("#avtar-error").text("Kích thước file không được vượt quá 10KB.")
+            alert("Kích thước file không được vượt quá 10MB.");
             return;
         }
         chosenFile = file;

@@ -122,7 +122,8 @@ public class UserService {
 
     private String saveAvatar(MultipartFile avatar) throws IOException {
         // Đường dẫn thư mục "images/user"
-        String uploadDir = System.getProperty("user.dir") + File.separator + "images" + File.separator + "user";
+        String uploadDir = "images/user" + File.separator;
+
         File dir = new File(uploadDir);
         // Kiểm tra nếu thư mục không tồn tại thì tạo mới
         if (!dir.exists()) {
