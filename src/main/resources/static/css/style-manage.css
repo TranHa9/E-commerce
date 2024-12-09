@@ -308,6 +308,18 @@ table .form-check {
     color: red;
 }
 
+.password-wrapper {
+    position: relative;
+}
+
+.icon-password {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
 .img-avatar {
     border-radius: 100%;
     border: 3px solid #fff;
@@ -843,7 +855,7 @@ b {
     color: #4f5d77;
     width: 100%;
     border-radius: 4px;
-    height: 45px;
+    /*height: 45px;*/
 }
 
 .form-control:focus, .form-select:focus {

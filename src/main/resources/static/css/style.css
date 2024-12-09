@@ -360,6 +360,14 @@ a:hover {
     max-width: 100%;
 }
 
+.image-info img {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+
 body {
     font-family: "DM Sans", sans-serif;
 }
@@ -10643,7 +10651,7 @@ a:hover span {
     }
 
     .header .main-header .header-left .header-shop .icon-list {
-        padding: 0px 18px 0px 18px;
+        padding: 0px;
         width: 25px;
         height: 25px;
     }

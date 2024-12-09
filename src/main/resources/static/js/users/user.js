@@ -83,8 +83,63 @@ $(document).ready(function () {
 
         },
     });
-    $("#form-info .form-control").on("focus", function () {
+
+    $.validator.addMethod(
+        "passwordPattern",
+        function (value, element) {
+            return this.optional(element) || /^(?=.*[a-zA-Z])(?=.*\d)/.test(value);
+        },
+        "Mật khẩu phải chứa cả chữ và số"
+    );
+
+    $.validator.addMethod(
+        "passwordMatch",
+        function (value, element) {
+            return this.optional(element) || value === $("#password").val();
+        },
+        "Mật khẩu mới và xác nhận mật khẩu không khớp"
+    );
+
+    $("#password-form").validate({
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        rules: {
+            "password": {
+                required: true,
+                minlength: 6,
+                maxlength: 16,
+                passwordPattern: true
+            },
+            "confirmedPassword": {
+                required: true,
+                minlength: 6,
+                maxlength: 16,
+                passwordPattern: true,
+                passwordMatch: true
+            }
+
+        },
+        messages: {
+            "password": {
+                required: "Mật khẩu bắt buộc nhập",
+                minlength: "Mật khẩu phải có ít nhất 6 ký tự",
+                maxlength: "Mật khẩu tối đa 16 ký tự",
+            },
+            "confirmedPassword": {
+                required: "Mật khẩu bắt buộc nhập",
+                minlength: "Mật khẩu phải có ít nhất 6 ký tự",
+                maxlength: "Mật khẩu tối đa 16 ký tự",
+            }
+
+        },
+    });
+    $("#password-form .form-control").on("focus", function () {
         $(this).siblings(".error").text(""); // Xóa lỗi của trường input này
+        $(this).removeClass("error");
+    });
+    $("#form-info .form-control").on("focus", function () {
+        $(this).siblings(".error").text("");
         $(this).removeClass("error");
     });
     const user = JSON.parse(localStorage.getItem("user"));
@@ -109,7 +164,7 @@ $(document).ready(function () {
         window.location.href = "/logins";
     }
 
-    $(".change-avatar-btn").click((event) => {
+    $("#change-avatar-btn").click((event) => {
         event.preventDefault();
         $("#avatar-input").click();
         $("#avtar-error").text("");
@@ -152,6 +207,9 @@ $(document).ready(function () {
             success: function (response) {
                 showToast("Lưu thành công", "success");
                 localStorage.setItem("user", JSON.stringify(response));
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
             }
         });
     })
@@ -165,4 +223,52 @@ $(document).ready(function () {
         return user;
     }
 
+    $("#btn-save-change").click(function () {
+        const isValidForm = $("#password-form").valid();
+        if (!isValidForm) {
+            return;
+        }
+        const newPassword = $("#password").val();
+        const confirmedPassword = $("#confirmedPassword").val();
+        $.ajax({
+            url: `/api/v1/accounts/${user.id}/password`,
+            type: "PATCH",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                password: newPassword,
+                confirmedPassword: confirmedPassword
+            }),
+            success: function () {
+                showToast("Đổi mật khẩu thành công", "success");
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('user');
+                setTimeout(function () {
+                    location.href = "/logins";
+                }, 2000);
+            },
+        })
+    })
+    $('#toggle-password').click(function () {
+        const passwordField = $('#password');
+        const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+        passwordField.attr('type', type);
+        const icon = $(this);
+        if (type === 'password') {
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        } else {
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        }
+    });
+    $('#toggle-confirmed-password').click(function () {
+        const passwordField = $('#confirmedPassword');
+        const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+        passwordField.attr('type', type);
+        const icon = $(this);
+        if (type === 'password') {
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        } else {
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        }
+    });
 })

@@ -11,4 +11,9 @@ public class UserController {
     public String users() {
         return "manage/user/page-user";
     }
+
+    @GetMapping("/admin/users")
+    public String managementUsers() {
+        return "manage/user/user-management";
+    }
 }

@@ -7,13 +7,17 @@ $(document).ready(function () {
         localStorage.removeItem("refreshToken");
     }
     const user = JSON.parse(localStorage.getItem("user"));
+    const role = localStorage.getItem("role");
+    if (user && user.avatar) {
+        $("#avatar-info").attr("src", "/api/v1/files/user/" + user.avatar);
+    }
     if (user && user.name) {
         $("#user-info").text(` ${user.name}`);
         let dropdownMenu = `
             <ul>
         `;
-        if (user.role === "ADMIN" || user.role === "SHOP") {
-            dropdownMenu += `<li><a href="#">Quản lý</a></li>`;
+        if (role && role === "ADMIN" || role === "SHOP") {
+            dropdownMenu += `<li><a href="/admin/users">Quản lý</a></li>`;
         }
         dropdownMenu += `
             <li><a href="/users">Tài khoản</a></li>
@@ -22,6 +26,7 @@ $(document).ready(function () {
         </ul>
         `;
         $(".dropdown-account").html(dropdownMenu);
+
     } else {
         $("#user-info").text("Xin chào!");
         $(".dropdown-account").html(`
@@ -32,7 +37,7 @@ $(document).ready(function () {
         `);
     }
 
-    $("#user-info").click(function () {
+    $("#user-info, .image-info").click(function () {
         $(".dropdown-account").toggleClass("dropdown-open");
     });
 
@@ -55,70 +60,6 @@ $(document).ready(function () {
         });
     });
 
-    function refreshToken() {
-        const accessToken = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (!refreshToken || !accessToken) return;
-
-        $.ajax({
-            url: "/api/v1/authentications/refresh_token",
-            method: "POST",
-            data: JSON.stringify({refreshToken: refreshToken}),
-            contentType: "application/json",
-            success: function (data) {
-                localStorage.setItem("accessToken", data?.jwt);
-                localStorage.setItem("refreshToken", data?.refreshToken);
-                const user = {
-                    id: data?.id,
-                    email: data?.email,
-                    name: data?.name,
-                    role: data?.roles?.[0]
-                };
-                localStorage.setItem("user", JSON.stringify(user));
-                setRefreshTimer();
-            }
-        });
-    }
-
-    // Kiểm tra xem token có hết hạn không
-    function isTokenExpired(token) {
-        if (!token) {
-            return true;
-        }
-        const decodedToken = parseJwt(token);
-        if (!decodedToken || !decodedToken.exp) return true;
-        const expTime = decodedToken.exp * 1000;
-        return expTime < Date.now();
-    }
-
-    // Hàm giải mã JWT (token) để lấy payload
-    function parseJwt(token) {
-        if (!token || token.split('.').length !== 3) return null;
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    }
-
-    function setRefreshTimer() {
-        const accessToken = localStorage.getItem('accessToken');
-        if (!accessToken) return;
-
-        const decodedToken = parseJwt(accessToken);
-        if (!decodedToken || !decodedToken.exp) return;
-
-        const expTime = decodedToken.exp * 1000;  // Lấy thời gian hết hạn (convert sang milliseconds)
-        const timeUntilExpiry = expTime - Date.now();  // Tính thời gian còn lại
-        const refreshTime = timeUntilExpiry - 60000;  // Refresh trước 1 phút (60,000ms)
-
-        if (refreshTime > 0) {
-            setTimeout(() => {
-                refreshToken();
-            }, refreshTime);
-        }
-    }
 
     setRefreshTimer();
 })

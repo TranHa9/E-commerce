@@ -27,5 +27,5 @@ public class NotificationTarget extends BaseEntity {
     @Enumerated(EnumType.STRING)
     NotifictionTargetType targetType;
 
-    boolean read;
+    boolean is_read;
 }

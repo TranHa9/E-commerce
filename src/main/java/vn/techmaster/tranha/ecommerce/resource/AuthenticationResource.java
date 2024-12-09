@@ -1,5 +1,6 @@
 package vn.techmaster.tranha.ecommerce.resource;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import vn.techmaster.tranha.ecommerce.exception.ExistedUserException;
 import vn.techmaster.tranha.ecommerce.exception.InvalidRefreshTokenException;
 import vn.techmaster.tranha.ecommerce.exception.ObjectNotFoundException;
@@ -28,8 +29,13 @@ public class AuthenticationResource {
     AuthenticationService authenticateService;
 
     @PostMapping("/login")
-    public JwtResponse authenticateUser(@Valid @RequestBody LoginRequest request) throws ObjectNotFoundException {
-        return authenticateService.authenticate(request);
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest request) throws ObjectNotFoundException {
+        try {
+            JwtResponse response = authenticateService.authenticate(request);
+            return ResponseEntity.ok(response);
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/registration")

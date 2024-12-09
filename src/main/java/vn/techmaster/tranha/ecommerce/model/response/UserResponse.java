@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.statics.Gender;
+import vn.techmaster.tranha.ecommerce.statics.Roles;
+import vn.techmaster.tranha.ecommerce.statics.UserStatus;
 
 import java.time.LocalDate;
 
@@ -18,7 +20,7 @@ public class UserResponse {
     String email;
 
     String name;
-    
+
     String phone;
 
     Gender gender;
@@ -26,5 +28,9 @@ public class UserResponse {
     LocalDate dob;
 
     String avatar;
+    
+    UserStatus status;
+
+    Roles role;
 
 }

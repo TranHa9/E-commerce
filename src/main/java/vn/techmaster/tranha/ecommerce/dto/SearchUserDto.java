@@ -9,7 +9,13 @@ import lombok.experimental.FieldDefaults;
 public class SearchUserDto {
 
     Long id;
-    String username;
+    String name;
+    String email;
+    String phone;
+    String dob;
+    String gender;
     String status;
+    String avatar;
+    String role;
     Long totalRecord;
 }

@@ -51,25 +51,30 @@ $(document).ready(function () {
             return;
         }
         const data = getDataForm()
-        const loginResponse = await $.ajax({
+        await $.ajax({
             url: '/api/v1/authentications/login',
             type: 'POST',
             data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8"
+            contentType: "application/json; charset=utf-8",
+            success: async function (response) {
+                localStorage.setItem("accessToken", response?.jwt);
+                localStorage.setItem("refreshToken", response?.refreshToken);
+                localStorage.setItem("role", response?.roles[0])
+                const user = await getUserDetail(response?.id);
+                if (user) {
+                    localStorage.setItem("user", JSON.stringify(user));
+                }
+                showToast("Đăng nhập thành công", "success");
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 1000);
+            },
+            error: function (jqXHR) {
+                if (jqXHR.status === 401) {
+                    showToast("Thông tin tài khoản mật khẩu không chỉnh xác", "error");
+                }
+            }
         });
-
-        localStorage.setItem("accessToken", loginResponse?.jwt);
-        localStorage.setItem("refreshToken", loginResponse?.refreshToken);
-
-        const user = await getUserDetail(loginResponse?.id);
-
-        if (user) {
-            localStorage.setItem("user", JSON.stringify(user));
-        }
-        showToast("Đăng nhập thành công", "success");
-        setTimeout(() => {
-            window.location.href = "/";
-        }, 1000);
     })
 
     function getDataForm() {
@@ -77,23 +82,6 @@ $(document).ready(function () {
         const user = {};
         formValues.forEach(input => {
             user[input.name] = input.value;
-        });
-        return user;
-    }
-
-    async function getUserDetail(id) {
-        const accessToken = localStorage.getItem("accessToken");
-        let user = null;
-        await $.ajax({
-            url: `/api/v1/users/${id}`,
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-            success: function (response) {
-                user = response;
-            },
         });
         return user;
     }
