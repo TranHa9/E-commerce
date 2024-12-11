@@ -1,6 +1,8 @@
 package vn.techmaster.tranha.ecommerce.resource;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,8 +10,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.exception.ExistedUserException;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
+import vn.techmaster.tranha.ecommerce.model.request.UpdateUserRequest;
 import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.service.ProductService;
 
@@ -20,6 +24,7 @@ import vn.techmaster.tranha.ecommerce.service.ProductService;
 public class ProductResource {
 
     ProductService productService;
+    ObjectMapper objectMapper;
 
 //    @GetMapping
 //    public CommonSearchResponse<?> search(ProductSearchRequest request) {
@@ -27,8 +32,14 @@ public class ProductResource {
 //    }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody @Valid CreateProductRequest request) throws ExistedUserException {
-        ProductResponse productResponse = productService.createProduct(request);
-        return ResponseEntity.status(HttpStatus.CREATED.value()).body(productResponse);
+    public ProductResponse create(
+            @RequestPart(value = "image") MultipartFile image,
+            @RequestPart("request") @Valid String createProductRequest) throws Exception {
+        try {
+            CreateProductRequest request = objectMapper.readValue(createProductRequest, CreateProductRequest.class);
+            return productService.createProduct(image, request);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Dữ liệu JSON không hợp lệ", e);
+        }
     }
 }

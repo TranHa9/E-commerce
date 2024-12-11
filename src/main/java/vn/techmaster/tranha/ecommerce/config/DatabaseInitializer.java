@@ -66,6 +66,11 @@ public class DatabaseInitializer implements CommandLineRunner {
                 userRepository.save(user);
             }
         }
+        Optional<Role> shopUserOptional = roleRepository.findByName(Roles.SHOP);
+        if (shopUserOptional.isEmpty()) {
+            Role shopRole = Role.builder().name(Roles.SHOP).build();
+            roleRepository.save(shopRole);
+        }
     }
 
 }

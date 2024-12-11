@@ -4,10 +4,10 @@ import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import vn.techmaster.tranha.ecommerce.entity.Category;
-import vn.techmaster.tranha.ecommerce.entity.Shop;
+import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -19,19 +19,20 @@ public class CreateProductRequest {
 
     String description;
 
-    @Min(value = 0, message = "Giá trị tối thiểu của giá là 0")
-    @NotNull(message = "Giá sản phẩm không được để trống")
-    Double minPrice;
+//    @Min(value = 0, message = "Giá trị tối thiểu của giá là 0")
+//    @NotNull(message = "Giá sản phẩm không được để trống")
+//    Double minPrice;
+//
+//    @Min(value = 0, message = "Giá trị tối thiểu của giá là 0")
+//    @NotNull(message = "Giá sản phẩm không được để trống")
+//    Double maxPrice;
 
     @Min(value = 0, message = "Giá trị tối thiểu của giá là 0")
     @NotNull(message = "Giá sản phẩm không được để trống")
-    Double maxPrice;
-
-    @Pattern(regexp = "^\\d+(?:\\.\\d{1,2})?$", message = "Giá phải là số hợp lệ (tối đa 2 chữ số thập phân)")
-    String prices;
+    Double price;
 
     @NotBlank(message = "URL ảnh không được để trống")
-    String images;
+    String image;
 
     @Min(value = 0, message = "Số lượng tồn kho không thể là số âm")
     int stockQuantity;
@@ -42,6 +43,7 @@ public class CreateProductRequest {
     @Future(message = "Hạn sử dụng phải là một ngày trong tương lai")
     LocalDate expiryDate; //Hạn sử dụng
 
-    @NotNull(message = "Danh mục sản phẩm không được để trống")
-    Category category;
+    Long categoryId;
+
+    Long shopId;
 }

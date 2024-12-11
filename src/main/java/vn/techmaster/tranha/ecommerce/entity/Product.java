@@ -19,19 +19,21 @@ public class Product extends BaseEntity {
 
     String name;
     String description;
-    Double minPrice;
-    Double maxPrice;
 
-    @Column(length = 5000)
-    String prices;
+    Double minPrice; // Giá thấp nhất cho sản phẩm (các biến thể khác nhau)
+    Double maxPrice; // Giá cao nhất cho sản phẩm (các biến thể khác nhau)
 
-    String images;
+    Double price;
 
     int stockQuantity;
+
     String origin; //Xuất xứ sản phẩm
     LocalDate expiryDate; //Hạn sử dụng
+
     int averageRating;
     int soldQuantity;
+
+    String image;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

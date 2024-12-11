@@ -26,7 +26,7 @@ public class ProductVariant extends BaseEntity {
 
     String variantValue;
 
-    //Double price;
+    Double price;
 
     int stockQuantity;
 

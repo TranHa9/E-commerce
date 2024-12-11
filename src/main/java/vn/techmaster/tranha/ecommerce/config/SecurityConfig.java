@@ -111,11 +111,22 @@ public class SecurityConfig {
                         ).permitAll()
                         // account end
 
+                        //Shop start
+                        .requestMatchers(HttpMethod.POST, "/api/v1/shops").authenticated()
+                        //Shop end
+
                         //Category start
                         .requestMatchers("api/v1/categories").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
                         //Category end
 
-                        
+                        //Product start
+                        .requestMatchers("api/v1/products").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        //Product end
+
+                        .requestMatchers("api/v1/product-attributes").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+
+                        .requestMatchers("api/v1/product-variants").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+
                         .requestMatchers("/api/**").authenticated() // all other apis need authentication
                         .anyRequest().permitAll() // all thymeleaf, html page don't have to authenticate
                 )
