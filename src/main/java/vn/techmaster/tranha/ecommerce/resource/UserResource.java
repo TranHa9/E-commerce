@@ -18,10 +18,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.techmaster.tranha.ecommerce.statics.Gender;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/users")

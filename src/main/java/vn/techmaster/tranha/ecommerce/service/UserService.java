@@ -84,10 +84,10 @@ public class UserService {
         List<SearchUserDto> result = userCustomRepository.searchUser(request);
 
         Long totalRecord = 0L;
-        List<UserSearchResponse> studentResponses = new ArrayList<>();
+        List<UserSearchResponse> userResponses = new ArrayList<>();
         if (!result.isEmpty()) {
             totalRecord = result.get(0).getTotalRecord();
-            studentResponses = result
+            userResponses = result
                     .stream()
                     .map(s -> objectMapper.convertValue(s, UserSearchResponse.class))
                     .toList();
@@ -98,7 +98,7 @@ public class UserService {
         return CommonSearchResponse.<UserSearchResponse>builder()
                 .totalRecord(totalRecord)
                 .totalPage(totalPage)
-                .data(studentResponses)
+                .data(userResponses)
                 .pageInfo(new CommonSearchResponse.CommonPagingResponse(request.getPageSize(), request.getPageIndex()))
                 .build();
     }
