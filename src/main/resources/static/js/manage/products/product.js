@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     const tableBody = $('table tbody');
     const pagination = $(".pagination-area .pagination")
     let totalPage;
@@ -7,9 +8,9 @@ $(document).ready(function () {
     let pageSize = 10;
     let pageIndex = 0;
 
-    function getUserData(data) {
+    function getProductData(data) {
         $.ajax({
-            url: '/api/v1/users',
+            url: '/api/v1/products',
             type: 'GET',
             data: {
                 pageIndex: pageIndex,
@@ -18,12 +19,13 @@ $(document).ready(function () {
             },
             contentType: "application/json; charset=utf-8",
             success: function (response) {
-                renderUserTable(response)
+                console.log(response)
+                renderProductTable(response)
             }
         });
     }
 
-    function renderUserTable(data) {
+    function renderProductTable(data) {
         pagination.empty();
         tableBody.empty();
         if (!data || data.data?.length === 0) {
@@ -32,32 +34,38 @@ $(document).ready(function () {
             );
             return;
         }
-        const users = data.data;
+        const products = data.data;
         totalPage = data.totalPage;
         totalRecord = data.totalRecord;
         pageInfo = data.pageInfo;
 
-        users.forEach(function (user) {
+        products.forEach(function (product) {
+            console.log(product)
+            const isProductActive = product.variants && product.variants.some(variant => variant.status === 'ACTIVE');
+            const productStatus = isProductActive ? 'ACTIVE' : 'INACTIVE';
             const row = `<tr>
                 <td width="40%"><a class="itemside" href="#">
                     <div class="left"><img class="img-sm img-avatar" 
-                    src="${user.avatar ? `/api/v1/files/user/${user.avatar}` : '/img/people/avatar-default.jpg'}"
+                    src="${product.avatar ? `/api/v1/files/product/${product.productImage}` : '/img/people/avatar-default.jpg'}"
                     alt="avatar"></div>
                     <div class="info pl-3">
-                        <h6 class="mb-0 title">${user.name}</h6><small class="text-muted">User ID: #${user.id}</small>
+                        <h6 class="mb-0 title">${product.productName}</h6><small class="text-muted">User ID: #${product.id}</small>
                     </div>
                 </a></td>
-                <td>${user.email}</td>
-                <td>${user.phone}</td>
-                <td>${user.role}</td>
-                <td><span class="badge rounded-pill alert-${user.status === 'ACTIVATED' ? 'success' : 'danger'}">${user.status}</span></td>
-                <td class="text-end"><a class="btn btn-sm btn-brand rounded font-sm mt-15" href="#">View details</a></td>
+                <td>${product.productPrice}</td>
+                <td>${product.categoryName}</td>
+                <td>${product.shopName}</td>
+                <td>${product.productStockQuantity}</td>
+                <td><span class="badge rounded-pill alert-${productStatus === 'ACTIVE' ? 'success' : 'danger'}">${productStatus}</span></td>
+                <td class="text-end"><a
+                                class="btn btn-sm font-sm rounded btn-brand mr-5" href="#"><i
+                                class="material-icons md-edit"></i> Edit</a><a
+                                class="btn btn-sm font-sm btn-light rounded" href="#"><i
+                                class="material-icons md-delete_forever"></i> Delete</a></td>
             </tr>`;
 
             tableBody.append(row);
         });
-
-        pagination.empty();
         pagination.append(`
             <li class="page-item previous-page"><a class="page-link" href="#"><i class="material-icons md-chevron_left"></i></a></li>
         `)
@@ -74,7 +82,7 @@ $(document).ready(function () {
             if (!pageIndex) {
                 return;
             }
-            getUserData({});
+            getProductData({});
         })
 
         $(".next-page").click(function () {
@@ -82,34 +90,16 @@ $(document).ready(function () {
                 return;
             }
             pageIndex = pageInfo.pageNumber + 1;
-            getUserData({});
+            getProductData({});
         })
         $(".previous-page").click(function () {
             if (pageInfo.pageNumber === 0) {
                 return;
             }
             pageIndex = pageInfo.pageNumber - 1;
-            getUserData({});
+            getProductData({});
         })
     }
 
-
-    getUserData({});
-
-    $("#btn-search").click(function () {
-        const formValues = $("#form-search").serializeArray();
-        const data = {};
-        formValues.forEach(input => {
-            data[input.name] = input.value;
-        });
-
-        getUserData(data)
-    })
-
-    $("#btn-reset").click(function () {
-        $("#form-search")[0].reset();
-        pageIndex = 0;
-        getUserData({});
-    });
-
+    getProductData({});
 })
