@@ -46,33 +46,35 @@
                                 </div>
 
                                 <div class="col-lg-6 mb-3">
-                                    <label for="description" class="form-label">Số lượng</label>
+                                    <label for="description" class="form-label">Mô tả</label>
                                     <textarea class="form-control" id="description" name="description" type="text"
-                                              placeholder="1000"></textarea>
+                                              placeholder="....."></textarea>
                                 </div>
 
                             </div>
                         </div>
                         <aside class="col-lg-4">
-                            <figure class="text-lg-center"><img class="img-lg mb-3 img-avatar"
-                                                                src="/img/people/avatar-default.jpg"
-                                                                alt="User Photo">
-                                <figcaption>
-                                    <input type="file" hidden="hidden" id="avatar-input" name="image"
-                                           accept="image/jpeg, image/png, image/gif"/>
-                                    <button id="change-avatar-btn" class="btn btn-sm btn-secondary">
-                                        Tải ảnh
-                                    </button>
-                                    <p id="avtar-error" class="error" for="image"></p>
-                                </figcaption>
-                            </figure>
+                            <div class="d-flex flex-md-column">
+                                <div class="image-preview-container d-flex">
+                                    <div class="image-placeholder d-flex justify-content-center flex-wrap"
+                                         style="width: 100%">
+                                        <i class="fas fa-image" style="font-size: 100px;"></i>
+                                    </div>
+                                </div>
+                                <input type="file" hidden="hidden" id="avatar-input" name="images"
+                                       accept="image/jpeg, image/png, image/gif, image/webp" multiple/>
+                                <button id="change-avatar-btn" class="btn btn-sm btn-secondary">
+                                    Tải ảnh
+                                </button>
+                                <p id="avtar-error" class="error" for="images"></p>
+                            </div>
                         </aside>
                     </div>
                     <br>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btn-save">Lưu</button>
+                <button type="button" class="btn btn-primary" id="btn-save-create">Lưu</button>
             </div>
         </div>
     </div>

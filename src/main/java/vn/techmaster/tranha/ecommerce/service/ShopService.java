@@ -13,7 +13,6 @@ import vn.techmaster.tranha.ecommerce.entity.Shop;
 import vn.techmaster.tranha.ecommerce.entity.User;
 import vn.techmaster.tranha.ecommerce.model.request.ShopCreateRequest;
 import vn.techmaster.tranha.ecommerce.model.response.ShopResponse;
-import vn.techmaster.tranha.ecommerce.model.response.UserResponse;
 import vn.techmaster.tranha.ecommerce.repository.RoleRepository;
 import vn.techmaster.tranha.ecommerce.repository.ShopRepository;
 import vn.techmaster.tranha.ecommerce.repository.UserRepository;
@@ -29,6 +28,7 @@ public class ShopService {
     UserRepository userRepository;
     RoleRepository roleRepository;
     ShopRepository shopRepository;
+    ObjectMapper objectMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> createShop(Long id, @Valid ShopCreateRequest request) {
@@ -56,7 +56,7 @@ public class ShopService {
         shopRepository.save(shop);
 
         ShopResponse response = ShopResponse.builder()
-                .shopId(shop.getId())
+                .id(shop.getId())
                 .name(shop.getName())
                 .description(shop.getDescription())
                 .rating(shop.getRating())
@@ -66,5 +66,10 @@ public class ShopService {
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    public ShopResponse findByUserId(Long userId) {
+        Shop shop = shopRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return objectMapper.convertValue(shop, ShopResponse.class);
     }
 }

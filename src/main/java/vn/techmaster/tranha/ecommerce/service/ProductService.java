@@ -41,7 +41,7 @@ public class ProductService {
     ProductCustomRepository productCustomRepository;
     ObjectMapper objectMapper;
 
-    public ProductResponse createProduct(MultipartFile image, CreateProductRequest request) throws Exception {
+    public ProductResponse createProduct(MultipartFile[] images, CreateProductRequest request) throws Exception {
         Optional<Category> categoryOptional = categoryRepository.findById(request.getCategoryId());
         Optional<Shop> shopOptional = shopRepository.findById(request.getShopId());
 
@@ -52,10 +52,18 @@ public class ProductService {
             throw new Exception("Shop not found");
         }
 
-        String imagePath = null;
-        if (image != null && !image.isEmpty()) {
-            imagePath = saveProductImage(image);
+        List<String> imagePaths = new ArrayList<>();
+        if (images != null && images.length > 0) {
+            // Lưu tất cả ảnh
+            for (MultipartFile image : images) {
+                String imagePath = saveProductImage(image);
+                imagePaths.add(imagePath);
+            }
         }
+//        String imagePath = null;
+//        if (image != null && !image.isEmpty()) {
+//            imagePath = saveProductImage(image);
+//        }
         // Tạo sản phẩm
         Product product = Product.builder()
                 .name(request.getName())
@@ -66,7 +74,7 @@ public class ProductService {
                 .expiryDate(request.getExpiryDate())
                 .category(categoryOptional.get())
                 .shop(shopOptional.get())
-                .image(imagePath)
+                .images(imagePaths.toString())
                 .build();
 
         productRepository.save(product);

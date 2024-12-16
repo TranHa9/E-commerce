@@ -18,7 +18,7 @@ public class ProductSearchResponse {
     Double productPrice;
     Double averageRating;
     String description;
-    String productImage;
+    String productImages;
     Double maxPrice;
     Double minPrice;
     String origin;

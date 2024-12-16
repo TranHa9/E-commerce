@@ -35,11 +35,11 @@ public class ProductResource {
 
     @PostMapping
     public ProductResponse create(
-            @RequestPart(value = "image") MultipartFile image,
+            @RequestPart(value = "images") MultipartFile[] images,
             @RequestPart("request") @Valid String createProductRequest) throws Exception {
         try {
             CreateProductRequest request = objectMapper.readValue(createProductRequest, CreateProductRequest.class);
-            return productService.createProduct(image, request);
+            return productService.createProduct(images, request);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Dữ liệu JSON không hợp lệ", e);
         }

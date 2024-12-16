@@ -28,7 +28,7 @@ public class ProductCustomRepository extends BaseRepository {
 
     public List<SearchProductDto> searchProduct(ProductSearchRequest request) {
         String query = "with raw_data as (\n" +
-                "select p.id, p.name as product_name,p.price as product_price, p.average_rating, p.description, p.image as product_image, p.max_price, p.min_price,\n" +
+                "select p.id, p.name as product_name,p.price as product_price, p.average_rating, p.description, p.images as product_images, p.max_price, p.min_price,\n" +
                 "    p.origin, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.name as category_name, s.name as shop_name,\n" +
                 "    JSON_ARRAYAGG(JSON_OBJECT(\n" +
                 "        'id', pv.id,\n" +
@@ -41,12 +41,12 @@ public class ProductCustomRepository extends BaseRepository {
                 "    )) as variants\n" +
                 "    from products p\n" +
                 "    join categories on categories.id = p.category_id\n" +
-                "    join product_variants pv on pv.product_id = p.id\n" +
-                "    join product_attributes pa on pa.id = pv.product_attribute_id\n" +
+                "    left join product_variants pv on pv.product_id = p.id\n" +
+                "    left join product_attributes pa on pa.id = pv.product_attribute_id\n" +
                 "    join shops s on s.id = p.shop_id\n" +
                 "    where 1 = 1 \n" +
                 "   {{search_condition}}\n" +
-                "    group by p.id, p.name, p.price, p.average_rating, p.description, p.image, p.max_price, p.min_price, p.origin, \n" +
+                "    group by p.id, p.name, p.price, p.average_rating, p.description, p.images, p.max_price, p.min_price, p.origin, \n" +
                 "             p.expiry_date, p.stock_quantity, p.sold_quantity, categories.name, s.name \n" +
                 "), count_data as (\n" +
                 "    select count(*) as totalRecord\n" +
@@ -107,7 +107,7 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setProductPrice(rs.getDouble("product_price"));
             dto.setAverageRating(rs.getDouble("average_rating"));
             dto.setDescription(rs.getString("description"));
-            dto.setProductImage(rs.getString("product_image"));
+            dto.setProductImages(rs.getString("product_images"));
             dto.setMaxPrice(rs.getDouble("max_price"));
             dto.setMinPrice(rs.getDouble("min_price"));
             dto.setOrigin(rs.getString("origin"));
