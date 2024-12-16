@@ -8,16 +8,18 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import vn.techmaster.tranha.ecommerce.dto.SearchProductDto;
 import vn.techmaster.tranha.ecommerce.entity.Category;
 import vn.techmaster.tranha.ecommerce.entity.Product;
 import vn.techmaster.tranha.ecommerce.entity.Shop;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
-import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
-import vn.techmaster.tranha.ecommerce.model.response.UserResponse;
+import vn.techmaster.tranha.ecommerce.model.request.ProductSearchRequest;
+import vn.techmaster.tranha.ecommerce.model.response.*;
 import vn.techmaster.tranha.ecommerce.repository.CategoryRepository;
 import vn.techmaster.tranha.ecommerce.repository.ProductRepository;
 import vn.techmaster.tranha.ecommerce.repository.ShopRepository;
 import vn.techmaster.tranha.ecommerce.repository.UserRepository;
+import vn.techmaster.tranha.ecommerce.repository.custom.ProductCustomRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,7 @@ public class ProductService {
     ProductRepository productRepository;
     CategoryRepository categoryRepository;
     ShopRepository shopRepository;
+    ProductCustomRepository productCustomRepository;
     ObjectMapper objectMapper;
 
     public ProductResponse createProduct(MultipartFile image, CreateProductRequest request) throws Exception {
@@ -86,5 +89,26 @@ public class ProductService {
         } catch (IOException e) {
             throw new IOException("Could not save avatar image", e);
         }
+    }
+
+    public CommonSearchResponse<?> searchProduct(ProductSearchRequest request) {
+        List<SearchProductDto> result = productCustomRepository.searchProduct(request);
+        Long totalRecord = 0L;
+        List<ProductSearchResponse> productResponses = new ArrayList<>();
+        if (!result.isEmpty()) {
+            totalRecord = result.get(0).getTotalRecord();
+            productResponses = result
+                    .stream()
+                    .map(s -> objectMapper.convertValue(s, ProductSearchResponse.class))
+                    .toList();
+        }
+        int totalPage = (int) Math.ceil((double) totalRecord / request.getPageSize());
+
+        return CommonSearchResponse.<ProductSearchResponse>builder()
+                .totalRecord(totalRecord)
+                .totalPage(totalPage)
+                .data(productResponses)
+                .pageInfo(new CommonSearchResponse.CommonPagingResponse(request.getPageSize(), request.getPageIndex()))
+                .build();
     }
 }

@@ -20,13 +20,14 @@ import java.time.LocalDate;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ProductSearchRequest extends BaseSearchRequest {
-    
+
     String name;
 
     Double minPrice;
+
     Double maxPrice;
 
-    String prices;
+    Double price;
 
     int stockQuantity;
 

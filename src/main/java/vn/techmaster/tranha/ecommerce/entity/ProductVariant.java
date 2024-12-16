@@ -1,5 +1,6 @@
 package vn.techmaster.tranha.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,14 +25,19 @@ public class ProductVariant extends BaseEntity {
     @JoinColumn(name = "product_attribute_id")
     ProductAttribute productAttribute;
 
+    @JsonProperty("variant_value")
     String variantValue;
 
+    @JsonProperty("price")
     Double price;
 
+    @JsonProperty("stock_quantity")
     int stockQuantity;
 
+    @JsonProperty("image")
     String image;
 
     @Enumerated(EnumType.STRING)
+    @JsonProperty("status")
     VariantStatus status;
 }

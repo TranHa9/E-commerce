@@ -31,6 +31,7 @@ public class Product extends BaseEntity {
     LocalDate expiryDate; //Hạn sử dụng
 
     int averageRating;
+    
     int soldQuantity;
 
     String image;

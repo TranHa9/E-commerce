@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.exception.ExistedUserException;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
+import vn.techmaster.tranha.ecommerce.model.request.ProductSearchRequest;
 import vn.techmaster.tranha.ecommerce.model.request.UpdateUserRequest;
+import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.service.ProductService;
 
@@ -26,10 +28,10 @@ public class ProductResource {
     ProductService productService;
     ObjectMapper objectMapper;
 
-//    @GetMapping
-//    public CommonSearchResponse<?> search(ProductSearchRequest request) {
-//        return productService.searchProduct(request);
-//    }
+    @GetMapping
+    public CommonSearchResponse<?> search(ProductSearchRequest request) {
+        return productService.searchProduct(request);
+    }
 
     @PostMapping
     public ProductResponse create(

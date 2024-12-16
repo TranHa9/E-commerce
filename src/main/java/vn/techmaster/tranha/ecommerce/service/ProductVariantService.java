@@ -9,7 +9,9 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.entity.Product;
 import vn.techmaster.tranha.ecommerce.entity.ProductAttribute;
@@ -27,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +42,7 @@ public class ProductVariantService {
     ProductVariantRepository productVariantRepository;
     ObjectMapper objectMapper;
 
+    @Transactional(rollbackFor = Exception.class)
     public ProductVariantResponse createProductVariant(MultipartFile image, CreateProductVariantRequest request) throws Exception {
         Optional<Product> productOptional = productRepository.findById(request.getProductId());
         if (productOptional.isEmpty()) {
@@ -62,11 +66,14 @@ public class ProductVariantService {
                 .productAttribute(productAttribute)
                 .variantValue(request.getVariantValue())
                 .stockQuantity(request.getStockQuantity())
+                .price(request.getPrice())
                 .image(imagePath)
                 .status(request.getStatus())
                 .build();
         productVariantRepository.save(productVariant);
-        
+
+        updateProductDetails(product);
+
         return objectMapper.convertValue(productVariant, ProductVariantResponse.class);
     }
 
@@ -88,4 +95,28 @@ public class ProductVariantService {
         }
     }
 
+    public void updateProductDetails(Product product) {
+        List<ProductVariant> variants = productVariantRepository.findByProductId(product.getId());
+
+        double minPrice = product.getPrice();
+        double maxPrice = product.getPrice();
+        int totalStock = 0;
+
+        for (ProductVariant variant : variants) {
+            double variantPrice = product.getPrice();
+            if (variantPrice < minPrice) {
+                minPrice = variantPrice;
+            }
+            if (variantPrice > maxPrice) {
+                maxPrice = variantPrice;
+            }
+            totalStock += variant.getStockQuantity();
+        }
+
+        product.setMinPrice(minPrice);
+        product.setMaxPrice(maxPrice);
+        product.setStockQuantity(totalStock);
+
+        productRepository.save(product);
+    }
 }

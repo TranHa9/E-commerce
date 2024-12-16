@@ -30,6 +30,4 @@ public class UserSearchResponse {
     String role;
 
     String status;
-
-
 }
