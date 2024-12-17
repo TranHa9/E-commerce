@@ -60,21 +60,18 @@ public class ProductService {
                 imagePaths.add(imagePath);
             }
         }
-//        String imagePath = null;
-//        if (image != null && !image.isEmpty()) {
-//            imagePath = saveProductImage(image);
-//        }
         // Tạo sản phẩm
         Product product = Product.builder()
                 .name(request.getName())
                 .description(request.getDescription())
-                .price(request.getPrice())
+                .basePrice(request.getBasePrice())
                 .stockQuantity(request.getStockQuantity())
                 .origin(request.getOrigin())
+                .brand(request.getBrand())
                 .expiryDate(request.getExpiryDate())
                 .category(categoryOptional.get())
                 .shop(shopOptional.get())
-                .images(imagePaths.toString())
+                .imageUrls(imagePaths.toString())
                 .build();
 
         productRepository.save(product);

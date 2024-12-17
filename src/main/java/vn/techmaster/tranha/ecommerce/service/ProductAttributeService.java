@@ -6,9 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import vn.techmaster.tranha.ecommerce.entity.ProductAttribute;
-import vn.techmaster.tranha.ecommerce.model.request.CreateProductAttrbutesRequest;
+import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
+import vn.techmaster.tranha.ecommerce.model.request.CreateProductAttributesRequest;
 import vn.techmaster.tranha.ecommerce.model.response.ProductAttributeResponse;
 import vn.techmaster.tranha.ecommerce.repository.ProductAttributeRepository;
+import vn.techmaster.tranha.ecommerce.repository.ProductVariantRepository;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -16,15 +20,24 @@ import vn.techmaster.tranha.ecommerce.repository.ProductAttributeRepository;
 public class ProductAttributeService {
 
     ProductAttributeRepository productAttributeRepository;
+    ProductVariantRepository productVariantRepository;
     ObjectMapper objectMapper;
 
-    public ProductAttributeResponse createProductAttribute(CreateProductAttrbutesRequest request) throws Exception {
-        if (productAttributeRepository.existsByName(request.getName())) {
-            throw new Exception("Product Attribute with this name already exists");
+    public ProductAttributeResponse createProductAttribute(CreateProductAttributesRequest request) throws Exception {
+//        if (productAttributeRepository.existsByName(request.getName())) {
+//            throw new Exception("Product Attribute with this name already exists");
+//        }
+        Optional<ProductVariant> productVariantOptional = productVariantRepository.findById(request.getVariantId());
+        if (productVariantOptional.isEmpty()) {
+            throw new Exception("Product Variant not found");
         }
+
+        ProductVariant productVariant = productVariantOptional.get();
+
         ProductAttribute productAttribute = ProductAttribute.builder()
                 .name(request.getName())
-                .description(request.getDescription())
+                .productVariant(productVariant)
+                .value(request.getValue())
                 .build();
         productAttributeRepository.save(productAttribute);
         return objectMapper.convertValue(productAttribute, ProductAttributeResponse.class);

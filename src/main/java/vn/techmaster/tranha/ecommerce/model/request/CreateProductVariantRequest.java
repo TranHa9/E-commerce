@@ -15,11 +15,9 @@ public class CreateProductVariantRequest {
 
     Long productId;
 
-    Long attributeId;
-
-    String variantValue;
-
     Double price;
+
+    String imageUrls;
 
     int stockQuantity;
 

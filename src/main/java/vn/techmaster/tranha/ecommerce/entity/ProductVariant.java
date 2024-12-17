@@ -21,23 +21,12 @@ public class ProductVariant extends BaseEntity {
     @JoinColumn(name = "product_id")
     Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "product_attribute_id")
-    ProductAttribute productAttribute;
-
-    @JsonProperty("variant_value")
-    String variantValue;
-
-    @JsonProperty("price")
     Double price;
 
-    @JsonProperty("stock_quantity")
     int stockQuantity;
 
-    @JsonProperty("image")
-    String image;
+    String imageUrls;
 
     @Enumerated(EnumType.STRING)
-    @JsonProperty("status")
     VariantStatus status;
 }

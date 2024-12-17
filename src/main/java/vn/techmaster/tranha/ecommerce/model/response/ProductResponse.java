@@ -26,17 +26,19 @@ public class ProductResponse {
 
     Double maxPrice;
 
-    String prices;
+    String basePrice;
 
-    String images;
+    String imageUrls;
 
     int stockQuantity;
 
     String origin; //Xuất xứ sản phẩm
 
+    String brand;
+
     LocalDate expiryDate; //Hạn sử dụng
 
-    int averageRating;
+    Double averageRating;
 
     int soldQuantity;
 

@@ -18,23 +18,30 @@ import java.time.LocalDate;
 public class Product extends BaseEntity {
 
     String name;
+
     String description;
 
     Double minPrice; // Giá thấp nhất cho sản phẩm (các biến thể khác nhau)
+
     Double maxPrice; // Giá cao nhất cho sản phẩm (các biến thể khác nhau)
 
-    Double price;
+    Double basePrice;
 
     int stockQuantity;
 
     String origin; //Xuất xứ sản phẩm
+
+    String brand; //thương hiệu
+
     LocalDate expiryDate; //Hạn sử dụng
 
-    int averageRating;
+    @Column(name = "average_rating", columnDefinition = "DOUBLE DEFAULT 0")
+    Double averageRating;
 
+    @Column(name = "sold_quantity", columnDefinition = "INT DEFAULT 0")
     int soldQuantity;
 
-    String images;
+    String imageUrls;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.techmaster.tranha.ecommerce.model.request.CreateProductAttrbutesRequest;
+import vn.techmaster.tranha.ecommerce.model.request.CreateProductAttributesRequest;
 import vn.techmaster.tranha.ecommerce.model.response.ProductAttributeResponse;
 import vn.techmaster.tranha.ecommerce.service.ProductAttributeService;
 
@@ -20,7 +20,7 @@ public class ProductAttributeResource {
     ProductAttributeService productAttributeService;
 
     @PostMapping
-    public ResponseEntity<?> createProductAttribute(@RequestBody @Valid CreateProductAttrbutesRequest request) throws Exception {
+    public ResponseEntity<?> createProductAttribute(@RequestBody @Valid CreateProductAttributesRequest request) throws Exception {
         ProductAttributeResponse productAttribute = productAttributeService.createProductAttribute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(productAttribute);
     }

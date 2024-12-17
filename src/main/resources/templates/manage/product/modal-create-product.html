@@ -4,12 +4,13 @@
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tạo mới sản phẩm</h5>
+                <h4 class="modal-title" id="exampleModalLabel">Tạo mới sản phẩm</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="form-create-product">
                     <div class="row">
+                        <h5 class="mb-15">Thông tin cơ bản</h5>
                         <div class="col-lg-8">
                             <div class="row gx-3">
                                 <div class="col-6 mb-3">
@@ -21,6 +22,11 @@
                                     <label for="origin" class="form-label">Xuất xứ</label>
                                     <input class="form-control" id="origin" name="origin" type="text"
                                            placeholder="Trung Quốc">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="brand" class="form-label">Thương hiệu</label>
+                                    <input class="form-control" id="brand" name="brand" type="text"
+                                           placeholder="Apple">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="expiryDate" class="form-label">Hạn sử dụng</label>
@@ -69,6 +75,41 @@
                                 <p id="avtar-error" class="error" for="images"></p>
                             </div>
                         </aside>
+                    </div>
+                    <div class="row">
+                        <h5 class="mb-15">Thông tin biến thể</h5>
+                        <div class="col">
+                            <div class="row gx-3" id="attributes-container">
+                                <!-- Các thuộc tính sẽ được thêm vào đây -->
+                            </div>
+                            <div class="col-12 mb-3">
+                                <button type="button" id="add-attribute" class="btn btn-sm btn-primary-light">Thêm
+                                    thuộc
+                                    tính
+                                </button>
+                                <button type="button" id="save-attribute" class="btn btn-sm btn-primary">Lưu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Bảng hiển thị các biến thể -->
+                    <div class="row d-none" id="variants">
+                        <h5 class="mb-15">Danh sách biến thể</h5>
+                        <div class="col">
+                            <table class="table table-bordered" id="variants-table">
+                                <thead>
+                                <tr>
+                                    <th>Lựa chọn</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá bán</th>
+                                    <th>Ảnh</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- Dữ liệu sẽ được hiển thị ở đây sau khi nhập thuộc tính -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <br>
                 </form>

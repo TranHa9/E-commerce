@@ -23,12 +23,12 @@ public class ProductVariantResource {
 
     @PostMapping
     public ProductVariantResponse createProductVariant(
-            @RequestPart("image") MultipartFile image,
+            @RequestPart("images") MultipartFile[] images,
             @RequestPart("request") @Valid String createProductVariantRequest
     ) throws Exception {
         try {
             CreateProductVariantRequest request = objectMapper.readValue(createProductVariantRequest, CreateProductVariantRequest.class);
-            return productVariantService.createProductVariant(image, request);
+            return productVariantService.createProductVariant(images, request);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Dữ liệu JSON không hợp lệ", e);
         }

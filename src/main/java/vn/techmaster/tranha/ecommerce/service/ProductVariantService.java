@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,36 +44,31 @@ public class ProductVariantService {
     ObjectMapper objectMapper;
 
     @Transactional(rollbackFor = Exception.class)
-    public ProductVariantResponse createProductVariant(MultipartFile image, CreateProductVariantRequest request) throws Exception {
+    public ProductVariantResponse createProductVariant(MultipartFile[] images, CreateProductVariantRequest request) throws Exception {
         Optional<Product> productOptional = productRepository.findById(request.getProductId());
         if (productOptional.isEmpty()) {
             throw new Exception("Product not found");
         }
         Product product = productOptional.get();
 
-        Optional<ProductAttribute> productAttributeOptional = productAttributeRepository.findById(request.getAttributeId());
-        if (productAttributeOptional.isEmpty()) {
-            throw new Exception("Product Attribute not found");
-        }
-
-        ProductAttribute productAttribute = productAttributeOptional.get();
-
-        String imagePath = null;
-        if (image != null && !image.isEmpty()) {
-            imagePath = saveProductImage(image);
+        List<String> imagePaths = new ArrayList<>();
+        if (images != null && images.length > 0) {
+            // Lưu tất cả ảnh
+            for (MultipartFile image : images) {
+                String imagePath = saveProductImage(image);
+                imagePaths.add(imagePath);
+            }
         }
         ProductVariant productVariant = ProductVariant.builder()
                 .product(product)
-                .productAttribute(productAttribute)
-                .variantValue(request.getVariantValue())
                 .stockQuantity(request.getStockQuantity())
                 .price(request.getPrice())
-                .image(imagePath)
+                .imageUrls(imagePaths.toString())
                 .status(request.getStatus())
                 .build();
         productVariantRepository.save(productVariant);
 
-        updateProductDetails(product);
+//        updateProductDetails(product);
 
         return objectMapper.convertValue(productVariant, ProductVariantResponse.class);
     }
@@ -95,28 +91,28 @@ public class ProductVariantService {
         }
     }
 
-    public void updateProductDetails(Product product) {
-        List<ProductVariant> variants = productVariantRepository.findByProductId(product.getId());
-
-        double minPrice = product.getPrice();
-        double maxPrice = product.getPrice();
-        int totalStock = 0;
-
-        for (ProductVariant variant : variants) {
-            double variantPrice = product.getPrice();
-            if (variantPrice < minPrice) {
-                minPrice = variantPrice;
-            }
-            if (variantPrice > maxPrice) {
-                maxPrice = variantPrice;
-            }
-            totalStock += variant.getStockQuantity();
-        }
-
-        product.setMinPrice(minPrice);
-        product.setMaxPrice(maxPrice);
-        product.setStockQuantity(totalStock);
-
-        productRepository.save(product);
-    }
+//    public void updateProductDetails(Product product) {
+//        List<ProductVariant> variants = productVariantRepository.findByProductId(product.getId());
+//
+//        double minPrice = product.getBasePrice();
+//        double maxPrice = product.getBasePrice();
+//        int totalStock = 0;
+//
+//        for (ProductVariant variant : variants) {
+//            double variantPrice = product.getBasePrice();
+//            if (variantPrice < minPrice) {
+//                minPrice = variantPrice;
+//            }
+//            if (variantPrice > maxPrice) {
+//                maxPrice = variantPrice;
+//            }
+//            totalStock += variant.getStockQuantity();
+//        }
+//
+//        product.setMinPrice(minPrice);
+//        product.setMaxPrice(maxPrice);
+//        product.setStockQuantity(totalStock);
+//
+//        productRepository.save(product);
+//    }
 }

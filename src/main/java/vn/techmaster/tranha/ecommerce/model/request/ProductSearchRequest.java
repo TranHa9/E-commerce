@@ -27,11 +27,15 @@ public class ProductSearchRequest extends BaseSearchRequest {
 
     Double maxPrice;
 
-    Double price;
+    Double basePrice;
 
     int stockQuantity;
 
-    int averageRating;
+    String brand;
+
+    String origin;
+
+    Double averageRating;
 
     int soldQuantity;
 

@@ -21,7 +21,9 @@ public class ProductSearchResponse {
     String productImages;
     Double maxPrice;
     Double minPrice;
+    Double basePrice;
     String origin;
+    String brand;
     String expiryDate;
     Integer productStockQuantity;
     Integer soldQuantity;

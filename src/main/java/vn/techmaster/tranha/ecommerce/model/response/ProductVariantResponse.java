@@ -3,20 +3,22 @@ package vn.techmaster.tranha.ecommerce.model.response;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import vn.techmaster.tranha.ecommerce.entity.Product;
 import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductVariantResponse {
+
     Long id;
 
-    String variantValue;
+    Product product;
 
     Double price;
 
     int stockQuantity;
 
-    String image;
+    String imageUrls;
 
     VariantStatus status;
 }

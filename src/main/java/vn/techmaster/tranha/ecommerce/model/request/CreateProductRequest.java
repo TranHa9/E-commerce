@@ -29,13 +29,16 @@ public class CreateProductRequest {
 
     @Min(value = 0, message = "Giá trị tối thiểu của giá là 0")
     @NotNull(message = "Giá sản phẩm không được để trống")
-    Double price;
+    Double basePrice;
 
     @NotBlank(message = "URL ảnh không được để trống")
-    String image;
+    String imageUrls;
 
     @Min(value = 0, message = "Số lượng tồn kho không thể là số âm")
     int stockQuantity;
+
+    @NotBlank(message = "Thương hiệu sản phẩm không được để trống")
+    String brand;
 
     @NotBlank(message = "Xuất xứ sản phẩm không được để trống")
     String origin; //Xuất xứ sản phẩm

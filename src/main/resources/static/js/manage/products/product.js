@@ -1,6 +1,5 @@
 $(document).ready(function () {
 
-    const tableBody = $('table tbody');
     const pagination = $(".pagination-area .pagination")
     let shopId;
     let totalPage;
@@ -26,6 +25,7 @@ $(document).ready(function () {
     }
 
     function renderProductTable(data) {
+        const tableBody = $('#product-list tbody');
         pagination.empty();
         tableBody.empty();
         if (!data || data.data?.length === 0) {
@@ -63,7 +63,7 @@ $(document).ready(function () {
                         <h6 class="mb-0 title">${product.productName}</h6><small class="text-muted">User ID: #${product.id}</small>
                     </div>
                 </a></td>
-                <td>${product.productPrice}</td>
+                <td>${product.basePrice}</td>
                 <td>${product.categoryName}</td>
                 <td>${product.shopName}</td>
                 <td>${product.productStockQuantity}</td>
@@ -191,4 +191,83 @@ $(document).ready(function () {
             shopId = response?.id
         }
     });
+
+    // Hàm để cập nhật bảng biến thể
+    function updateVariants(attributes) {
+        const tableBody = $("#variants-table tbody");
+        tableBody.empty();
+
+        // Tạo tất cả các kết hợp biến thể từ các thuộc tính đã nhập
+        const combinations = getCombinations(attributes);
+
+        combinations.forEach(combination => {
+            const row = `<tr>
+                <td>${combination.join(' - ')}</td>
+                <td><input type="number" class="form-control" placeholder="Số lượng"></td>
+                <td><input type="number" class="form-control" placeholder="Giá bán"></td>
+                <td><input type="file" class="form-control"></td>
+            </tr>`
+            tableBody.append(row);
+        });
+    }
+
+    // Hàm tạo kết hợp các giá trị thuộc tính
+    function getCombinations(attributes) {
+        let result = [[]];
+        for (let attribute of attributes) {
+            let temp = [];
+            for (let val of attribute.values) {
+                for (let combination of result) {
+                    temp.push(combination.concat(val));
+                }
+            }
+            result = temp;
+        }
+        return result;
+    }
+
+    // Khi nhấn "Lưu thuộc tính"
+    $("#save-attribute").click(function () {
+        $("#variants").removeClass("d-none")
+        // Lấy tất cả các thuộc tính đã thêm
+        const attributeElements = $("#attributes-container .attributes-input");
+        let attributes = [];
+
+        // Duyệt qua tất cả các thuộc tính và lấy dữ liệu
+        attributeElements.each(function () {
+            const name = $(this).find("input[name='attribute-name']").val();
+            const values = $(this).find("input[name='attribute-values']").val().split(',').map(value => value.trim());
+            // const values = $(this).find("input[name='attribute-values']").val();
+            attributes.push({name, values});
+        });
+
+        console.log(attributes)
+        updateVariants(attributes);
+    });
+
+    // Sự kiện khi nhấn nút "Thêm thuộc tính"
+    $("#add-attribute").click(function () {
+        // Tạo các trường nhập liệu mới cho thuộc tính
+        const attributeHtml = `
+            <div class="attributes-input d-flex gap-2 mb-3">
+                <div class="col">
+                    <label for="attribute-name" class="form-label">Tên thuộc tính</label>
+                    <input class="form-control" name="attribute-name" type="text" placeholder="Ví dụ: Màu sắc" />
+                </div>
+                <div class="col">
+                    <label for="attribute-values" class="form-label">Giá trị thuộc tính</label>
+                    <input class="form-control" name="attribute-values" type="text" placeholder="Ví dụ: Đỏ, Xanh, Vàng" />
+                </div>
+                <button type="button" class="btn btn-danger btn-remove-attribute">Xóa</button>
+            </div>
+        `;
+
+        // Thêm vào container thuộc tính
+        $("#attributes-container").append(attributeHtml);
+        $("#attributes-container").on("click", ".btn-remove-attribute", function () {
+            $(this).closest('.attributes-input').remove();
+        });
+
+    });
+
 })

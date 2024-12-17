@@ -18,13 +18,14 @@ import java.util.Map;
 public class SearchProductDto {
     Long id;
     String productName;
-    Double productPrice;
     Double averageRating;
     String description;
     String productImages;
     Double maxPrice;
     Double minPrice;
+    Double basePrice;
     String origin;
+    String brand;
     String expiryDate;
     Integer productStockQuantity;
     Integer soldQuantity;
