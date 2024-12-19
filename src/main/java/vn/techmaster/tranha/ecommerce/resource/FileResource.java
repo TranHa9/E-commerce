@@ -30,6 +30,7 @@ public class FileResource {
 
         String basePath = switch (type) {
             case "user" -> "images/user/";
+            case "logo" -> "images/logo/";
             case "product" -> "images/product/";
             default -> null;
         };

@@ -59,7 +59,6 @@ $(document).ready(function () {
             success: async function (response) {
                 localStorage.setItem("accessToken", response?.jwt);
                 localStorage.setItem("refreshToken", response?.refreshToken);
-                localStorage.setItem("role", response?.roles[0])
                 const user = await getUserDetail(response?.id);
                 if (user) {
                     localStorage.setItem("user", JSON.stringify(user));

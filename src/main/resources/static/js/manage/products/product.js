@@ -158,6 +158,10 @@ $(document).ready(function () {
 
         // 3. Gọi API tạo product-attributes
         await addAttributes();
+
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     })
 
     async function createProduct() {
@@ -240,7 +244,7 @@ $(document).ready(function () {
     function fetchShopData() {
         const user = JSON.parse(localStorage.getItem("user"));
         $.ajax({
-            url: `/api/v1/shops/${user?.id}`,
+            url: `/api/v1/shops/user/${user?.id}`,
             type: 'GET',
             contentType: "application/json; charset=utf-8",
             success: function (response) {

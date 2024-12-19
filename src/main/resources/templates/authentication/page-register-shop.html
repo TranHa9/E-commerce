@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/common/head :: html_head(pageTitle='Register-Shop - Ecom Marketplace Template')}">
+<body>
+<div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="text-center"><img class="mb-10" src="/img/template/favicon.svg" alt="Ecom">
+                <div class="preloader-dots"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="fragments/common/header :: header"></div>
+<main class="main">
+    <section class="section-box shop-template mt-60">
+        <div class="container">
+            <div class="row mb-100">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                    <h3>Tạo Shop</h3>
+                    <div class="form-register mt-30 mb-30">
+                        <form id="shop-form">
+                            <div class="form-group">
+                                <label for="name" class="mb-5 font-sm color-gray-700">Tên shop *</label>
+                                <input class="form-control" type="text" id="name" placeholder="Trần Văn A"
+                                       name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="mb-5 font-sm color-gray-700">Mô tả</label>
+                                <textarea class="form-control" type="text" id="description" placeholder="Mô tả...."
+                                          name="description"></textarea>
+                            </div>
+                        </form>
+                        <div class="form-group">
+                            <button class="font-md-bold btn btn-buy" id="btn-create-shop" type="button">Đăng ký</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:insert="fragments/common/footer" :: footer></div>
+<div th:insert="fragments/common/scripts" :: scripts></div>
+<script src="/js/authentication/create-shop.js"></script>
+</body>
+</html>

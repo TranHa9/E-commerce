@@ -19,7 +19,7 @@ public class Shop extends BaseEntity {
 
     String description;
 
-    int rating;
+    Double rating;
 
     String logo;
 

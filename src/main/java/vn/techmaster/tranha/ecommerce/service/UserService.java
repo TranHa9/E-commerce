@@ -3,6 +3,7 @@ package vn.techmaster.tranha.ecommerce.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.dto.SearchUserDto;
 import vn.techmaster.tranha.ecommerce.entity.Role;
@@ -18,6 +19,7 @@ import vn.techmaster.tranha.ecommerce.model.response.UserSearchResponse;
 import vn.techmaster.tranha.ecommerce.repository.RoleRepository;
 import vn.techmaster.tranha.ecommerce.repository.UserRepository;
 import vn.techmaster.tranha.ecommerce.repository.custom.UserCustomRepository;
+import vn.techmaster.tranha.ecommerce.security.CustomUserDetails;
 import vn.techmaster.tranha.ecommerce.statics.Roles;
 import vn.techmaster.tranha.ecommerce.statics.UserStatus;
 import lombok.AccessLevel;
@@ -56,9 +58,16 @@ public class UserService {
 
 
     public UserResponse getDetail(Long id) throws ObjectNotFoundException {
-        return userRepository.findById(id)
-                .map(u -> objectMapper.convertValue(u, UserResponse.class))
+        User user = userRepository.findUserWithRolesById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("User not found"));
+        Roles roleName = user.getRoles().stream()
+                .findFirst()
+                .map(Role::getName)
+                .orElse(null);
+        UserResponse userResponse = objectMapper.convertValue(user, UserResponse.class);
+        userResponse.setRole(roleName);
+
+        return userResponse;
     }
 
 

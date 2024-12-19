@@ -26,7 +26,7 @@ public class ShopRating extends BaseEntity {
     @JoinColumn(name = "user_id")
     User user;
 
-    int rating;
+    Double rating;
 
     String comment;
 

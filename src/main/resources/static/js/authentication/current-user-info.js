@@ -7,7 +7,6 @@ $(document).ready(function () {
         localStorage.removeItem("refreshToken");
     }
     const user = JSON.parse(localStorage.getItem("user"));
-    const role = localStorage.getItem("role");
     if (user && user.avatar) {
         $("#avatar-info").attr("src", "/api/v1/files/user/" + user.avatar);
     }
@@ -16,8 +15,14 @@ $(document).ready(function () {
         let dropdownMenu = `
             <ul>
         `;
-        if (role && role === "ADMIN" || role === "SHOP") {
-            dropdownMenu += `<li><a href="/admin/users">Quản lý</a></li>`;
+        if (user?.role && user?.role === "ADMIN") {
+            dropdownMenu += `<li><a href="/admin/users">Quản lý tài khoản</a></li>`;
+        }
+        if (user?.role && user?.role === "ADMIN" || user?.role === "SHOP") {
+            dropdownMenu += `<li><a href="/admin/products">Quản lý sản phẩm</a></li>`;
+        }
+        if (user?.role && user?.role !== "SHOP") {
+            dropdownMenu += `<li><a href="/shops">Mở shop</a></li>`;
         }
         dropdownMenu += `
             <li><a href="/users">Tài khoản</a></li>

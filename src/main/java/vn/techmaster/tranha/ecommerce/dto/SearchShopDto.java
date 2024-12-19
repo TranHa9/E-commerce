@@ -1,19 +1,20 @@
-package vn.techmaster.tranha.ecommerce.model.response;
+package vn.techmaster.tranha.ecommerce.dto;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import vn.techmaster.tranha.ecommerce.entity.User;
 
 @Data
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShopResponse {
+public class SearchShopDto {
     Long id;
     String name;
     String description;
-    Double rating;
     String logo;
+    Double rating;
+    String userName;
     String email;
-    String phone;
+    Long userId;
+    Long totalRecord;
 }
