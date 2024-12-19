@@ -31,8 +31,8 @@ public class CreateProductRequest {
     @NotNull(message = "Giá sản phẩm không được để trống")
     Double basePrice;
 
-    @NotBlank(message = "URL ảnh không được để trống")
-    String imageUrls;
+//    @NotBlank(message = "URL ảnh không được để trống")
+//    String imageUrls;
 
     @Min(value = 0, message = "Số lượng tồn kho không thể là số âm")
     int stockQuantity;

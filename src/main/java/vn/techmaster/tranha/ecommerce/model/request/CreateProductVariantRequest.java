@@ -20,6 +20,4 @@ public class CreateProductVariantRequest {
     String imageUrls;
 
     int stockQuantity;
-
-    VariantStatus status;
 }
