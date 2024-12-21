@@ -240,7 +240,6 @@ $(document).ready(function () {
         return product;
     }
 
-    // Lấy thông tin shop
     function fetchShopData() {
         const user = JSON.parse(localStorage.getItem("user"));
         $.ajax({
@@ -257,84 +256,6 @@ $(document).ready(function () {
     }
 
     fetchShopData();
-
-    // Hàm để cập nhật bảng biến thể
-    function updateVariants(attributes) {
-        const tableBody = $("#variants-table tbody");
-        tableBody.empty();
-
-        // Tạo tất cả các kết hợp biến thể từ các thuộc tính đã nhập
-        const combinations = getCombinations(attributes);
-
-        combinations.forEach(combination => {
-            const row = `<tr>
-                <td>${combination.join(' - ')}</td>
-                <td><input type="number" id="stockQuantity" name="stockQuantity" class="form-control" placeholder="Số lượng"></td>
-                <td><input type="number" id="price" name="price" class="form-control" placeholder="Giá bán"></td>
-                <td><input type="file" id="variant-images" class="form-control" accept="image/jpeg, image/png, image/gif, image/webp" multiple></td>
-            </tr>`
-            tableBody.append(row);
-        });
-    }
-
-    // Hàm tạo kết hợp các giá trị thuộc tính
-    function getCombinations(attributes) {
-        let result = [[]];
-        for (let attribute of attributes) {
-            let temp = [];
-            for (let val of attribute.values) {
-                for (let combination of result) {
-                    temp.push(combination.concat(val));
-                }
-            }
-            result = temp;
-        }
-        return result;
-    }
-
-    // Khi nhấn "Lưu thuộc tính"
-    $("#save-attribute").click(function () {
-        $("#variants").removeClass("d-none")
-        // Lấy tất cả các thuộc tính đã thêm
-        const attributeElements = $("#attributes-container .attributes-input");
-        let attributes = [];
-
-        // Duyệt qua tất cả các thuộc tính và lấy dữ liệu
-        attributeElements.each(function () {
-            const name = $(this).find("input[name='name']").val();
-            const values = $(this).find("input[name='value']").val().split(',').map(value => value.trim());
-            // const values = $(this).find("input[name='attribute-values']").val();
-            attributes.push({name, values});
-        });
-
-        console.log(attributes)
-        updateVariants(attributes);
-    });
-
-    // Sự kiện khi nhấn nút "Thêm thuộc tính"
-    $("#add-attribute").click(function () {
-        // Tạo các trường nhập liệu mới cho thuộc tính
-        const attributeHtml = `
-            <div class="attributes-input d-flex gap-2 mb-3">
-                <div class="col">
-                    <label for="name" class="form-label">Tên thuộc tính</label>
-                    <input class="form-control" id="name" name="name" type="text" placeholder="Ví dụ: Màu sắc" />
-                </div>
-                <div class="col">
-                    <label for="value" class="form-label">Giá trị thuộc tính</label>
-                    <input class="form-control" id="value" name="value" type="text" placeholder="Ví dụ: Đỏ, Xanh, Vàng" />
-                </div>
-                <button type="button" class="btn btn-danger btn-remove-attribute">Xóa</button>
-            </div>
-        `;
-
-        // Thêm vào container thuộc tính
-        $("#attributes-container").append(attributeHtml);
-        $("#attributes-container").on("click", ".btn-remove-attribute", function () {
-            $(this).closest('.attributes-input').remove();
-        });
-
-    });
 
     function getVariantForm() {
         const formValues = $("#from-create-variant").serializeArray();
@@ -354,4 +275,217 @@ $(document).ready(function () {
         return attribute;
     }
 
+    // Thêm thuộc tính mới
+    $('#add-attribute').click(function () {
+        let attributeHtml = `
+            <div class="row gx-3 attribute-group">
+                <div class="col-lg-5 mb-3">
+                    <label for="attributeName" class="form-label">Thuộc tính 2</label>
+                    <input type="text" id="attributeName" name="attributeName"
+                        class="form-control me-2"
+                            placeholder="VD: Kích thước,...">
+                </div>
+                <div class="col-lg-5 mb-3">
+                    <label for="attributeValue" class="form-label">Giá trị</label>
+                        <input type="text" id="attributeValue" name="attributeValue"
+                        class="form-control me-2"
+                            placeholder="VD: M, L, XL (phân cách bởi dấu phẩy)">
+                </div>
+                <div class="col mb-3">
+                <input type="radio" name="attribute-radio" value="2">
+                    <button class="btn-delete">Xóa</button>
+                </div>
+            </div>`;
+        $('#attribute-section').append(attributeHtml);
+        updateAddButtonState();
+    });
+
+    function updateAddButtonState() {
+        if ($('#attribute-section .attribute-group').length >= 2) {
+            $('#add-attribute').addClass('btn-disabled').prop('disabled', true);
+        } else {
+            $('#add-attribute').removeClass('btn-disabled').prop('disabled', false);
+        }
+    }
+
+    function resetVariantList() {
+        $('#variant-header').html('<th>Thuộc tính</th><th>Số lượng</th><th>Giá bán</th>');
+        $('#variant-body').html('');
+    }
+
+    $(document).on('click', '.btn-delete', function () {
+        $(this).closest('.attribute-group').remove();
+        $('#image-update-section #image-body ').empty()
+        $('#image-update-section').hide();
+        updateAddButtonState();
+        resetVariantList();
+    });
+
+    $('#save-attributes').click(function () {
+        let headers = [];
+        let attributes = [];
+        let variants = [];
+        let radioValue = "1";
+
+        $('.attribute-group').each(function () {
+            let attributeName = $(this).find('input').eq(0).val();
+            let attributeValues = $(this).find('input').eq(1).val().split(',').map(val => val.trim());
+            attributes.push({name: attributeName, values: attributeValues});
+        });
+
+        // Tạo header
+        attributes.forEach(attribute => {
+            headers.push(`<th>${attribute.name}</th>`);
+        });
+
+        headers.push('<th>Số lượng</th>', '<th>Giá bán</th>');
+        $('#variant-header').html(headers.join(''));
+
+        // Hàm tạo tổ hợp
+        function generateCombinations(index, current) {
+            if (index === attributes.length) {
+                variants.push([...current]);
+                return;
+            }
+            attributes[index].values.forEach(value => {
+                current.push(value);
+                generateCombinations(index + 1, current);
+                current.pop();
+            });
+        }
+
+        generateCombinations(0, []);
+
+        let rows = '';
+        variants.forEach(variant => {
+            let row = '';
+            variant.forEach((value) => {
+                row += `<td>${value}</td>`;
+            });
+            row += `
+                    <td><input type="number" class="form-control" placeholder="Số lượng"></td>
+                    <td><input type="number" class="form-control" placeholder="Giá bán"></td>`;
+            rows += `<tr>${row}</tr>`;
+        });
+
+        $('#variant-body').html(rows);
+
+        radioValue = $("input[name='attribute-radio']:checked").val();
+        if (radioValue === "1") {
+            $('#image-update-section').show();
+
+            let rowImages = '';
+            attributes[0].values.forEach(value => {
+                rowImages += `
+                    <tr>
+                        <td>${value}</td>
+                        <td>
+                            <input type="file" class="form-control image-upload" accept="image/*" />
+                            <div class="image-preview" style="display: none;"></div>
+                        </td>
+                        <td><button class="btn-delete-image">Xóa</button></td>
+                    </tr>
+                `;
+            });
+
+            $('#image-body').html(rowImages);
+
+            // Xử lý sự kiện tải ảnh
+            $('.image-upload').change(function () {
+                let file = this.files[0];
+                let previewContainer = $(this).closest('td').find('.image-preview');
+
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewContainer.html('<img src="' + e.target.result + '" alt="Image Preview" style="width: 100px; height: auto;"/>');
+                        previewContainer.show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Xử lý sự kiện xóa ảnh
+            $('.btn-delete-image').click(function () {
+                let row = $(this).closest('tr');
+                row.find('.image-upload').val('');  // Xóa ảnh đã tải lên
+                row.find('.image-preview').hide(); // Ẩn ảnh đã tải lên
+            });
+        } else if (radioValue === "2") {
+            $('#image-update-section').show();
+            let rowImages = '';
+            attributes[1].values.forEach(value => {
+                rowImages += `
+                    <tr>
+                        <td>${value}</td>
+                        <td>
+                            <input type="file" class="form-control image-upload" accept="image/*" />
+                            <div class="image-preview" style="display: none;"></div>
+                        </td>
+                        <td><button class="btn-delete-image">Xóa</button></td>
+                    </tr>
+                `;
+            });
+
+            $('#image-body').html(rowImages);
+
+            // Xử lý sự kiện tải ảnh
+            $('.image-upload').change(function () {
+                let file = this.files[0];
+                let previewContainer = $(this).closest('td').find('.image-preview');
+
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewContainer.html('<img src="' + e.target.result + '" alt="Image Preview" style="width: 100px; height: auto;"/>');
+                        previewContainer.show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Xử lý sự kiện xóa ảnh
+            $('.btn-delete-image').click(function () {
+                let row = $(this).closest('tr');
+                row.find('.image-upload').val('');  // Xóa ảnh đã tải lên
+                row.find('.image-preview').hide(); // Ẩn ảnh đã tải lên
+            });
+        }
+
+    });
+
+    let currentStep = 0;
+
+    function updateStep() {
+        $('.step-content.active').fadeOut(300, function () {
+            $(this).removeClass('active');
+            $(`#content-${currentStep + 1}`).fadeIn(300).addClass('active');
+        });
+        $('.step').removeClass('active');
+        $('.step-line').removeClass('active');
+
+        $(`#step-${currentStep + 1}`).addClass('active');
+
+        for (let i = 1; i <= currentStep; i++) {
+            $(`#step-${i}`).addClass('active');
+            $(`#line-${i}`).addClass('active');
+        }
+
+        $('#back-btn').prop('disabled', currentStep === 0);
+        $('#next-btn').prop('disabled', currentStep === $('.step-content').length - 1);
+    }
+
+    $('#back-btn').click(function () {
+        if (currentStep > 0) {
+            currentStep--;
+            updateStep();
+        }
+    });
+    $('#next-btn').click(function () {
+        if (currentStep < $('.step-content').length - 1) {
+            currentStep++;
+            updateStep();
+        }
+    });
+    updateStep();
 })

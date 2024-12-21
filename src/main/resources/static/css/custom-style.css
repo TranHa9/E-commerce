@@ -1,0 +1,136 @@
+.modal-custom-right {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 70%;
+    max-width: 100%; /* Đảm bảo responsive */
+    margin: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-custom-right .modal-dialog {
+    margin: 0;
+    height: 100%;
+}
+
+.modal-custom-right .modal-content {
+    height: 100%;
+    overflow-y: auto; /* Để nội dung có thể cuộn */
+    border-radius: 0;
+}
+
+/* Responsive cho màn hình nhỏ hơn */
+@media (max-width: 768px) {
+    .modal-custom-right {
+        width: 100%;
+    }
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.step-wrapper {
+    display: flex;
+    flex-direction: column; /* Xếp chồng số và tiêu đề */
+    align-items: center; /* Căn giữa số và tiêu đề */
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dcdcdc; /* Màu nền mặc định */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.step-title {
+    margin-top: 8px; /* Khoảng cách giữa số và tiêu đề */
+    font-size: 14px;
+    color: #333; /* Màu tiêu đề mặc định */
+    font-weight: 500;
+    text-align: center; /* Căn giữa văn bản */
+}
+
+.step.active + .step-title {
+    color: #007bff; /* Màu xanh cho tiêu đề của step đang kích hoạt */
+}
+
+.step.active {
+    background-color: #007bff; /* Màu xanh cho step hiện tại */
+}
+
+.step-line {
+    flex: 1;
+    height: 4px;
+    background-color: #dcdcdc; /* Màu mặc định */
+    margin: 0 10px;
+}
+
+.step-line.active {
+    background-color: #007bff; /* Màu xanh cho thanh đã qua */
+}
+
+.content {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    /*background-color: #f9f9f9;*/
+}
+
+.button-group {
+    margin-top: 20px;
+}
+
+.step-content {
+    display: none; /* Ẩn tất cả nội dung ban đầu */
+}
+
+.step-content.active {
+    display: block; /* Hiển thị nội dung của step hiện tại */
+}
+
+.btn-delete {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 29px;
+}
+
+.btn-delete:hover {
+    background-color: #e63946;
+}
+
+.btn-custom {
+    background-color: #3167ebbd;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3;
+}
+
+.btn-disabled {
+    background-color: #d6d6d6;
+    color: #a0a0a0;
+    cursor: not-allowed;
+}

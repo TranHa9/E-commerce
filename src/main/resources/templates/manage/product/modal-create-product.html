@@ -1,124 +1,176 @@
 <div th:fragment="create-product-modal" class="modal fade"
      id="create-product-modal" tabindex="-1"
      aria-labelledby="book-creation-modal" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-custom-right">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="exampleModalLabel">Tạo mới sản phẩm</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="form-create-product">
-                    <div class="row">
-                        <h5 class="mb-15">Thông tin cơ bản</h5>
-                        <div class="col-lg-8">
-                            <div class="row gx-3">
-                                <div class="col-6 mb-3">
-                                    <label for="name" class="form-label">Tên sản phẩm*</label>
-                                    <input class="form-control" id="name" name="name" type="text"
-                                           placeholder="Áo thun">
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="origin" class="form-label">Xuất xứ</label>
-                                    <input class="form-control" id="origin" name="origin" type="text"
-                                           placeholder="Trung Quốc">
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="brand" class="form-label">Thương hiệu</label>
-                                    <input class="form-control" id="brand" name="brand" type="text"
-                                           placeholder="Apple">
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="expiryDate" class="form-label">Hạn sử dụng</label>
-                                    <input class="form-control" id="expiryDate" name="expiryDate" type="date"
-                                           placeholder="">
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="basePrice" class="form-label">Giá</label>
-                                    <input class="form-control" id="basePrice" name="basePrice" type="number"
-                                           placeholder="100000">
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="categoryId" class="form-label">Danh mục</label>
-                                    <select class="form-select" id="categoryId" name="categoryId">
-                                        <option selected value="1">Điện tử</option>
-                                        <option value="2">Quần áo</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="stockQuantity" class="form-label">Số lượng</label>
-                                    <input class="form-control" id="stockQuantity" name="stockQuantity" type="number"
-                                           placeholder="1000">
-                                </div>
-
-                                <div class="col-lg-6 mb-3">
-                                    <label for="description" class="form-label">Mô tả</label>
-                                    <textarea class="form-control" id="description" name="description" type="text"
-                                              placeholder="....."></textarea>
-                                </div>
-
-                            </div>
+                <div class="container mt-5">
+                    <!-- Stepper -->
+                    <div class="step-indicator">
+                        <div class="step-wrapper">
+                            <div class="step active" id="step-1">1</div>
+                            <div class="step-title">Thông tin cơ bản</div>
                         </div>
-                        <aside class="col-lg-4">
-                            <div class="d-flex flex-md-column">
-                                <div class="image-preview-container d-flex">
-                                    <div class="image-placeholder d-flex justify-content-center flex-wrap"
-                                         style="width: 100%">
-                                        <i class="fas fa-image" style="font-size: 100px;"></i>
+                        <div class="step-line" id="line-1"></div>
+                        <div class="step-wrapper">
+                            <div class="step" id="step-2">2</div>
+                            <div class="step-title">Chi tiết sản phẩm</div>
+                        </div>
+                        <div class="step-line" id="line-2"></div>
+                        <div class="step-wrapper">
+                            <div class="step" id="step-3">3</div>
+                            <div class="step-title">Thông tin biến thể</div>
+                        </div>
+                    </div>
+                    <!-- Content -->
+                    <div class="content">
+                        <div class="step-content active" id="content-1">
+                            <form id="form-create-product">
+                                <div class="row">
+                                    <h5 class="mb-15">Thông tin cơ bản</h5>
+                                    <div class="col-lg-8">
+                                        <div class="row gx-3">
+                                            <div class="col-6 mb-3">
+                                                <label for="name" class="form-label">Tên sản phẩm*</label>
+                                                <input class="form-control" id="name" name="name" type="text"
+                                                       placeholder="Áo thun">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="categoryId" class="form-label">Danh mục</label>
+                                                <select class="form-select" id="categoryId" name="categoryId">
+                                                    <option selected value="1">Điện tử</option>
+                                                    <option value="2">Quần áo</option>
+                                                </select>
+                                            </div>
+                                            <div class="col mb-3">
+                                                <label for="description" class="form-label">Mô tả</label>
+                                                <textarea class="form-control" id="description" name="description"
+                                                          type="text" rows="10"
+                                                          placeholder="....."></textarea>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <aside class="col-lg-4">
+                                        <div class="d-flex flex-md-column">
+                                            <div class="image-preview-container d-flex">
+                                                <div class="image-placeholder d-flex justify-content-center flex-wrap"
+                                                     style="width: 100%">
+                                                    <i class="fas fa-image" style="font-size: 100px;"></i>
+                                                </div>
+                                            </div>
+                                            <input type="file" hidden="hidden" id="avatar-input" name="images"
+                                                   accept="image/jpeg, image/png, image/gif, image/webp" multiple/>
+                                            <button id="change-avatar-btn" class="btn btn-sm btn-secondary">
+                                                Tải ảnh
+                                            </button>
+                                            <p id="avtar-error" class="error" for="images"></p>
+                                        </div>
+                                    </aside>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="step-content" id="content-2">
+                            <form id="form-create-info">
+                                <div class="row">
+                                    <h5 class="mb-15">Thông tin cơ bản</h5>
+                                    <div class="col">
+                                        <div class="row gx-3">
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="origin" class="form-label">Xuất xứ</label>
+                                                <input class="form-control" id="origin" name="origin" type="text"
+                                                       placeholder="Trung Quốc">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="brand" class="form-label">Thương hiệu</label>
+                                                <input class="form-control" id="brand" name="brand" type="text"
+                                                       placeholder="Apple">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="expiryDate" class="form-label">Hạn sử dụng</label>
+                                                <input class="form-control" id="expiryDate" name="expiryDate"
+                                                       type="date"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <input type="file" hidden="hidden" id="avatar-input" name="images"
-                                       accept="image/jpeg, image/png, image/gif, image/webp" multiple/>
-                                <button id="change-avatar-btn" class="btn btn-sm btn-secondary">
-                                    Tải ảnh
-                                </button>
-                                <p id="avtar-error" class="error" for="images"></p>
+                            </form>
+                        </div>
+                        <div class="step-content" id="content-3">
+                            <form id="form-create-attributes">
+                                <div class="row">
+                                    <h5 class="mb-15">Thông tin biến thể</h5>
+                                    <div class="col">
+                                        <div id="attribute-section">
+                                            <div class="row gx-3 attribute-group">
+                                                <div class="col-lg-5 mb-3">
+                                                    <label for="attributeName" class="form-label">Thuộc tính 1</label>
+                                                    <input type="text" id="attributeName" name="attributeName"
+                                                           class="form-control me-2"
+                                                           placeholder="VD: Màu sắc,...">
+                                                </div>
+                                                <div class="col-lg-5 mb-3">
+                                                    <label for="attributeValue" class="form-label">Giá trị</label>
+                                                    <input type="text" id="attributeValue" name="attributeValue"
+                                                           class="form-control me-2"
+                                                           placeholder="VD: Trắng, Đen (phân cách bởi dấu phẩy)">
+                                                </div>
+                                                <div class="col mb-3">
+                                                    <input type="radio" name="attribute-radio" value="1" checked>
+                                                    <button class="btn-delete btn-disabled" disabled>Xóa</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <button id="add-attribute" class="btn-custom">Thêm thuộc tính</button>
+                            <button id="save-attributes" class="btn-custom ms-2">Cập nhật</button>
+                            <!-- Tiêu đề cập nhật ảnh sẽ được thêm vào đây -->
+                            <div id="image-update-section" class="mt-3" style="display: none;">
+                                <h5 class="mb-3">Cập nhật ảnh</h5>
+                                <table class="table table-bordered mt-3">
+                                    <thead>
+                                    <tr>
+                                        <th>Thuộc tính</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="image-body">
+                                    </tbody>
+                                </table>
                             </div>
-                        </aside>
-                    </div>
-                </form>
-                <form id="from-create-attribute">
-                    <div class="row">
-                        <h5 class="mb-15">Thông tin biến thể</h5>
-                        <div class="col">
-                            <div class="row gx-3" id="attributes-container">
-                                <!-- Các thuộc tính sẽ được thêm vào đây -->
-                            </div>
-                            <div class="col-12 mb-3">
-                                <button type="button" id="add-attribute" class="btn btn-sm btn-primary-light">Thêm
-                                    thuộc
-                                    tính
-                                </button>
-                                <button type="button" id="save-attribute" class="btn btn-sm btn-primary">Lưu
-                                </button>
-                            </div>
+                            <form id="form-create-variants">
+                                <div class="row">
+                                    <h5 class="mb-15 mt-25">Danh sách biến thể</h5>
+                                    <div class="col">
+                                        <table class="table table-bordered mt-3">
+                                            <thead>
+                                            <tr id="variant-header">
+                                                <th>Thuộc tính</th>
+                                                <th>Số lượng</th>
+                                                <th>Giá bán</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="variant-body">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </form>
-                <form id="from-create-variant">
-                    <!-- Bảng hiển thị các biến thể -->
-                    <div class="row d-none" id="variants">
-                        <h5 class="mb-15">Danh sách biến thể</h5>
-                        <div class="col">
-                            <table class="table table-bordered" id="variants-table">
-                                <thead>
-                                <tr>
-                                    <th>Lựa chọn</th>
-                                    <th>Số lượng</th>
-                                    <th>Giá bán</th>
-                                    <th>Ảnh</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- Dữ liệu sẽ được hiển thị ở đây sau khi nhập thuộc tính -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <br>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
+                <button class="btn btn-secondary" id="back-btn" disabled>Quay lại</button>
+                <button class="btn btn-primary" id="next-btn">Tiếp</button>
                 <button type="button" class="btn btn-primary" id="btn-save-create">Lưu</button>
             </div>
         </div>
