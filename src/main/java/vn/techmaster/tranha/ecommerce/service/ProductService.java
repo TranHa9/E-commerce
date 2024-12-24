@@ -1,10 +1,7 @@
 package vn.techmaster.tranha.ecommerce.service;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -12,26 +9,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.dto.SearchProductDto;
-import vn.techmaster.tranha.ecommerce.entity.Category;
-import vn.techmaster.tranha.ecommerce.entity.Product;
-import vn.techmaster.tranha.ecommerce.entity.Shop;
+import vn.techmaster.tranha.ecommerce.entity.*;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
 import vn.techmaster.tranha.ecommerce.model.request.ProductSearchRequest;
-import vn.techmaster.tranha.ecommerce.model.response.*;
-import vn.techmaster.tranha.ecommerce.repository.CategoryRepository;
-import vn.techmaster.tranha.ecommerce.repository.ProductRepository;
-import vn.techmaster.tranha.ecommerce.repository.ShopRepository;
-import vn.techmaster.tranha.ecommerce.repository.UserRepository;
+import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
+import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
+import vn.techmaster.tranha.ecommerce.model.response.ProductSearchResponse;
+import vn.techmaster.tranha.ecommerce.repository.*;
 import vn.techmaster.tranha.ecommerce.repository.custom.ProductCustomRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,9 +36,34 @@ public class ProductService {
     CategoryRepository categoryRepository;
     ShopRepository shopRepository;
     ProductCustomRepository productCustomRepository;
+    ProductVariantRepository productVariantRepository;
+    ProductAttributeRepository productAttributeRepository;
     ObjectMapper objectMapper;
 
-    public ProductResponse createProduct(MultipartFile[] images, CreateProductRequest request) throws Exception {
+
+    public CommonSearchResponse<?> searchProduct(ProductSearchRequest request) {
+        List<SearchProductDto> result = productCustomRepository.searchProduct(request);
+        Long totalRecord = 0L;
+        List<ProductSearchResponse> productResponses = new ArrayList<>();
+        if (!result.isEmpty()) {
+            totalRecord = result.get(0).getTotalRecord();
+            productResponses = result
+                    .stream()
+                    .map(s -> objectMapper.convertValue(s, ProductSearchResponse.class))
+                    .toList();
+        }
+        int totalPage = (int) Math.ceil((double) totalRecord / request.getPageSize());
+
+        return CommonSearchResponse.<ProductSearchResponse>builder()
+                .totalRecord(totalRecord)
+                .totalPage(totalPage)
+                .data(productResponses)
+                .pageInfo(new CommonSearchResponse.CommonPagingResponse(request.getPageSize(), request.getPageIndex()))
+                .build();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ProductResponse createProduct(CreateProductRequest request, MultipartFile[] productImage) throws Exception {
         Optional<Category> categoryOptional = categoryRepository.findById(request.getCategoryId());
         Optional<Shop> shopOptional = shopRepository.findById(request.getShopId());
 
@@ -54,15 +73,15 @@ public class ProductService {
         if (shopOptional.isEmpty()) {
             throw new Exception("Shop not found");
         }
-
         List<String> imagePaths = new ArrayList<>();
-        if (images != null && images.length > 0) {
+        if (productImage != null && productImage.length > 0) {
             // Lưu tất cả ảnh
-            for (MultipartFile image : images) {
+            for (MultipartFile image : productImage) {
                 String imagePath = saveProductImage(image);
                 imagePaths.add(imagePath);
             }
         }
+
         //Chuyển đổi thành json để lưu
         String imageUrlsJson = objectMapper.writeValueAsString(imagePaths);
         String pricesJson = objectMapper.writeValueAsString(request.getPrices());
@@ -83,7 +102,7 @@ public class ProductService {
                 maxPrice = variant.getPrice();
             }
         }
-        // Tạo sản phẩm
+        // Tạo sản phẩm chính
         Product product = Product.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -100,13 +119,27 @@ public class ProductService {
                 .build();
 
         productRepository.save(product);
+        // Tạo danh sách các productVariants và productAttributes
+        List<ProductVariant> savedVariants = new ArrayList<>();
+        List<ProductAttribute> savedAttributes = new ArrayList<>();
 
-        // Chuyển đổi giá và hình ảnh thành danh sách để trả về
+        for (ProductVariant variant : request.getVariants()) {
+            variant.setProduct(product);
+            savedVariants.add(variant);
+            for (ProductAttribute attribute : variant.getAttributes()) {
+                attribute.setProductVariant(variant);
+                savedAttributes.add(attribute);
+            }
+        }
+        productVariantRepository.saveAll(savedVariants);
+        productAttributeRepository.saveAll(savedAttributes);
+
         List<CreateProductRequest.Price> productVariants = objectMapper.readValue(product.getPrices(), new TypeReference<List<CreateProductRequest.Price>>() {
         });
         List<String> imageUrls = objectMapper.readValue(product.getImageUrls(), new TypeReference<List<String>>() {
         });
         return ProductResponse.builder()
+                .id(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())
                 .minPrice(product.getMinPrice())
@@ -130,7 +163,13 @@ public class ProductService {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        String fileName = System.currentTimeMillis() + "_" + avatar.getOriginalFilename();
+        // Lấy tên gốc của tệp và mã hóa nó
+        String originalFileName = avatar.getOriginalFilename();
+        String encodedFileName = URLEncoder.encode(originalFileName, "UTF-8")
+                .replaceAll("\\+", "_") // Thay đổi dấu cộng thành dấu gạch dưới
+                .replaceAll("%20", "_"); // Thay đổi dấu cách thành dấu gạch dưới
+
+        String fileName = System.currentTimeMillis() + "_" + encodedFileName;
         Path filePath = Paths.get(uploadDir + File.separator + fileName);
         try {
             Files.copy(avatar.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -138,26 +177,5 @@ public class ProductService {
         } catch (IOException e) {
             throw new IOException("Could not save avatar image", e);
         }
-    }
-
-    public CommonSearchResponse<?> searchProduct(ProductSearchRequest request) {
-        List<SearchProductDto> result = productCustomRepository.searchProduct(request);
-        Long totalRecord = 0L;
-        List<ProductSearchResponse> productResponses = new ArrayList<>();
-        if (!result.isEmpty()) {
-            totalRecord = result.get(0).getTotalRecord();
-            productResponses = result
-                    .stream()
-                    .map(s -> objectMapper.convertValue(s, ProductSearchResponse.class))
-                    .toList();
-        }
-        int totalPage = (int) Math.ceil((double) totalRecord / request.getPageSize());
-
-        return CommonSearchResponse.<ProductSearchResponse>builder()
-                .totalRecord(totalRecord)
-                .totalPage(totalPage)
-                .data(productResponses)
-                .pageInfo(new CommonSearchResponse.CommonPagingResponse(request.getPageSize(), request.getPageIndex()))
-                .build();
     }
 }

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
 import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
 import java.time.LocalDate;
@@ -48,4 +49,6 @@ public class CreateProductRequest {
         private String value;
 
     }
+
+    private List<ProductVariant> variants; // Các biến thể của sản phẩm
 }

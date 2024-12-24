@@ -62,8 +62,6 @@ public class ProductVariantService {
         ProductVariant productVariant = ProductVariant.builder()
                 .product(product)
                 .stockQuantity(request.getStockQuantity())
-                .attributes(request.getAttributes())
-                .imageUrls(imagePaths.toString())
                 .status(VariantStatus.ACTIVE)
                 .build();
         productVariantRepository.save(productVariant);

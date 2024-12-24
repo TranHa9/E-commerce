@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -43,7 +44,7 @@ public class Product extends BaseEntity {
     int soldQuantity;
 
     String imageUrls;
-
+    
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;

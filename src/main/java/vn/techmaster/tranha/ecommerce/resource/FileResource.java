@@ -2,24 +2,62 @@ package vn.techmaster.tranha.ecommerce.resource;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/files")
 public class FileResource {
+
+    @PostMapping()
+    public ResponseEntity<?> uploadImages(@RequestPart("images") MultipartFile[] files) {
+        String uploadDir = "images/product" + File.separator;
+        File dir = new File(uploadDir);
+        // Kiểm tra nếu thư mục không tồn tại thì tạo mới
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        // Danh sách để lưu các đường dẫn của ảnh
+        List<String> uploadedFileNames = new ArrayList<>();
+        try {
+            // Lặp qua tất cả các tệp và lưu từng tệp
+            for (MultipartFile file : files) {
+                // Lấy tên gốc của tệp và mã hóa nó
+                String originalFileName = file.getOriginalFilename();
+                String encodedFileName = URLEncoder.encode(originalFileName, "UTF-8")
+                        .replaceAll("\\+", "_") // Thay đổi dấu cộng thành dấu gạch dưới
+                        .replaceAll("%20", "_"); // Thay đổi dấu cách thành dấu gạch dưới
+
+                String fileName = System.currentTimeMillis() + "_" + encodedFileName;
+                Path filePath = Paths.get(uploadDir + fileName);
+
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                uploadedFileNames.add("/product/" + fileName);
+            }
+
+            return ResponseEntity.ok(uploadedFileNames);
+
+        } catch (IOException e) {
+            // Trả về lỗi nếu không thể lưu ảnh
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not save images: " + e.getMessage());
+        }
+    }
 
     @GetMapping("/{type}/{fileName}")
     public ResponseEntity<?> download(@PathVariable String type,

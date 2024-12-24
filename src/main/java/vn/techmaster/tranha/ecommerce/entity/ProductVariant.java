@@ -7,6 +7,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
+import java.util.List;
+
 @Data
 @Entity
 @SuperBuilder
@@ -21,11 +23,12 @@ public class ProductVariant extends BaseEntity {
     @JoinColumn(name = "product_id")
     Product product;
 
-    String attributes;
+    Double price;
 
     int stockQuantity;
 
-    String imageUrls;
+    @OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductAttribute> attributes;
 
     @Enumerated(EnumType.STRING)
     VariantStatus status;
