@@ -21,7 +21,7 @@ public class ProductVariant extends BaseEntity {
     @JoinColumn(name = "product_id")
     Product product;
 
-    Double price;
+    String attributes;
 
     int stockQuantity;
 

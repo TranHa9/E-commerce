@@ -1,5 +1,8 @@
 package vn.techmaster.tranha.ecommerce.service;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -60,22 +63,63 @@ public class ProductService {
                 imagePaths.add(imagePath);
             }
         }
+        //Chuyển đổi thành json để lưu
+        String imageUrlsJson = objectMapper.writeValueAsString(imagePaths);
+        String pricesJson = objectMapper.writeValueAsString(request.getPrices());
+
+        // Tính tổng stockQuantity, minPrice, maxPrice
+        List<CreateProductRequest.Price> variants = objectMapper.readValue(pricesJson, new TypeReference<List<CreateProductRequest.Price>>() {
+        });
+        int totalStockQuantity = 0;
+        double minPrice = Double.MAX_VALUE;
+        double maxPrice = Double.MIN_VALUE;
+
+        for (CreateProductRequest.Price variant : variants) {
+            totalStockQuantity += variant.getStockQuantity();
+            if (variant.getPrice() < minPrice) {
+                minPrice = variant.getPrice();
+            }
+            if (variant.getPrice() > maxPrice) {
+                maxPrice = variant.getPrice();
+            }
+        }
         // Tạo sản phẩm
         Product product = Product.builder()
                 .name(request.getName())
                 .description(request.getDescription())
-                .basePrice(request.getBasePrice())
-                .stockQuantity(request.getStockQuantity())
+                .prices(pricesJson)
+                .stockQuantity(totalStockQuantity)
                 .origin(request.getOrigin())
                 .brand(request.getBrand())
                 .expiryDate(request.getExpiryDate())
                 .category(categoryOptional.get())
                 .shop(shopOptional.get())
-                .imageUrls(imagePaths.toString())
+                .imageUrls(imageUrlsJson)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
                 .build();
 
         productRepository.save(product);
-        return objectMapper.convertValue(product, ProductResponse.class);
+
+        // Chuyển đổi giá và hình ảnh thành danh sách để trả về
+        List<CreateProductRequest.Price> productVariants = objectMapper.readValue(product.getPrices(), new TypeReference<List<CreateProductRequest.Price>>() {
+        });
+        List<String> imageUrls = objectMapper.readValue(product.getImageUrls(), new TypeReference<List<String>>() {
+        });
+        return ProductResponse.builder()
+                .name(product.getName())
+                .description(product.getDescription())
+                .minPrice(product.getMinPrice())
+                .maxPrice(product.getMaxPrice())
+                .prices(productVariants)
+                .imageUrls(imageUrls)
+                .stockQuantity(product.getStockQuantity())
+                .origin(product.getOrigin())
+                .brand(product.getBrand())
+                .expiryDate(product.getExpiryDate())
+                .category(product.getCategory())
+                .shop(product.getShop())
+                .build();
     }
 
     private String saveProductImage(MultipartFile avatar) throws IOException {

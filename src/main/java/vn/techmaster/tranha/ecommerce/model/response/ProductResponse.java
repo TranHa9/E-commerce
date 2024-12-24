@@ -4,15 +4,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.entity.Category;
 import vn.techmaster.tranha.ecommerce.entity.Shop;
+import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductResponse {
 
@@ -26,9 +30,9 @@ public class ProductResponse {
 
     Double maxPrice;
 
-    String basePrice;
+    List<CreateProductRequest.Price> prices;
 
-    String imageUrls;
+    List<String> imageUrls;
 
     int stockQuantity;
 
@@ -45,4 +49,5 @@ public class ProductResponse {
     Category category;
 
     Shop shop;
+
 }

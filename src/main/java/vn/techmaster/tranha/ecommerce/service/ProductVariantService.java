@@ -62,14 +62,14 @@ public class ProductVariantService {
         ProductVariant productVariant = ProductVariant.builder()
                 .product(product)
                 .stockQuantity(request.getStockQuantity())
-                .price(request.getPrice())
+                .attributes(request.getAttributes())
                 .imageUrls(imagePaths.toString())
                 .status(VariantStatus.ACTIVE)
                 .build();
         productVariantRepository.save(productVariant);
 
 
-        updateProductDetails(product);
+//        updateProductDetails(product);
 
         return objectMapper.convertValue(productVariant, ProductVariantResponse.class);
     }
@@ -92,28 +92,28 @@ public class ProductVariantService {
         }
     }
 
-    public void updateProductDetails(Product product) {
-        List<ProductVariant> variants = productVariantRepository.findByProductId(product.getId());
-
-        double minPrice = product.getBasePrice();
-        double maxPrice = product.getBasePrice();
-        int totalStock = 0;
-
-        for (ProductVariant variant : variants) {
-            double variantPrice = variant.getPrice();
-            if (variantPrice < minPrice) {
-                minPrice = variantPrice;
-            }
-            if (variantPrice > maxPrice) {
-                maxPrice = variantPrice;
-            }
-            totalStock += variant.getStockQuantity();
-        }
-
-        product.setMinPrice(minPrice);
-        product.setMaxPrice(maxPrice);
-        product.setStockQuantity(totalStock);
-
-        productRepository.save(product);
-    }
+//    public void updateProductDetails(Product product) {
+//        List<ProductVariant> variants = productVariantRepository.findByProductId(product.getId());
+//
+//        double minPrice = product.getBasePrice();
+//        double maxPrice = product.getBasePrice();
+//        int totalStock = 0;
+//
+//        for (ProductVariant variant : variants) {
+//            double variantPrice = variant.getPrice();
+//            if (variantPrice < minPrice) {
+//                minPrice = variantPrice;
+//            }
+//            if (variantPrice > maxPrice) {
+//                maxPrice = variantPrice;
+//            }
+//            totalStock += variant.getStockQuantity();
+//        }
+//
+//        product.setMinPrice(minPrice);
+//        product.setMaxPrice(maxPrice);
+//        product.setStockQuantity(totalStock);
+//
+//        productRepository.save(product);
+//    }
 }

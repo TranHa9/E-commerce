@@ -27,8 +27,6 @@ public class ProductSearchRequest extends BaseSearchRequest {
 
     Double maxPrice;
 
-    Double basePrice;
-
     int stockQuantity;
 
     String brand;

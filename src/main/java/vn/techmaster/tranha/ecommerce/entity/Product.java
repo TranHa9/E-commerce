@@ -25,7 +25,8 @@ public class Product extends BaseEntity {
 
     Double maxPrice; // Giá cao nhất cho sản phẩm (các biến thể khác nhau)
 
-    Double basePrice;
+    @Lob
+    String prices;
 
     int stockQuantity;
 

@@ -41,8 +41,7 @@ $(document).ready(function () {
         products.forEach(function (product) {
             const isProductActive = product.variants && product.variants.some(variant => variant.status === 'ACTIVE');
             const productStatus = isProductActive ? 'ACTIVE' : 'INACTIVE';
-            const images = parseImages(product.productImages);
-            const firstImage = images.length > 0 ? images[0] : null;
+            const firstImage = product.productImages.length > 0 ? product.productImages[0] : null;
 
             const row = `<tr>
                 <td width="40%"><a class="itemside" href="#">
@@ -53,7 +52,8 @@ $(document).ready(function () {
                         <h6 class="mb-0 title">${product.productName}</h6><small class="text-muted">User ID: #${product.id}</small>
                     </div>
                 </a></td>
-                <td>${product.basePrice}</td>
+                <td>${product.minPrice}</td>
+                <td>${product.maxPrice}</td>
                 <td>${product.categoryName}</td>
                 <td>${product.shopName}</td>
                 <td>${product.productStockQuantity}</td>
@@ -110,14 +110,6 @@ $(document).ready(function () {
         });
     }
 
-    // Xử lý ảnh sản phẩm
-    function parseImages(productImages) {
-        if (!productImages) return [];
-        const fixedImages = productImages.replace(/[\[\]]/g, '').split(',')
-            .map(image => image.trim().replace(/(^"|"$)/g, ''));
-        return fixedImages;
-    }
-
     getProductData({});
 
     $("#change-avatar-btn").click((event) => {
@@ -150,95 +142,90 @@ $(document).ready(function () {
     });
 
     $("#btn-save-create").click(async function () {
-        // 1. Gọi API tạo product
-        await createProduct();
-
-        // 2. Gọi API tạo product-variants
-        await addVariant();
-
-        // 3. Gọi API tạo product-attributes
-        await addAttributes();
-
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
-    })
-
-    async function createProduct() {
+        let request = {
+            name: $('#name').val(),
+            categoryId: parseInt($('#categoryId').val()),
+            description: $('#description').val(),
+            origin: $('#origin').val(),
+            brand: $('#brand').val(),
+            expiryDate: $('#expiryDate').val(),
+            prices: []
+        };
         const formProduct = new FormData();
-        const formValues = getProductForm();
-
         if (shopId) {
-            formValues.shopId = shopId;
+            request.shopId = shopId;
         }
-        formProduct.append('request', JSON.stringify(formValues));
+
+        request.prices = collectVariants();
+
+        // Thêm toàn bộ thông tin của request vào FormData
+        formProduct.append('request', JSON.stringify(request));
+
         const files = $("#avatar-input")[0].files;
         if (files.length > 0) {
             Array.from(files).forEach(file => {
                 formProduct.append('images', file, file.name);
             });
         }
-
-        const productResponse = await $.ajax({
+        console.log("attributes", getVariantData())
+        console.log("Payload:", request);
+        $.ajax({
             url: `/api/v1/products`,
             type: 'POST',
+            //enctype: 'multipart/form-data',
             processData: false,
             contentType: false,
-            data: formProduct
+            data: formProduct,
+            success: function (response) {
+                showToast("Lưu thành công", "success");
+            }
         });
-        showToast("Tạo sản phẩm thành công", "success");
-        newProductId = productResponse?.id;
-        console.log("newProductId", newProductId)
-    }
+    })
 
-    async function addVariant() {
-        const formVariant = new FormData();
-        const formValues = getVariantForm();
-        if (newProductId) {
-            formValues.productId = newProductId;
-        }
-        formVariant.append('request', JSON.stringify(formValues));
-        const variantFiles = $("#variant-images")[0].files;
-        if (variantFiles.length > 0) {
-            Array.from(variantFiles).forEach(file => {
-                formVariant.append('images', file, file.name);
+    function collectVariants() {
+        let variants = [];
+        $('#variant-body tr').each(function () {
+            let variant = [];
+            $(this).find('td').slice(0, -2).each(function (index) {
+                variant.push({
+                    name: $("#variant-header th").eq(index).text().trim(),
+                    value: $(this).text().trim()
+                });
             });
-        }
-        const variantResponse = await $.ajax({
-            url: `/api/v1/product-variants`,
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: formVariant
+
+            let price = parseFloat($(this).find('[name="price"]').val());
+            let stockQuantity = parseInt($(this).find('[name="stockQuantity"]').val());
+
+            variants.push({
+                variant: variant,
+                price: price,
+                stockQuantity: stockQuantity
+            });
         });
-        showToast("Tạo biến thể thành công", "success");
-        newVariantId = variantResponse?.id;
-        console.log("newVariantId", newVariantId)
+        return variants;
     }
 
-    async function addAttributes() {
-        const attribute = getAttributeForm()
-        if (newVariantId) {
-            attribute.variantId = newVariantId;
-        }
-        const attributeResponse = await $.ajax({
-            url: `/api/v1/product-attributes`,
-            type: 'POST',
-            contentType: "application/json",
-            data: JSON.stringify(attribute)
+    function getVariantData() {
+        let variants = [];
+        $('#variant-body tr').each(function () {
+            let attribute = [];
+            $(this).find('td').slice(0, -2).each(function (index) {
+                attribute.push({
+                    name: $("#variant-header th").eq(index).text().trim(),
+                    value: $(this).text().trim()
+                });
+            });
+            let stockQuantity = parseInt($(this).find('[name="stockQuantity"]').val());
+
+            variants.push({
+                attributes: attribute,
+                stockQuantity: stockQuantity
+            });
+
         });
-        showToast("Tạo thuộc tính thành công", "success");
-        console.log("attributeResponse", attributeResponse)
+        return variants;
     }
 
-    function getProductForm() {
-        const formValues = $("#form-create-product").serializeArray();
-        const product = {};
-        formValues.forEach(input => {
-            product[input.name] = input.value;
-        });
-        return product;
-    }
 
     function fetchShopData() {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -257,23 +244,6 @@ $(document).ready(function () {
 
     fetchShopData();
 
-    function getVariantForm() {
-        const formValues = $("#from-create-variant").serializeArray();
-        const variant = {};
-        formValues.forEach(input => {
-            variant[input.name] = input.value;
-        });
-        return variant;
-    }
-
-    function getAttributeForm() {
-        const formValues = $("#from-create-attribute").serializeArray();
-        const attribute = {};
-        formValues.forEach(input => {
-            attribute[input.name] = input.value;
-        });
-        return attribute;
-    }
 
     // Thêm thuộc tính mới
     $('#add-attribute').click(function () {
@@ -363,8 +333,8 @@ $(document).ready(function () {
                 row += `<td>${value}</td>`;
             });
             row += `
-                    <td><input type="number" class="form-control" placeholder="Số lượng"></td>
-                    <td><input type="number" class="form-control" placeholder="Giá bán"></td>`;
+                    <td><input type="number" name="stockQuantity" class="form-control" placeholder="Số lượng"></td>
+                    <td><input type="number" name="price" class="form-control" placeholder="Giá bán"></td>`;
             rows += `<tr>${row}</tr>`;
         });
 

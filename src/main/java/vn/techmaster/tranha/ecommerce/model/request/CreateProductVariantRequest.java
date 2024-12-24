@@ -15,7 +15,7 @@ public class CreateProductVariantRequest {
 
     Long productId;
 
-    Double price;
+    String attributes;
 
     String imageUrls;
 

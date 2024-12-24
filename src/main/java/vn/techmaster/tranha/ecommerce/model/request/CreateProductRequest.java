@@ -19,23 +19,7 @@ public class CreateProductRequest {
 
     String description;
 
-//    @Min(value = 0, message = "Giá trị tối thiểu của giá là 0")
-//    @NotNull(message = "Giá sản phẩm không được để trống")
-//    Double minPrice;
-//
-//    @Min(value = 0, message = "Giá trị tối thiểu của giá là 0")
-//    @NotNull(message = "Giá sản phẩm không được để trống")
-//    Double maxPrice;
-
-    @Min(value = 0, message = "Giá trị tối thiểu của giá là 0")
-    @NotNull(message = "Giá sản phẩm không được để trống")
-    Double basePrice;
-
-//    @NotBlank(message = "URL ảnh không được để trống")
-//    String imageUrls;
-
-    @Min(value = 0, message = "Số lượng tồn kho không thể là số âm")
-    int stockQuantity;
+    List<Price> prices;
 
     @NotBlank(message = "Thương hiệu sản phẩm không được để trống")
     String brand;
@@ -49,4 +33,19 @@ public class CreateProductRequest {
     Long categoryId;
 
     Long shopId;
+
+    @Data
+    public static class Price {
+        private List<Variant> variant;
+        private double price;
+        private int stockQuantity;
+
+    }
+
+    @Data
+    public static class Variant {
+        private String name;
+        private String value;
+
+    }
 }

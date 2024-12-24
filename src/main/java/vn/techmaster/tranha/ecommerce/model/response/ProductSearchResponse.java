@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.dto.ProductVariantDto;
 import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
+import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
 
 import java.util.List;
 
@@ -18,10 +19,10 @@ public class ProductSearchResponse {
     Double productPrice;
     Double averageRating;
     String description;
-    String productImages;
+    List<String> productImages;
     Double maxPrice;
     Double minPrice;
-    Double basePrice;
+    List<CreateProductRequest.Price> prices;
     String origin;
     String brand;
     String expiryDate;

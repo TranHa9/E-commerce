@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import vn.techmaster.tranha.ecommerce.dto.ProductVariantDto;
 import vn.techmaster.tranha.ecommerce.dto.SearchProductDto;
 import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
+import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
 import vn.techmaster.tranha.ecommerce.model.request.ProductSearchRequest;
 import vn.techmaster.tranha.ecommerce.repository.BaseRepository;
 import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
@@ -28,7 +29,7 @@ public class ProductCustomRepository extends BaseRepository {
 
     public List<SearchProductDto> searchProduct(ProductSearchRequest request) {
         String query = "with raw_data as (\n" +
-                "         select p.id, p.name as product_name, p.base_price as product_price, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
+                "         select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
                 "                p.origin,p.brand, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.name as category_name, s.name as shop_name," +
                 "    JSON_ARRAYAGG(\n" +
                 "            JSON_OBJECT(\n" +
@@ -70,10 +71,6 @@ public class ProductCustomRepository extends BaseRepository {
         if (request.getName() != null && !request.getName().trim().isEmpty()) {
             searchCondition += " and lower(p.name) like :name";
             parameters.put("name", "%" + request.getName().toLowerCase() + "%");
-        }
-        if (request.getBasePrice() != null && request.getBasePrice() >= 0) {
-            searchCondition += " and p.base_price >= :basePrice";
-            parameters.put("basePrice", request.getBasePrice());
         }
         if (request.getMinPrice() != null && request.getMinPrice() >= 0) {
             searchCondition += " and p.min_price >= :minPrice";
@@ -119,10 +116,8 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setProductName(rs.getString("product_name"));
             dto.setAverageRating(rs.getDouble("average_rating"));
             dto.setDescription(rs.getString("description"));
-            dto.setProductImages(rs.getString("product_images"));
             dto.setMaxPrice(rs.getDouble("max_price"));
             dto.setMinPrice(rs.getDouble("min_price"));
-            dto.setBasePrice(rs.getDouble("product_price"));
             dto.setOrigin(rs.getString("origin"));
             dto.setBrand(rs.getString("brand"));
             dto.setExpiryDate(rs.getString("expiry_date"));
@@ -131,6 +126,25 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setCategoryName(rs.getString("category_name"));
             dto.setShopName(rs.getString("shop_name"));
             dto.setTotalRecord(rs.getLong("totalRecord"));
+
+            String pricesJson = rs.getString("product_prices");
+            if (pricesJson != null && !pricesJson.isEmpty()) {
+                try {
+                    List<CreateProductRequest.Price> prices = objectMapper.readValue(pricesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, CreateProductRequest.Price.class));
+                    dto.setPrices(prices);
+                } catch (Exception e) {
+                    dto.setVariants(new ArrayList<>());
+                }
+            }
+            String imagesJson = rs.getString("product_images");
+            if (imagesJson != null && !imagesJson.isEmpty()) {
+                try {
+                    List<String> images = objectMapper.readValue(imagesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+                    dto.setProductImages(images);
+                } catch (Exception e) {
+                    dto.setVariants(new ArrayList<>());
+                }
+            }
 
             String variantsJson = rs.getString("variants");
             if (variantsJson != null && !variantsJson.isEmpty()) {
