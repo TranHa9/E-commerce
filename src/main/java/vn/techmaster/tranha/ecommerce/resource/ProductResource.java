@@ -3,6 +3,7 @@ package vn.techmaster.tranha.ecommerce.resource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,15 +33,7 @@ public class ProductResource {
     }
 
     @PostMapping
-    public ProductResponse createProduct(
-            @RequestPart("request") String createProductRequest,
-            @RequestPart(value = "images") MultipartFile[] images
-    ) throws Exception {
-        try {
-            CreateProductRequest request = objectMapper.readValue(createProductRequest, CreateProductRequest.class);
-            return productService.createProduct(request, images);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Dữ liệu JSON không hợp lệ", e);
-        }
+    public ProductResponse createProduct(@RequestBody @Valid CreateProductRequest request) throws Exception {
+        return productService.createProduct(request);
     }
 }

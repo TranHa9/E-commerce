@@ -178,30 +178,61 @@ $(document).ready(function () {
         if (!files || files.length === 0) {
             $('#image-error').text('Ảnh không được để trống!');
             return;
-        } else if (files.length > 9) {
-            $('#image-error').text('Bạn chỉ có thể tải tối đa 9 ảnh');
-            return;
         } else {
             $('#image-error').text('')
         }
         const maxSize = 10 * 1024 * 1024; // 10MB
         const imagePlaceholder = $(".image-preview-container .image-placeholder");
-        imagePlaceholder.empty();
         Array.from(files).forEach(file => {
             if (file.size > maxSize) {
                 alert("Kích thước file không được vượt quá 10MB.");
                 return;
             }
+            const formData = new FormData();
+            formData.append("files", file);
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const imageUrl = e.target.result;
-                const imgElement = `<div class="image-preview"><img class="img-sm" src="${imageUrl}" alt="Image preview"></div>`;
-                imagePlaceholder.append(imgElement);
-            };
-            reader.readAsDataURL(file);
+            $.ajax({
+                url: '/api/v1/files',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    const imgElement = `
+                    <div class="image-preview" id="image-product">
+                        <img class="img-product" src="/api/v1/files${response}" alt="Image preview">
+                        <div class="image-actions">
+                            <button class="delete-btn">🗑️</button>
+                        </div>
+                    </div>`;
+                    imagePlaceholder.append(imgElement);
+                    $(".fas.fa-image").hide()
+                    $(".delete-btn").last().click(function () {
+                        $(this).closest('#image-product').remove();
+                        if ($('#image-product').length === 0) {
+                            $(".fas.fa-image").show();
+                        }
+                    });
+                },
+            });
         });
     });
+
+    function validateImageCount() {
+        let isValid = true;
+        const imageCount = $('#image-product.image-preview').length;
+        if (imageCount === 0) {
+            $('#image-error').text('Ảnh không được để trống!');
+            isValid = false;
+        } else {
+            $('#image-error').text('');
+        }
+        if (imageCount > 9) {
+            $('#image-error').text('Bạn chỉ có thể tải tối đa 9 ảnh');
+            isValid = false;
+        }
+        return isValid;
+    }
 
     $("#btn-save-create").click(async function () {
         const isValid = validateVariants()
@@ -217,29 +248,23 @@ $(document).ready(function () {
             expiryDate: $('#expiryDate').val(),
             prices: []
         };
-        const formProduct = new FormData();
         if (shopId) {
             request.shopId = shopId;
         }
 
         request.prices = getPriceVariants();
         request.variants = getVariantData()
-        // Thêm toàn bộ thông tin của request vào FormData
-        formProduct.append('request', JSON.stringify(request));
-
-        const files = $("#avatar-input")[0].files;
-        if (files.length > 0) {
-            Array.from(files).forEach(file => {
-                formProduct.append('images', file, file.name);
-            });
-        }
+        const imgPathArray = [];
+        $("#image-product img").each(function () {
+            const imgPath = $(this).attr("src").replace('/api/v1/files/product/', '');
+            imgPathArray.push(imgPath);
+        });
+        request.imageUrls = imgPathArray;
         $.ajax({
             url: `/api/v1/products`,
             type: 'POST',
-            //enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            data: formProduct,
+            data: JSON.stringify(request),
+            contentType: "application/json; charset=utf-8",
             success: function (response) {
                 showToast("Tạo mới thành công", "success");
             }
@@ -311,6 +336,27 @@ $(document).ready(function () {
 
     fetchShopData();
 
+    function fetchCategoriesData() {
+        $.ajax({
+            url: '/api/v1/categories',
+            type: 'GET',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                if (!data && data?.data.length === 0) {
+                    $('#categoryId').append($('<option></option>').text("Chưa có dữ liệu"));
+                }
+                $('#categoryId').empty();
+                data?.data.forEach(category => {
+                    const option = $('<option></option>')
+                        .val(category.id)
+                        .text(category.name);
+                    $('#categoryId').append(option);
+                });
+            },
+        });
+    }
+
+    fetchCategoriesData()
     // Thêm thuộc tính mới
     $('#add-attribute').click(function () {
         let attributeHtml = `
@@ -525,22 +571,14 @@ $(document).ready(function () {
     $('#next-btn').click(function (e) {
         const isValidForm = $("#form-create-product").valid();
         if (!isValidForm) {
-            alert("Vui lòng nhập đẩy đủ thông tin yêu cầu")
             return;
         }
-        let files = $('#avatar-input')[0].files;
-        if (!files || files.length === 0) {
-            $('#image-error').text('Ảnh không được để trống!');
+        let isValidImages = validateImageCount();
+        if (!isValidImages) {
             return;
-        } else if (files.length > 9) {
-            $('#image-error').text('Bạn chỉ có thể tải tối đa 9 ảnh');
-            return;
-        } else {
-            $('#image-error').text('');
         }
         const isValidFromInfo = $("#form-create-info").valid()
         if (!isValidFromInfo) {
-            alert("Vui lòng nhập đẩy đủ thông tin yêu cầu")
             return;
         }
         if (currentStep < $('.step-content').length - 1) {

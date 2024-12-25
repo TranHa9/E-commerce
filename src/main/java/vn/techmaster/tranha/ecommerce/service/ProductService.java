@@ -64,7 +64,7 @@ public class ProductService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ProductResponse createProduct(CreateProductRequest request, MultipartFile[] productImage) throws Exception {
+    public ProductResponse createProduct(CreateProductRequest request) throws Exception {
         Optional<Category> categoryOptional = categoryRepository.findById(request.getCategoryId());
         Optional<Shop> shopOptional = shopRepository.findById(request.getShopId());
 
@@ -74,17 +74,9 @@ public class ProductService {
         if (shopOptional.isEmpty()) {
             throw new Exception("Shop not found");
         }
-        List<String> imagePaths = new ArrayList<>();
-        if (productImage != null && productImage.length > 0) {
-            // Lưu tất cả ảnh
-            for (MultipartFile image : productImage) {
-                String imagePath = saveProductImage(image);
-                imagePaths.add(imagePath);
-            }
-        }
 
         //Chuyển đổi thành json để lưu
-        String imageUrlsJson = objectMapper.writeValueAsString(imagePaths);
+        String imageUrlsJson = objectMapper.writeValueAsString(request.getImageUrls());
         String pricesJson = objectMapper.writeValueAsString(request.getPrices());
 
         // Tính tổng stockQuantity, minPrice, maxPrice

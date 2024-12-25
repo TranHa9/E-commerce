@@ -20,6 +20,9 @@ public class CreateProductRequest {
 
     String description;
 
+    @NotEmpty(message = "Ảnh phẩm không được để trống")
+    List<String> imageUrls;
+
     @NotEmpty(message = "Danh sách giá không được để trống")
     List<Prices> prices;
 
