@@ -25,6 +25,4 @@ public class ProductAttribute extends BaseEntity {
     String name;
 
     String value;
-
-    String imageUrl;
 }

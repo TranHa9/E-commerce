@@ -1,24 +1,17 @@
 package vn.techmaster.tranha.ecommerce.model.request;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateProductVariantRequest {
-
-    Long productId;
+public class UpdateProductVariantRequest {
 
     @NotNull(message = "Danh sách giá không được để trống")
     @Min(value = 1000, message = "Giá phải lớn hơn hoặc bằng 1000")
@@ -31,5 +24,8 @@ public class CreateProductVariantRequest {
 
     @NotEmpty(message = "Danh sách thuộc tính không được để trống")
     @Valid
-    List<CreateProductAttributesRequest> attributes;
+    List<UpdateProductAttributeRequest> attributes;
+
+    @NotNull(message = "Trạng thái không được để trống")
+    VariantStatus status;
 }

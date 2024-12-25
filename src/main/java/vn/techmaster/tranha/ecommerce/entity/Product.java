@@ -27,7 +27,7 @@ public class Product extends BaseEntity {
     Double maxPrice; // Giá cao nhất cho sản phẩm (các biến thể khác nhau)
 
     @Lob
-    String prices;
+    String prices; // json bao gồm giá,số lượng, variants
 
     int stockQuantity;
 
@@ -44,7 +44,7 @@ public class Product extends BaseEntity {
     int soldQuantity;
 
     String imageUrls;
-    
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;

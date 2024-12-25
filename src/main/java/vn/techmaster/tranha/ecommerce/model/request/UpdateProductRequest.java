@@ -5,16 +5,13 @@ import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
-import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateProductRequest {
-
+public class UpdateProductRequest {
     @NotBlank(message = "Tên sản phẩm không được để trống")
     @Size(max = 250, message = "Tên sản phẩm không được vượt quá 250 ký tự")
     String name;
@@ -25,6 +22,7 @@ public class CreateProductRequest {
     List<String> imageUrls;
 
     @NotEmpty(message = "Danh sách giá không được để trống")
+    @Valid
     List<Prices> prices;
 
     @NotBlank(message = "Thương hiệu sản phẩm không được để trống")
@@ -37,8 +35,6 @@ public class CreateProductRequest {
     LocalDate expiryDate; //Hạn sử dụng
 
     Long categoryId;
-
-    Long shopId;
 
     @Data
     public static class Prices {
@@ -58,10 +54,9 @@ public class CreateProductRequest {
         private String name;
         @NotBlank(message = "Giá trị biến thể không được để trống")
         private String value;
-
     }
 
     @NotEmpty(message = "Danh sách biến thể sản phẩm không được để trống")
     @Valid
-    private List<CreateProductVariantRequest> variants;
+    private List<UpdateProductVariantRequest> variants;
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
 import vn.techmaster.tranha.ecommerce.model.request.ProductSearchRequest;
+import vn.techmaster.tranha.ecommerce.model.request.UpdateProductRequest;
 import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.service.ProductService;
@@ -35,5 +36,10 @@ public class ProductResource {
     @PostMapping
     public ProductResponse createProduct(@RequestBody @Valid CreateProductRequest request) throws Exception {
         return productService.createProduct(request);
+    }
+
+    @PutMapping("/{id}")
+    public ProductResponse updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductRequest request) throws Exception {
+        return productService.updateProduct(id, request);
     }
 }

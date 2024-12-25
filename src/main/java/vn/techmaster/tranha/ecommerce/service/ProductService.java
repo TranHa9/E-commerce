@@ -7,11 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.dto.SearchProductDto;
 import vn.techmaster.tranha.ecommerce.entity.*;
-import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
-import vn.techmaster.tranha.ecommerce.model.request.ProductSearchRequest;
+import vn.techmaster.tranha.ecommerce.model.request.*;
 import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductSearchResponse;
@@ -19,13 +17,6 @@ import vn.techmaster.tranha.ecommerce.repository.*;
 import vn.techmaster.tranha.ecommerce.repository.custom.ProductCustomRepository;
 import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @Service
@@ -116,13 +107,22 @@ public class ProductService {
         List<ProductVariant> savedVariants = new ArrayList<>();
         List<ProductAttribute> savedAttributes = new ArrayList<>();
 
-        for (ProductVariant variant : request.getVariants()) {
-            variant.setProduct(product);
+        for (CreateProductVariantRequest variantRequest : request.getVariants()) {
+            ProductVariant variant = new ProductVariant();
+            variant.setPrice(variantRequest.getPrice());
+            variant.setStockQuantity(variantRequest.getStockQuantity());
+            variant.setImageUrl(variantRequest.getImageUrl());
             variant.setStatus(VariantStatus.ACTIVE);
+            variant.setProduct(product);
             savedVariants.add(variant);
-            for (ProductAttribute attribute : variant.getAttributes()) {
-                attribute.setProductVariant(variant);
-                savedAttributes.add(attribute);
+            if (variantRequest.getAttributes() != null) {
+                for (CreateProductAttributesRequest attributeRequest : variantRequest.getAttributes()) {
+                    ProductAttribute attribute = new ProductAttribute();
+                    attribute.setName(attributeRequest.getName());
+                    attribute.setValue(attributeRequest.getValue());
+                    attribute.setProductVariant(variant);
+                    savedAttributes.add(attribute);
+                }
             }
         }
         productVariantRepository.saveAll(savedVariants);
@@ -149,20 +149,98 @@ public class ProductService {
                 .build();
     }
 
-    private String saveProductImage(MultipartFile avatar) throws IOException {
-        String uploadDir = "images/product" + File.separator;
-        File dir = new File(uploadDir);
-        // Kiểm tra nếu thư mục không tồn tại thì tạo mới
-        if (!dir.exists()) {
-            dir.mkdirs();
+    public ProductResponse updateProduct(Long id, UpdateProductRequest request) throws Exception {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isEmpty()) {
+            throw new Exception("Product not found");
         }
-        String fileName = System.currentTimeMillis() + "_" + avatar.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir + File.separator + fileName);
-        try {
-            Files.copy(avatar.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            return fileName;
-        } catch (IOException e) {
-            throw new IOException("Could not save avatar image", e);
+        Product product = productOptional.get();
+        Optional<Category> categoryOptional = categoryRepository.findById(request.getCategoryId());
+        if (categoryOptional.isEmpty()) {
+            throw new Exception("Category not found");
         }
+
+        String imageUrlsJson = objectMapper.writeValueAsString(request.getImageUrls());
+        String pricesJson = objectMapper.writeValueAsString(request.getPrices());
+
+        // Tính lại tổng số lượng tồn kho, giá trị thấp nhất và cao nhất
+        List<CreateProductRequest.Prices> variants = objectMapper.readValue(pricesJson, new TypeReference<List<CreateProductRequest.Prices>>() {
+        });
+        int totalStockQuantity = 0;
+        double minPrice = Double.MAX_VALUE;
+        double maxPrice = Double.MIN_VALUE;
+
+        for (CreateProductRequest.Prices variant : variants) {
+            totalStockQuantity += variant.getStockQuantity();
+            if (variant.getPrice() < minPrice) {
+                minPrice = variant.getPrice();
+            }
+            if (variant.getPrice() > maxPrice) {
+                maxPrice = variant.getPrice();
+            }
+        }
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrices(pricesJson);
+        product.setStockQuantity(totalStockQuantity);
+        product.setOrigin(request.getOrigin());
+        product.setBrand(request.getBrand());
+        product.setExpiryDate(request.getExpiryDate());
+        product.setCategory(categoryOptional.get());
+        product.setImageUrls(imageUrlsJson);
+        product.setMinPrice(minPrice);
+        product.setMaxPrice(maxPrice);
+
+        productRepository.save(product);
+
+        List<ProductVariant> existingVariants = productVariantRepository.findByProductId(id);
+        productVariantRepository.deleteAll(existingVariants);
+
+        List<ProductVariant> savedVariants = new ArrayList<>();
+        List<ProductAttribute> savedAttributes = new ArrayList<>();
+
+        for (UpdateProductVariantRequest variantRequest : request.getVariants()) {
+            ProductVariant variant = new ProductVariant();
+            variant.setPrice(variantRequest.getPrice());
+            variant.setStockQuantity(variantRequest.getStockQuantity());
+            variant.setImageUrl(variantRequest.getImageUrl());
+            variant.setStatus(variantRequest.getStatus());
+            variant.setProduct(product);
+            savedVariants.add(variant);
+
+            if (variantRequest.getAttributes() != null) {
+                for (UpdateProductAttributeRequest attributeRequest : variantRequest.getAttributes()) {
+                    ProductAttribute attribute = new ProductAttribute();
+                    attribute.setName(attributeRequest.getName());
+                    attribute.setValue(attributeRequest.getValue());
+                    attribute.setProductVariant(variant);
+                    savedAttributes.add(attribute);
+                }
+            }
+        }
+
+        productVariantRepository.saveAll(savedVariants);
+        productAttributeRepository.saveAll(savedAttributes);
+
+        List<CreateProductRequest.Prices> productVariants = objectMapper.readValue(product.getPrices(), new TypeReference<List<CreateProductRequest.Prices>>() {
+        });
+        List<String> imageUrls = objectMapper.readValue(product.getImageUrls(), new TypeReference<List<String>>() {
+        });
+
+        return ProductResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .minPrice(product.getMinPrice())
+                .maxPrice(product.getMaxPrice())
+                .prices(productVariants)
+                .imageUrls(imageUrls)
+                .stockQuantity(product.getStockQuantity())
+                .origin(product.getOrigin())
+                .brand(product.getBrand())
+                .expiryDate(product.getExpiryDate())
+                .category(product.getCategory())
+                .shop(product.getShop())
+                .build();
     }
 }

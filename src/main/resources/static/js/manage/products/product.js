@@ -267,6 +267,9 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 showToast("Tạo mới thành công", "success");
+                setTimeout(function () {
+                    location.reload();
+                }, 2000)
             }
         });
     })
