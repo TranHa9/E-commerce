@@ -1,6 +1,5 @@
 package vn.techmaster.tranha.ecommerce.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +25,8 @@ public class ProductVariant extends BaseEntity {
     Double price;
 
     int stockQuantity;
+
+    String imageUrl;
 
     @OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductAttribute> attributes;

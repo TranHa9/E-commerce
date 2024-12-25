@@ -25,7 +25,7 @@ import java.util.List;
 public class FileResource {
 
     @PostMapping()
-    public ResponseEntity<?> uploadImages(@RequestPart("images") MultipartFile[] files) {
+    public ResponseEntity<?> uploadImages(@RequestPart("files") MultipartFile[] files) {
         String uploadDir = "images/product" + File.separator;
         File dir = new File(uploadDir);
         // Kiểm tra nếu thư mục không tồn tại thì tạo mới
@@ -37,13 +37,7 @@ public class FileResource {
         try {
             // Lặp qua tất cả các tệp và lưu từng tệp
             for (MultipartFile file : files) {
-                // Lấy tên gốc của tệp và mã hóa nó
-                String originalFileName = file.getOriginalFilename();
-                String encodedFileName = URLEncoder.encode(originalFileName, "UTF-8")
-                        .replaceAll("\\+", "_") // Thay đổi dấu cộng thành dấu gạch dưới
-                        .replaceAll("%20", "_"); // Thay đổi dấu cách thành dấu gạch dưới
-
-                String fileName = System.currentTimeMillis() + "_" + encodedFileName;
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
                 Path filePath = Paths.get(uploadDir + fileName);
 
                 Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);

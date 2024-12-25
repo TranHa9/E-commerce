@@ -130,7 +130,7 @@ public class ProductCustomRepository extends BaseRepository {
             String pricesJson = rs.getString("product_prices");
             if (pricesJson != null && !pricesJson.isEmpty()) {
                 try {
-                    List<CreateProductRequest.Price> prices = objectMapper.readValue(pricesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, CreateProductRequest.Price.class));
+                    List<CreateProductRequest.Prices> prices = objectMapper.readValue(pricesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, CreateProductRequest.Prices.class));
                     dto.setPrices(prices);
                 } catch (Exception e) {
                     dto.setVariants(new ArrayList<>());

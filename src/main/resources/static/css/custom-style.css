@@ -112,6 +112,15 @@
     margin-top: 29px;
 }
 
+#clear-button {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .btn-delete:hover {
     background-color: #e63946;
 }

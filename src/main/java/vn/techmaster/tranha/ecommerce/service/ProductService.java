@@ -17,6 +17,7 @@ import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductSearchResponse;
 import vn.techmaster.tranha.ecommerce.repository.*;
 import vn.techmaster.tranha.ecommerce.repository.custom.ProductCustomRepository;
+import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,13 +88,13 @@ public class ProductService {
         String pricesJson = objectMapper.writeValueAsString(request.getPrices());
 
         // Tính tổng stockQuantity, minPrice, maxPrice
-        List<CreateProductRequest.Price> variants = objectMapper.readValue(pricesJson, new TypeReference<List<CreateProductRequest.Price>>() {
+        List<CreateProductRequest.Prices> variants = objectMapper.readValue(pricesJson, new TypeReference<List<CreateProductRequest.Prices>>() {
         });
         int totalStockQuantity = 0;
         double minPrice = Double.MAX_VALUE;
         double maxPrice = Double.MIN_VALUE;
 
-        for (CreateProductRequest.Price variant : variants) {
+        for (CreateProductRequest.Prices variant : variants) {
             totalStockQuantity += variant.getStockQuantity();
             if (variant.getPrice() < minPrice) {
                 minPrice = variant.getPrice();
@@ -125,6 +126,7 @@ public class ProductService {
 
         for (ProductVariant variant : request.getVariants()) {
             variant.setProduct(product);
+            variant.setStatus(VariantStatus.ACTIVE);
             savedVariants.add(variant);
             for (ProductAttribute attribute : variant.getAttributes()) {
                 attribute.setProductVariant(variant);
@@ -134,7 +136,7 @@ public class ProductService {
         productVariantRepository.saveAll(savedVariants);
         productAttributeRepository.saveAll(savedAttributes);
 
-        List<CreateProductRequest.Price> productVariants = objectMapper.readValue(product.getPrices(), new TypeReference<List<CreateProductRequest.Price>>() {
+        List<CreateProductRequest.Prices> productVariants = objectMapper.readValue(product.getPrices(), new TypeReference<List<CreateProductRequest.Prices>>() {
         });
         List<String> imageUrls = objectMapper.readValue(product.getImageUrls(), new TypeReference<List<String>>() {
         });
@@ -157,19 +159,12 @@ public class ProductService {
 
     private String saveProductImage(MultipartFile avatar) throws IOException {
         String uploadDir = "images/product" + File.separator;
-
         File dir = new File(uploadDir);
         // Kiểm tra nếu thư mục không tồn tại thì tạo mới
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        // Lấy tên gốc của tệp và mã hóa nó
-        String originalFileName = avatar.getOriginalFilename();
-        String encodedFileName = URLEncoder.encode(originalFileName, "UTF-8")
-                .replaceAll("\\+", "_") // Thay đổi dấu cộng thành dấu gạch dưới
-                .replaceAll("%20", "_"); // Thay đổi dấu cách thành dấu gạch dưới
-
-        String fileName = System.currentTimeMillis() + "_" + encodedFileName;
+        String fileName = System.currentTimeMillis() + "_" + avatar.getOriginalFilename();
         Path filePath = Paths.get(uploadDir + File.separator + fileName);
         try {
             Files.copy(avatar.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);

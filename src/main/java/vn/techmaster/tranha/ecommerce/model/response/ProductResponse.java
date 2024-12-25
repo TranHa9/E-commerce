@@ -30,7 +30,7 @@ public class ProductResponse {
 
     Double maxPrice;
 
-    List<CreateProductRequest.Price> prices;
+    List<CreateProductRequest.Prices> prices;
 
     List<String> imageUrls;
 

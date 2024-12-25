@@ -33,8 +33,8 @@ public class ProductResource {
 
     @PostMapping
     public ProductResponse createProduct(
-            @RequestPart("product") String createProductRequest,
-            @RequestPart(value = "images", required = false) MultipartFile[] images
+            @RequestPart("request") String createProductRequest,
+            @RequestPart(value = "images") MultipartFile[] images
     ) throws Exception {
         try {
             CreateProductRequest request = objectMapper.readValue(createProductRequest, CreateProductRequest.class);
