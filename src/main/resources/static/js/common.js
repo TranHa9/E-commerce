@@ -44,6 +44,24 @@ async function getUserDetail(id) {
     return user;
 }
 
+async function fetchShopData() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const accessToken = localStorage.getItem("accessToken");
+    let shop = null;
+    await $.ajax({
+        url: `/api/v1/shops/user/${user?.id}`,
+        type: 'GET',
+        contentType: "application/json; charset=utf-8",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+        success: function (response) {
+            shop = response;
+        }
+    });
+    return shop;
+}
+
 // Kiểm tra xem token có hết hạn không
 function isTokenExpired(token) {
     if (!token) {
@@ -103,7 +121,6 @@ async function refreshToken() {
         success: async function (data) {
             localStorage.setItem("accessToken", data?.jwt);
             localStorage.setItem("refreshToken", data?.refreshToken);
-            localStorage.setItem("role", data?.roles[0])
             const user = await getUserDetail(data?.id);
             if (user) {
                 localStorage.setItem("user", JSON.stringify(user));

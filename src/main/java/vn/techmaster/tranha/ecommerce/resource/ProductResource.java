@@ -14,6 +14,7 @@ import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
 import vn.techmaster.tranha.ecommerce.model.request.ProductSearchRequest;
 import vn.techmaster.tranha.ecommerce.model.request.UpdateProductRequest;
 import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
+import vn.techmaster.tranha.ecommerce.model.response.ProductDetailResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.service.ProductService;
 
@@ -29,8 +30,18 @@ public class ProductResource {
     ObjectMapper objectMapper;
 
     @GetMapping
-    public CommonSearchResponse<?> search(ProductSearchRequest request) {
-        return productService.searchProduct(request);
+    public CommonSearchResponse<?> searchAllProduct(ProductSearchRequest request) {
+        return productService.searchProductAll(request);
+    }
+
+    @GetMapping("/{id}")
+    public ProductDetailResponse getProductById(@PathVariable Long id) {
+        return productService.getProductById(id);
+    }
+
+    @GetMapping("/shop/{id}")
+    public CommonSearchResponse<?> SearchByShop(@PathVariable Long id, ProductSearchRequest request) {
+        return productService.searchProductByShop(id, request);
     }
 
     @PostMapping

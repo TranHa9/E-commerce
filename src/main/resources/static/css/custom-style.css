@@ -112,7 +112,7 @@
     margin-top: 29px;
 }
 
-#clear-button {
+.clear-button {
     background-color: #ff4d4f;
     color: white;
     border: none;

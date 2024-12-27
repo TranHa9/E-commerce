@@ -7,10 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.techmaster.tranha.ecommerce.dto.SearchProductDto;
+import vn.techmaster.tranha.ecommerce.dto.SearchProductAllDto;
 import vn.techmaster.tranha.ecommerce.entity.*;
 import vn.techmaster.tranha.ecommerce.model.request.*;
 import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
+import vn.techmaster.tranha.ecommerce.model.response.ProductDetailResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductSearchResponse;
 import vn.techmaster.tranha.ecommerce.repository.*;
@@ -33,8 +34,8 @@ public class ProductService {
     ObjectMapper objectMapper;
 
 
-    public CommonSearchResponse<?> searchProduct(ProductSearchRequest request) {
-        List<SearchProductDto> result = productCustomRepository.searchProduct(request);
+    public CommonSearchResponse<?> searchProductAll(ProductSearchRequest request) {
+        List<SearchProductAllDto> result = productCustomRepository.searchProductAll(request);
         Long totalRecord = 0L;
         List<ProductSearchResponse> productResponses = new ArrayList<>();
         if (!result.isEmpty()) {
@@ -149,6 +150,7 @@ public class ProductService {
                 .build();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public ProductResponse updateProduct(Long id, UpdateProductRequest request) throws Exception {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isEmpty()) {
@@ -242,5 +244,31 @@ public class ProductService {
                 .category(product.getCategory())
                 .shop(product.getShop())
                 .build();
+    }
+
+    public CommonSearchResponse<?> searchProductByShop(Long id, ProductSearchRequest request) {
+        List<SearchProductAllDto> result = productCustomRepository.searchProductByShop(id, request);
+        Long totalRecord = 0L;
+        List<ProductSearchResponse> productResponses = new ArrayList<>();
+        if (!result.isEmpty()) {
+            totalRecord = result.get(0).getTotalRecord();
+            productResponses = result
+                    .stream()
+                    .map(s -> objectMapper.convertValue(s, ProductSearchResponse.class))
+                    .toList();
+        }
+        int totalPage = (int) Math.ceil((double) totalRecord / request.getPageSize());
+
+        return CommonSearchResponse.<ProductSearchResponse>builder()
+                .totalRecord(totalRecord)
+                .totalPage(totalPage)
+                .data(productResponses)
+                .pageInfo(new CommonSearchResponse.CommonPagingResponse(request.getPageSize(), request.getPageIndex()))
+                .build();
+    }
+
+    public ProductDetailResponse getProductById(Long id) {
+        SearchProductAllDto result = productCustomRepository.getProductById(id);
+        return objectMapper.convertValue(result, ProductDetailResponse.class);
     }
 }

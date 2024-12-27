@@ -1,22 +1,19 @@
 package vn.techmaster.tranha.ecommerce.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SearchProductDto {
+public class SearchProductByShopDto {
     Long id;
     String productName;
     Double averageRating;
@@ -34,5 +31,4 @@ public class SearchProductDto {
     String shopName;
     List<ProductVariantDto> variants;
     Long totalRecord;
-
 }

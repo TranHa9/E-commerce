@@ -120,8 +120,11 @@
         </div>
     </footer>
     <div th:insert="~{manage/product/modal-create-product :: create-product-modal}"></div>
+    <div th:insert="~{manage/product/modal-edit-product :: edit-product-modal}"></div>
 </main>
 <div th:insert="fragments/common/manage/scripts" :: scripts></div>
 <script src="/js/manage/products/product.js"></script>
+<script src="/js/manage/products/create-product.js"></script>
+<script src="/js/manage/products/edit-product.js"></script>
 </body>
 </html>
