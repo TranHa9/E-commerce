@@ -62,7 +62,7 @@ $(document).ready(function () {
     $("#change-avatar-btn").click((event) => {
         event.preventDefault();
         $("#avatar-input").click();
-        $("#avtar-error").text("");
+        $("#image-error").text("");
     });
     $("#avatar-input").change(event => {
         const files = event.target.files;
@@ -90,7 +90,7 @@ $(document).ready(function () {
                 contentType: false,
                 success: function (response) {
                     const imgElement = `
-                    <div class="image-preview" id="image-product">
+                    <div class="image-preview create-image-product">
                         <img class="img-product" src="/api/v1/files${response}" alt="Image preview">
                         <div class="image-actions">
                             <button class="delete-btn">🗑️</button>
@@ -99,8 +99,8 @@ $(document).ready(function () {
                     imagePlaceholder.append(imgElement);
                     $(".fas.fa-image").hide()
                     $(".delete-btn").last().click(function () {
-                        $(this).closest('#image-product').remove();
-                        if ($('#image-product').length === 0) {
+                        $(this).closest('.image-preview.create-image-product').remove();
+                        if ($('.image-preview.create-image-product').length === 0) {
                             $(".fas.fa-image").show();
                         }
                     });
@@ -111,7 +111,7 @@ $(document).ready(function () {
 
     function validateImageCount() {
         let isValid = true;
-        const imageCount = $('#image-product.image-preview').length;
+        const imageCount = $('.image-preview.create-image-product').length;
         if (imageCount === 0) {
             $('#image-error').text('Ảnh không được để trống!');
             isValid = false;
@@ -146,7 +146,7 @@ $(document).ready(function () {
         request.prices = getPriceVariants();
         request.variants = getVariantData()
         const imgPathArray = [];
-        $("#image-product img").each(function () {
+        $(".image-preview.create-image-product img").each(function () {
             const imgPath = $(this).attr("src").replace('/api/v1/files/product/', '');
             imgPathArray.push(imgPath);
         });
@@ -243,14 +243,14 @@ $(document).ready(function () {
                     <input type="text" id="attributeName" name="attributeName"
                         class="form-control me-2"
                             placeholder="VD: Kích thước,...">
-                    <p class="error" for="attributeName"></p>
+                    <p class="error attributeName"></p>
                 </div>
                 <div class="col-lg-5 mb-3">
                     <label for="attributeValue" class="form-label">Giá trị</label>
                         <input type="text" id="attributeValue" name="attributeValue"
                         class="form-control me-2"
                             placeholder="VD: M, L, XL (phân cách bởi dấu phẩy)">
-                    <p class="error" for="attributeValue"></p>
+                    <p class="error attributeValue"></p>
                 </div>
                 <div class="col mb-3">
                     <button class="btn-delete">Xóa</button>
@@ -266,8 +266,8 @@ $(document).ready(function () {
         $('.attribute-group').each(function () {
             let attributeName = $(this).find('input[name="attributeName"]').val();
             let attributeValue = $(this).find('input[name="attributeValue"]').val();
-            let attributeNameError = $(this).find('p[for="attributeName"]');
-            let attributeValueError = $(this).find('p[for="attributeValue"]');
+            let attributeNameError = $(this).find('.error.attributeName');
+            let attributeValueError = $(this).find('.error.attributeValue');
             if (!attributeName) {
                 attributeNameError.text("Vui lòng nhâp tên thuộc tính");
                 isValid = false;
@@ -363,17 +363,17 @@ $(document).ready(function () {
             row += `
                     <td>
                         <input type="number" name="stockQuantity" class="form-control" placeholder="Số lượng">
-                        <p class="error" for="stockQuantity"></p>
+                        <p class="error stockQuantity"></p>
                     </td>;
                     <td>
                         <input type="number" name="price" class="form-control" placeholder="Giá bán">
-                        <p class="error" for="price"></p>
+                        <p class="error price"></p>
                     </td>;
                     <td>
-                        <input type="file" name="imageUrl" id="image-variant" class="form-control create-image-variant" placeholder="image-variant">
+                        <input type="file" name="imageUrl" class="form-control create-image-variant" placeholder="image-variant">
                         <div class="d-flex gap-2 align-items-center justify-content-between">
                         <img class="image-preview img-sm mt-2" src="" alt="Uploaded Image" style="display: none;">
-                        <button type="button" id="clear-button" style="display: none">Xóa ảnh</button>
+                        <button type="button" class="crate-clear-button" style="display: none">Xóa ảnh</button>
                         </div>
                     </td>`;
             rows += `<tr>${row}</tr>`;
@@ -389,8 +389,8 @@ $(document).ready(function () {
         $('#variant-body tr').each(function () {
             let stockQuantity = $(this).find('input[name="stockQuantity"]').val();
             let price = $(this).find('input[name="price"]').val();
-            let stockQuantityError = $(this).find('p[for="stockQuantity"]');
-            let priceError = $(this).find('p[for="price"]');
+            let stockQuantityError = $(this).find('.error.stockQuantity');
+            let priceError = $(this).find('.error.price');
             if (!stockQuantity) {
                 stockQuantityError.text("Vui lòng nhâp số lượng");
                 isValid = false;
@@ -470,7 +470,7 @@ $(document).ready(function () {
         let fileInput = $(event.target);
         const file = event.target.files[0];
         let previewImage = fileInput.closest('td').find('.image-preview');
-        let clearButton = fileInput.closest('td').find('#clear-button');
+        let clearButton = fileInput.closest('td').find('.create-clear-button');
         if (!file) {
             previewImage.attr("src", "").hide();
             clearButton.hide();
@@ -502,7 +502,7 @@ $(document).ready(function () {
         });
     });
     // Xóa ảnh và làm trống input khi nhấn nút xóa
-    $(document).on('click', '#clear-button', function (event) {
+    $(document).on('click', '.create-clear-button', function (event) {
         let button = $(event.target);
         let fileInput = button.closest('td').find('input[type="file"]');
         let previewImage = button.closest('td').find('.image-preview');

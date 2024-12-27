@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import vn.techmaster.tranha.ecommerce.entity.Category;
 import vn.techmaster.tranha.ecommerce.entity.Shop;
 import vn.techmaster.tranha.ecommerce.statics.Gender;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 import vn.techmaster.tranha.ecommerce.statics.Roles;
 import vn.techmaster.tranha.ecommerce.statics.UserStatus;
 
@@ -21,7 +22,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 public class ProductSearchRequest extends BaseSearchRequest {
 
-    String name;
+    String productName;
 
     Double minPrice;
 
@@ -37,7 +38,9 @@ public class ProductSearchRequest extends BaseSearchRequest {
 
     int soldQuantity;
 
-    Category category;
+    String categoryName;
 
-    Shop shop;
+    String shopName;
+
+    ProductStatus status;
 }

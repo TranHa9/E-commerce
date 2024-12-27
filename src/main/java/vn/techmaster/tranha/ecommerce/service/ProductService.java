@@ -16,7 +16,7 @@ import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductSearchResponse;
 import vn.techmaster.tranha.ecommerce.repository.*;
 import vn.techmaster.tranha.ecommerce.repository.custom.ProductCustomRepository;
-import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.util.*;
 
@@ -101,6 +101,7 @@ public class ProductService {
                 .imageUrls(imageUrlsJson)
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
+                .status(ProductStatus.ACTIVE)
                 .build();
 
         productRepository.save(product);
@@ -113,7 +114,7 @@ public class ProductService {
             variant.setPrice(variantRequest.getPrice());
             variant.setStockQuantity(variantRequest.getStockQuantity());
             variant.setImageUrl(variantRequest.getImageUrl());
-            variant.setStatus(VariantStatus.ACTIVE);
+            variant.setStatus(ProductStatus.ACTIVE);
             variant.setProduct(product);
             savedVariants.add(variant);
             if (variantRequest.getAttributes() != null) {
@@ -147,6 +148,7 @@ public class ProductService {
                 .expiryDate(product.getExpiryDate())
                 .category(product.getCategory())
                 .shop(product.getShop())
+                .status(product.getStatus())
                 .build();
     }
 
@@ -224,6 +226,20 @@ public class ProductService {
         productVariantRepository.saveAll(savedVariants);
         productAttributeRepository.saveAll(savedAttributes);
 
+        // Kiểm tra trạng thái của các biến thể và cập nhật trạng thái sản phẩm
+        boolean hasActive = savedVariants.stream().anyMatch(v -> v.getStatus() == ProductStatus.ACTIVE);
+        boolean hasOutOfStock = savedVariants.stream().anyMatch(v -> v.getStatus() == ProductStatus.OUT_OF_STOCK);
+        boolean allInactive = savedVariants.stream().allMatch(v -> v.getStatus() == ProductStatus.INACTIVE);
+
+        if (hasActive) {
+            product.setStatus(ProductStatus.ACTIVE);
+        } else if (hasOutOfStock) {
+            product.setStatus(ProductStatus.OUT_OF_STOCK);
+        } else if (allInactive) {
+            product.setStatus(ProductStatus.INACTIVE);
+        }
+        productRepository.save(product);
+
         List<CreateProductRequest.Prices> productVariants = objectMapper.readValue(product.getPrices(), new TypeReference<List<CreateProductRequest.Prices>>() {
         });
         List<String> imageUrls = objectMapper.readValue(product.getImageUrls(), new TypeReference<List<String>>() {
@@ -243,6 +259,7 @@ public class ProductService {
                 .expiryDate(product.getExpiryDate())
                 .category(product.getCategory())
                 .shop(product.getShop())
+                .status(product.getStatus())
                 .build();
     }
 

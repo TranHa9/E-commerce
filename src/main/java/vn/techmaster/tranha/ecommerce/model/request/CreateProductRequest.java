@@ -5,8 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
-import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
 
 import java.time.LocalDate;
 import java.util.List;

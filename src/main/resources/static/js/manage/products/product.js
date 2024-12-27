@@ -50,28 +50,6 @@ $(document).ready(function () {
         pageInfo = data.pageInfo;
 
         products.forEach(function (product) {
-            // Kiểm tra trạng thái của các biến thể
-            let hasActiveVariant = false;
-            let hasOutOfStockVariant = false;
-
-            if (product.variants && product.variants.length > 0) {
-                product.variants.forEach(variant => {
-                    if (variant.status === 'ACTIVE') {
-                        hasActiveVariant = true;
-                    }
-                    if (variant.status === 'OUT_OF_STOCK') {
-                        hasOutOfStockVariant = true;
-                    }
-                });
-            }
-            // Xác định trạng thái sản phẩm
-            let productStatus = 'INACTIVE'; // Mặc định là "Ngừng bán"
-            if (hasActiveVariant) {
-                productStatus = 'ACTIVE'; // Có ít nhất một biến thể hoạt động
-            } else if (hasOutOfStockVariant) {
-                productStatus = 'OUT_OF_STOCK'; // Không có biến thể hoạt động nhưng có biến thể hết hàng
-            }
-
             const firstImage = product.productImages.length > 0 ? product.productImages[0] : null;
 
             const row = `<tr>
@@ -89,8 +67,8 @@ $(document).ready(function () {
                 <td>${product.categoryName}</td>
                 <td>${product.shopName}</td>
                 <td>${product.productStockQuantity}</td>
-                <td><span class="badge rounded-pill alert-${productStatus === 'ACTIVE' ? 'success' : productStatus === 'OUT_OF_STOCK' ? 'warning' : 'danger'}">
-            ${productStatus === 'ACTIVE' ? 'Hoạt động' : productStatus === 'OUT_OF_STOCK' ? 'Hết hàng' : 'Ngừng bán'}</span></td>
+                <td><span class="badge rounded-pill alert-${product.status === 'ACTIVE' ? 'success' : product.status === 'OUT_OF_STOCK' ? 'warning' : 'danger'}">
+                    ${product.status === 'ACTIVE' ? 'Có sẵn' : product.status === 'OUT_OF_STOCK' ? 'Hết hàng' : 'Ngừng bán'}</span></td>
                 <td class="text-end">
                         <button class="btn btn-sm font-sm rounded btn-brand mr-5 edit-product-btn" 
                                     data-bs-toggle="modal"
@@ -149,5 +127,21 @@ $(document).ready(function () {
             }
         });
     }
+
+    $("#btn-search").click(function () {
+        const formValues = $("#form-search").serializeArray();
+        const data = {};
+        formValues.forEach(input => {
+            data[input.name] = input.value;
+        });
+
+        getProductData(data)
+    })
+
+    $("#btn-reset").click(function () {
+        $("#form-search")[0].reset();
+        pageIndex = 0;
+        getProductData({});
+    });
 
 })

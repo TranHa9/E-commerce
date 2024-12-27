@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.entity.Product;
-import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -20,5 +20,5 @@ public class ProductVariantResponse {
 
     String imageUrls;
 
-    VariantStatus status;
+    ProductStatus status;
 }

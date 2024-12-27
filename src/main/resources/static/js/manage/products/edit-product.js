@@ -159,7 +159,7 @@ $(document).ready(function () {
                 const statusOptions = ["ACTIVE", "INACTIVE", "OUT_OF_STOCK"];
                 const statusOptionsHtml = statusOptions.map(status => {
                     const selected = variant.status === status ? "selected" : "";  // Chọn trạng thái hiện tại
-                    return `<option value="${status}" ${selected}>${status === "ACTIVE" ? "Hoạt động" : status === "INACTIVE" ? "Ngừng bán" : "Hết hàng"}</option>`;
+                    return `<option value="${status}" ${selected}>${status === "ACTIVE" ? "Có sẵn" : status === "INACTIVE" ? "Ngừng bán" : "Hết hàng"}</option>`;
                 }).join('');
 
                 const row = `
@@ -317,7 +317,7 @@ $(document).ready(function () {
     $("#change-image-btn").click((event) => {
         event.preventDefault();
         $("#image-input").click();
-        $("#avtar-error").text("");
+        $("#update-image-error").text("");
     });
 
     $("#image-input").change(event => {
@@ -547,7 +547,7 @@ $(document).ready(function () {
                     </td>
                     <td>
                         <select class="form-select" id="update-status" name="status">
-                            <option value="ACTIVE">Hoạt động</option>
+                            <option value="ACTIVE">Có sẵn</option>
                             <option value="INACTIVE">Ngừng bán</option>
                             <option value="OUT_OF_STOCK">Hết hàng</option>
                            </select>

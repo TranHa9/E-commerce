@@ -1,27 +1,20 @@
 package vn.techmaster.tranha.ecommerce.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import vn.techmaster.tranha.ecommerce.entity.Product;
-import vn.techmaster.tranha.ecommerce.entity.ProductAttribute;
 import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductVariantRequest;
 import vn.techmaster.tranha.ecommerce.model.response.ProductVariantResponse;
 import vn.techmaster.tranha.ecommerce.repository.ProductAttributeRepository;
 import vn.techmaster.tranha.ecommerce.repository.ProductRepository;
 import vn.techmaster.tranha.ecommerce.repository.ProductVariantRepository;
-import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +55,7 @@ public class ProductVariantService {
         ProductVariant productVariant = ProductVariant.builder()
                 .product(product)
                 .stockQuantity(request.getStockQuantity())
-                .status(VariantStatus.ACTIVE)
+                .status(ProductStatus.ACTIVE)
                 .build();
         productVariantRepository.save(productVariant);
 

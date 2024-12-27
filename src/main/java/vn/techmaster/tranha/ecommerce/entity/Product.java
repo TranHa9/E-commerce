@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -52,4 +53,7 @@ public class Product extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "shop_id")
     Shop shop;
+
+    @Enumerated(EnumType.STRING)
+    ProductStatus status;
 }

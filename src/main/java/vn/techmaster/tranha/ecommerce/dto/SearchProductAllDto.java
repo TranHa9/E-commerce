@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class SearchProductAllDto {
     Integer soldQuantity;
     String categoryName;
     String shopName;
+    String status;
     List<ProductVariantDto> variants;
     Long totalRecord;
 

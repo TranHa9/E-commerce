@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.util.List;
 
@@ -32,5 +32,5 @@ public class ProductVariant extends BaseEntity {
     private List<ProductAttribute> attributes;
 
     @Enumerated(EnumType.STRING)
-    VariantStatus status;
+    ProductStatus status;
 }

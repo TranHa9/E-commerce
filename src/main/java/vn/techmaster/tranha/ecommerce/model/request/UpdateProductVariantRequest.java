@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import vn.techmaster.tranha.ecommerce.statics.VariantStatus;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.util.List;
 
@@ -27,5 +27,5 @@ public class UpdateProductVariantRequest {
     List<UpdateProductAttributeRequest> attributes;
 
     @NotNull(message = "Trạng thái không được để trống")
-    VariantStatus status;
+    ProductStatus status;
 }

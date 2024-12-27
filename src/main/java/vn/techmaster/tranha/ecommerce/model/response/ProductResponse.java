@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.entity.Category;
 import vn.techmaster.tranha.ecommerce.entity.Shop;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,5 +50,7 @@ public class ProductResponse {
     Category category;
 
     Shop shop;
+
+    ProductStatus status;
 
 }

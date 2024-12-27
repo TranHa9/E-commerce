@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.dto.ProductVariantDto;
 import vn.techmaster.tranha.ecommerce.entity.ProductVariant;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.util.List;
 
@@ -30,5 +31,6 @@ public class ProductSearchResponse {
     Integer soldQuantity;
     String categoryName;
     String shopName;
+    ProductStatus status;
     List<ProductVariantDto> variants;
 }

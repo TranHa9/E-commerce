@@ -26,7 +26,7 @@ public class ProductCustomRepository extends BaseRepository {
     public List<SearchProductAllDto> searchProductAll(ProductSearchRequest request) {
         String query = "with raw_data as (\n" +
                 "         select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
-                "                p.origin,p.brand, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.name as category_name, s.name as shop_name," +
+                "                p.origin,p.brand, p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.name as category_name, s.name as shop_name," +
                 "    JSON_ARRAYAGG(\n" +
                 "            JSON_OBJECT(\n" +
                 "                'id', pv.id,\n" +
@@ -52,7 +52,7 @@ public class ProductCustomRepository extends BaseRepository {
                 "    join shops s on s.id = p.shop_id\n" +
                 "    where 1 = 1 \n" +
                 "   {{search_condition}}\n" +
-                "    group by p.id, p.name, p.base_price, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,  \n" +
+                "    group by p.id, p.name, p.prices, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,p.brand, p.status \n" +
                 "             p.expiry_date, p.stock_quantity, p.sold_quantity, categories.name, s.name\n" +
                 "), count_data as (\n" +
                 "    select count(*) as totalRecord\n" +
@@ -64,9 +64,9 @@ public class ProductCustomRepository extends BaseRepository {
                 "offset :p_offset";
         Map<String, Object> parameters = new HashMap<>();
         String searchCondition = "";
-        if (request.getName() != null && !request.getName().trim().isEmpty()) {
+        if (request.getProductName() != null && !request.getProductName().trim().isEmpty()) {
             searchCondition += " and lower(p.name) like :name";
-            parameters.put("name", "%" + request.getName().toLowerCase() + "%");
+            parameters.put("name", "%" + request.getProductName().toLowerCase() + "%");
         }
         if (request.getMinPrice() != null && request.getMinPrice() >= 0) {
             searchCondition += " and p.min_price >= :minPrice";
@@ -88,17 +88,21 @@ public class ProductCustomRepository extends BaseRepository {
             searchCondition += " and p.sold_quantity >= :soldQuantity";
             parameters.put("soldQuantity", request.getSoldQuantity());
         }
-        if (request.getCategory() != null && request.getCategory().getName() != null) {
+        if (request.getCategoryName() != null && !request.getCategoryName().trim().isEmpty()) {
             searchCondition += " and lower(categories.name) like :categoryName";
-            parameters.put("categoryName", "%" + request.getCategory().getName().toLowerCase() + "%");
+            parameters.put("categoryName", "%" + request.getCategoryName().toLowerCase() + "%");
         }
-        if (request.getShop() != null && request.getShop().getName() != null) {
+        if (request.getShopName() != null && !request.getShopName().trim().isEmpty()) {
             searchCondition += " and lower(s.name) like :shopName";
-            parameters.put("shopName", "%" + request.getShop().getName().toLowerCase() + "%");
+            parameters.put("shopName", "%" + request.getShopName().toLowerCase() + "%");
         }
         if (request.getBrand() != null && !request.getBrand().trim().isEmpty()) {
             searchCondition += " and lower(p.brand) like :brand";
             parameters.put("brand", "%" + request.getBrand().toLowerCase() + "%");
+        }
+        if (request.getStatus() != null) {
+            searchCondition += " and lower(p.status) = :status";
+            parameters.put("status", request.getStatus().name().toLowerCase());
         }
 
         query = query.replace("{{search_condition}}", searchCondition);
@@ -121,6 +125,7 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setSoldQuantity(rs.getInt("sold_quantity"));
             dto.setCategoryName(rs.getString("category_name"));
             dto.setShopName(rs.getString("shop_name"));
+            dto.setStatus(rs.getString("status"));
             dto.setTotalRecord(rs.getLong("totalRecord"));
 
             String pricesJson = rs.getString("product_prices");
@@ -160,7 +165,7 @@ public class ProductCustomRepository extends BaseRepository {
     public List<SearchProductAllDto> searchProductByShop(Long id, ProductSearchRequest request) {
         String query = "with raw_data as (\n" +
                 "         select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
-                "                p.origin,p.brand, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.name as category_name, s.name as shop_name," +
+                "                p.origin,p.brand, p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.name as category_name, s.name as shop_name," +
                 "    JSON_ARRAYAGG(\n" +
                 "            JSON_OBJECT(\n" +
                 "                'id', pv.id,\n" +
@@ -187,7 +192,7 @@ public class ProductCustomRepository extends BaseRepository {
                 "    where 1 = 1 \n" +
                 "        and p.shop_id = :shopId\n" +
                 "   {{search_condition}}\n" +
-                "    group by p.id, p.name, p.base_price, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,  \n" +
+                "    group by p.id, p.name, p.prices, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,  \n" +
                 "             p.expiry_date, p.stock_quantity, p.sold_quantity, categories.name, s.name\n" +
                 "), count_data as (\n" +
                 "    select count(*) as totalRecord\n" +
@@ -200,9 +205,9 @@ public class ProductCustomRepository extends BaseRepository {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("shopId", id);
         String searchCondition = "";
-        if (request.getName() != null && !request.getName().trim().isEmpty()) {
+        if (request.getProductName() != null && !request.getProductName().trim().isEmpty()) {
             searchCondition += " and lower(p.name) like :name";
-            parameters.put("name", "%" + request.getName().toLowerCase() + "%");
+            parameters.put("name", "%" + request.getProductName().toLowerCase() + "%");
         }
         if (request.getMinPrice() != null && request.getMinPrice() >= 0) {
             searchCondition += " and p.min_price >= :minPrice";
@@ -224,13 +229,17 @@ public class ProductCustomRepository extends BaseRepository {
             searchCondition += " and p.sold_quantity >= :soldQuantity";
             parameters.put("soldQuantity", request.getSoldQuantity());
         }
-        if (request.getCategory() != null && request.getCategory().getName() != null) {
+        if (request.getCategoryName() != null && !request.getCategoryName().trim().isEmpty()) {
             searchCondition += " and lower(categories.name) like :categoryName";
-            parameters.put("categoryName", "%" + request.getCategory().getName().toLowerCase() + "%");
+            parameters.put("categoryName", "%" + request.getCategoryName().toLowerCase() + "%");
         }
         if (request.getBrand() != null && !request.getBrand().trim().isEmpty()) {
             searchCondition += " and lower(p.brand) like :brand";
             parameters.put("brand", "%" + request.getBrand().toLowerCase() + "%");
+        }
+        if (request.getStatus() != null) {
+            searchCondition += " and lower(p.status) = :status";
+            parameters.put("status", request.getStatus().name().toLowerCase());
         }
 
         query = query.replace("{{search_condition}}", searchCondition);
@@ -253,6 +262,7 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setSoldQuantity(rs.getInt("sold_quantity"));
             dto.setCategoryName(rs.getString("category_name"));
             dto.setShopName(rs.getString("shop_name"));
+            dto.setStatus(rs.getString("status"));
             dto.setTotalRecord(rs.getLong("totalRecord"));
 
             String pricesJson = rs.getString("product_prices");
@@ -291,7 +301,7 @@ public class ProductCustomRepository extends BaseRepository {
 
     public SearchProductAllDto getProductById(Long id) {
         String query = "select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
-                "                p.origin,p.brand, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.id as categoryId, categories.name as category_name, s.name as shop_name," +
+                "                p.origin,p.brand,p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.id as categoryId, categories.name as category_name, s.name as shop_name," +
                 "    JSON_ARRAYAGG(\n" +
                 "            JSON_OBJECT(\n" +
                 "                'id', pv.id,\n" +
@@ -317,7 +327,7 @@ public class ProductCustomRepository extends BaseRepository {
                 "    join shops s on s.id = p.shop_id\n" +
                 "    where 1 = 1 \n" +
                 "        and p.id = :productId\n" +
-                "    group by p.id, p.name, p.base_price, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,  \n" +
+                "    group by p.id, p.name, p.prices, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,  \n" +
                 "             p.expiry_date, p.stock_quantity, p.sold_quantity, categories.name, s.name\n";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("productId", id);
@@ -339,6 +349,7 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setCategoryId(rs.getLong("categoryId"));
             dto.setCategoryName(rs.getString("category_name"));
             dto.setShopName(rs.getString("shop_name"));
+            dto.setStatus(rs.getString("status"));
 
             String pricesJson = rs.getString("product_prices");
             if (pricesJson != null && !pricesJson.isEmpty()) {
