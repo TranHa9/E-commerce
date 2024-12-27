@@ -17,6 +17,7 @@ import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductDetailResponse;
 import vn.techmaster.tranha.ecommerce.model.response.ProductResponse;
 import vn.techmaster.tranha.ecommerce.service.ProductService;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.util.List;
 
@@ -52,5 +53,15 @@ public class ProductResource {
     @PutMapping("/{id}")
     public ProductResponse updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductRequest request) throws Exception {
         return productService.updateProduct(id, request);
+    }
+
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<?> updateProductStatus(@PathVariable Long id, @RequestBody ProductStatus status) {
+        try {
+            productService.updateProductStatus(id, status);
+            return ResponseEntity.ok("Product status updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

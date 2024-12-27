@@ -288,4 +288,24 @@ public class ProductService {
         SearchProductAllDto result = productCustomRepository.getProductById(id);
         return objectMapper.convertValue(result, ProductDetailResponse.class);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updateProductStatus(Long productId, ProductStatus status) throws Exception {
+        Optional<Product> productOptional = productRepository.findById(productId);
+        if (productOptional.isEmpty()) {
+            throw new Exception("Product not found");
+        }
+
+        Product product = productOptional.get();
+
+        product.setStatus(status);
+        productRepository.save(product);
+
+        List<ProductVariant> variants = productVariantRepository.findByProductId(productId);
+
+        for (ProductVariant variant : variants) {
+            variant.setStatus(status);
+        }
+        productVariantRepository.saveAll(variants);
+    }
 }
