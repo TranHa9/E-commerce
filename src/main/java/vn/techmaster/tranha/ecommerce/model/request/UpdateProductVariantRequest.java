@@ -13,7 +13,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateProductVariantRequest {
 
-    @NotNull(message = "Danh sách giá không được để trống")
+    @NotNull(message = "Gía của biến thể không được để trống")
     @Min(value = 1000, message = "Giá phải lớn hơn hoặc bằng 1000")
     Double price;
 

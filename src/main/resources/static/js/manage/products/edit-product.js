@@ -1,8 +1,62 @@
 $(document).ready(function () {
+    // Custom validator để kiểm tra ngày trong tương lai
+    $.validator.addMethod("futureDate", function (value, element) {
+        if (!value) return true;
+        let currentDate = new Date();
+        let inputDate = new Date(value);
+        return inputDate > currentDate;
+    }, "Hạn sử dụng phải là ngày trong tương lai");
+    $('#form-edit-product').validate({
+        rules: {
+            name: {
+                required: true,
+                maxlength: 250,
+            },
+            categoryId: {
+                required: true
+            },
+        },
+        messages: {
+            name: {
+                required: "Vui lòng nhập tên sản phẩm",
+                maxlength: "Tên sản phẩm không vượt quá 250 ký tự"
+            },
+            categoryId: {
+                required: "Vui lòng chọn danh mục"
+            },
+        }
+    });
+
+    $('#form-eidt-info').validate({
+        rules: {
+            origin: {
+                required: true
+            },
+            brand: {
+                required: true
+            },
+            expiryDate: {
+                date: true,
+                futureDate: true
+            }
+        },
+        messages: {
+            origin: {
+                required: "Vui lòng nhập xuất xứ"
+            },
+            brand: {
+                required: "Vui lòng nhập thương hiệu"
+            },
+            expiryDate: {
+                date: "Vui lòng nhập ngày hợp lệ",
+                futureDate: "Hạn sử dụng phải là ngày trong tương lai"
+            }
+        }
+    });
+
     $(document).on('click', '.edit-product-btn', async function () {
         const productId = $(this).data('id');
         const product = await getProductDetail(productId)
-        console.log(product)
         $('#update-name').val(product.productName);
         $('#update-categoryId').val(product.categoryId);
         $('#update-description').val(product.description);
@@ -58,14 +112,14 @@ $(document).ready(function () {
                     <input type="text" id="update-attributeName" name="attributeName" value="${name}"
                         class="form-control me-2"
                             placeholder="VD: Kích thước,...">
-                    <p class="error" for="update-attributeName"></p>
+                    <p class="error update-attributeName"></p>
                 </div>
                 <div class="col-lg-5 mb-3">
                     <label for="update-attributeValue" class="form-label">Giá trị</label>
                         <input type="text" id="update-attributeValue" name="attributeValue" value="${valuesArray}"
                         class="form-control me-2"
                             placeholder="VD: M, L, XL (phân cách bởi dấu phẩy)">
-                    <p class="error" for="update-attributeValue"></p>
+                    <p class="error update-attributeValue"></p>
                 </div>
                 <div class="col mb-3">
                     <button class="btn-delete">Xóa</button>
@@ -94,25 +148,32 @@ $(document).ready(function () {
             attributeNames.forEach(name => {
                 headerHtml += `<th>${name}</th>`;
             });
-            headerHtml += `<th>Số lượng</th><th>Giá bán</th><th>Ảnh</th>`;
+            headerHtml += `<th>Số lượng</th><th>Giá bán</th><th>Ảnh</th><th>Trạng thái</th>`;
             variantHeader.html(headerHtml);
 
             // Xây dựng các dòng dữ liệu
             product.variants.forEach(variant => {
                 const attributeValues = variant.attributes.map(attr => `<td>${attr.value}</td>`).join('');
                 const imageUrl = variant.image || "";
+                // Xử lý giá trị status
+                const statusOptions = ["ACTIVE", "INACTIVE", "OUT_OF_STOCK"];
+                const statusOptionsHtml = statusOptions.map(status => {
+                    const selected = variant.status === status ? "selected" : "";  // Chọn trạng thái hiện tại
+                    return `<option value="${status}" ${selected}>${status === "ACTIVE" ? "Hoạt động" : status === "INACTIVE" ? "Ngừng bán" : "Hết hàng"}</option>`;
+                }).join('');
+
                 const row = `
         <tr>
             ${attributeValues}
             <td>
                 <input type="number" name="stockQuantity" class="form-control" placeholder="Số lượng"
                     value="${variant.stock_quantity}">
-                <p class="error" for="stockQuantity"></p>
+                <p class="error stockQuantity"></p>
             </td>
             <td>
                 <input type="number" name="price" class="form-control" placeholder="Giá bán"
                     value="${variant.price}">
-                <p class="error" for="price"></p>
+                <p class="error price"></p>
             </td>
             <td>
                 <input type="file" name="imageUrl" class="form-control update-image-variant" placeholder="image-variant">
@@ -121,11 +182,34 @@ $(document).ready(function () {
                     <button type="button" class="clear-button btn btn-danger btn-sm" style="display: ${imageUrl ? 'block' : 'none'};">Xóa ảnh</button>
                 </div>
             </td>
+            <td>
+                <select class="form-select" id="update-status" name="status">
+                    ${statusOptionsHtml}
+                </select>
+            </td>
         </tr>`;
                 variantBody.append(row);
             });
         }
+
+        //Cập nhật
         $("#btn-save-edit").click(function () {
+            const isValidForm = $("#form-edit-product").valid();
+            if (!isValidForm) {
+                return;
+            }
+            let isValidImages = validateImageCount();
+            if (!isValidImages) {
+                return;
+            }
+            const isValidFromInfo = $("#form-edit-info").valid()
+            if (!isValidFromInfo) {
+                return;
+            }
+            const isValidVariant = validateAttributes()
+            if (!isValidVariant) {
+                return;
+            }
             const isValid = validateVariants()
             if (!isValid) {
                 return;
@@ -154,14 +238,13 @@ $(document).ready(function () {
             imgPathArray.push(imgPath);
         });
         request.imageUrls = imgPathArray;
-        console.log(request)
         $.ajax({
             url: `/api/v1/products/${id}`,
             type: 'PUT',
             data: JSON.stringify(request),
             contentType: "application/json; charset=utf-8",
             success: function (response) {
-                showToast("Tạo mới thành công", "success");
+                showToast("Cập nhât thành công", "success");
                 setTimeout(function () {
                     location.reload();
                 }, 2000)
@@ -173,7 +256,7 @@ $(document).ready(function () {
         let variants = [];
         $('#update-variant-body tr').each(function () {
             let variant = [];
-            $(this).find('td').slice(0, -3).each(function (index) {
+            $(this).find('td').slice(0, -4).each(function (index) {
                 variant.push({
                     name: $("#variant-header th").eq(index).text().trim(),
                     value: $(this).text().trim()
@@ -196,7 +279,7 @@ $(document).ready(function () {
         let variants = [];
         $('#update-variant-body tr').each(function () {
             let attribute = [];
-            $(this).find('td').slice(0, -3).each(function (index) {
+            $(this).find('td').slice(0, -4).each(function (index) {
                 attribute.push({
                     name: $("#variant-header th").eq(index).text().trim(),
                     value: $(this).text().trim()
@@ -204,13 +287,15 @@ $(document).ready(function () {
             });
             let price = parseFloat($(this).find('[name="price"]').val());
             let stockQuantity = parseInt($(this).find('[name="stockQuantity"]').val());
+            let status = ($(this).find('[name="status"]').val());
             let imageUrl = $(this).find('.image-preview').length > 0
                 ? $(this).find('.image-preview').attr('src').replace('/api/v1/files/product/', '') : null;
             variants.push({
                 attributes: attribute,
                 stockQuantity: stockQuantity,
                 price: price,
-                imageUrl: imageUrl
+                imageUrl: imageUrl,
+                status: status
             });
 
         });
@@ -238,10 +323,10 @@ $(document).ready(function () {
     $("#image-input").change(event => {
         const files = event.target.files;
         if (!files || files.length === 0) {
-            $('#image-error').text('Ảnh không được để trống!');
+            $('#update-image-error').text('Ảnh không được để trống!');
             return;
         } else {
-            $('#image-error').text('')
+            $('#update-image-error').text('')
         }
         const maxSize = 10 * 1024 * 1024; // 10MB
         const imagePlaceholder = $(".image-container .image-placeholder");
@@ -279,6 +364,22 @@ $(document).ready(function () {
             });
         });
     });
+
+    function validateImageCount() {
+        let isValid = true;
+        const imageCount = $('.image-preview.image-product').length;
+        if (imageCount === 0) {
+            $('#update-image-error').text('Ảnh không được để trống!');
+            isValid = false;
+        } else {
+            $('#update-image-error').text('');
+        }
+        if (imageCount > 9) {
+            $('#update-image-error').text('Bạn chỉ có thể tải tối đa 9 ảnh');
+            isValid = false;
+        }
+        return isValid;
+    }
 
     function fetchCategoriesData() {
         $.ajax({
@@ -334,8 +435,8 @@ $(document).ready(function () {
         $('.update-attribute-group').each(function () {
             let attributeName = $(this).find('input[name="attributeName"]').val();
             let attributeValue = $(this).find('input[name="attributeValue"]').val();
-            let attributeNameError = $(this).find('p[for="attributeName"]');
-            let attributeValueError = $(this).find('p[for="attributeValue"]');
+            let attributeNameError = $(this).find('.error.update-attributeName');
+            let attributeValueError = $(this).find('.error.update-attributeValue');
             if (!attributeName) {
                 attributeNameError.text("Vui lòng nhâp tên thuộc tính");
                 isValid = false;
@@ -431,19 +532,27 @@ $(document).ready(function () {
             row += `
                     <td>
                         <input type="number" name="stockQuantity" class="form-control" placeholder="Số lượng">
-                        <p class="error" for="stockQuantity"></p>
+                        <p class="error stockQuantity"></p>
                     </td>;
                     <td>
                         <input type="number" name="price" class="form-control" placeholder="Giá bán">
-                        <p class="error" for="price"></p>
+                        <p class="error price"></p>
                     </td>;
                     <td>
-                        <input type="file" name="imageUrl" id="image-variant" class="form-control update-image-variant" placeholder="image-variant">
+                        <input type="file" name="imageUrl" class="form-control update-image-variant" placeholder="image-variant">
                         <div class="d-flex gap-2 align-items-center justify-content-between">
                         <img class="image-preview img-sm mt-2" src="" alt="Uploaded Image" style="display: none;">
                         <button type="button" class="clear-button btn btn-danger btn-sm" style="display: none">Xóa ảnh</button>
                         </div>
-                    </td>`;
+                    </td>
+                    <td>
+                        <select class="form-select" id="update-status" name="status">
+                            <option value="ACTIVE">Hoạt động</option>
+                            <option value="INACTIVE">Ngừng bán</option>
+                            <option value="OUT_OF_STOCK">Hết hàng</option>
+                           </select>
+                    </td>
+                    `;
             rows += `<tr>${row}</tr>`;
         });
 
@@ -457,8 +566,8 @@ $(document).ready(function () {
         $('#update-variant-body tr').each(function () {
             let stockQuantity = $(this).find('input[name="stockQuantity"]').val();
             let price = $(this).find('input[name="price"]').val();
-            let stockQuantityError = $(this).find('p[for="stockQuantity"]');
-            let priceError = $(this).find('p[for="price"]');
+            let stockQuantityError = $(this).find('.error.stockQuantity');
+            let priceError = $(this).find('.error.price');
             if (!stockQuantity) {
                 stockQuantityError.text("Vui lòng nhâp số lượng");
                 isValid = false;

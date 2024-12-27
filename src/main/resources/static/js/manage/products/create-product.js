@@ -3,7 +3,7 @@ $(document).ready(function () {
     (async function () {
         shop = await fetchShopData();
     })();
-// Custom validator để kiểm tra ngày trong tương lai
+    // Custom validator để kiểm tra ngày trong tương lai
     $.validator.addMethod("futureDate", function (value, element) {
         if (!value) return true;
         let currentDate = new Date();
