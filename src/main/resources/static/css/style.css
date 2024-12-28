@@ -3497,7 +3497,7 @@ a.text-brand-3:hover {
 }
 
 .header .main-header .header-left .header-search {
-    width: 35%;
+    width: 45%;
 }
 
 .header .main-header .header-left .header-search .box-header-search {
@@ -3521,7 +3521,7 @@ a.text-brand-3:hover {
 .header .main-header .header-left .header-search .box-header-search .box-category {
     position: relative;
     margin-right: 15px;
-    min-width: 120px;
+    min-width: 140px;
 }
 
 .header .main-header .header-left .header-search .box-header-search .box-category::before {
@@ -3549,7 +3549,7 @@ a.text-brand-3:hover {
 }
 
 .header .main-header .header-left .header-shop {
-    width: 35%;
+    width: 30%;
     text-align: right;
 }
 

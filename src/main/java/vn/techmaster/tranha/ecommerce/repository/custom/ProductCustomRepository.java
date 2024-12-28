@@ -52,7 +52,7 @@ public class ProductCustomRepository extends BaseRepository {
                 "    join shops s on s.id = p.shop_id\n" +
                 "    where 1 = 1 \n" +
                 "   {{search_condition}}\n" +
-                "    group by p.id, p.name, p.prices, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,p.brand, p.status \n" +
+                "    group by p.id, p.name, p.prices, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,p.brand, p.status, \n" +
                 "             p.expiry_date, p.stock_quantity, p.sold_quantity, categories.name, s.name\n" +
                 "), count_data as (\n" +
                 "    select count(*) as totalRecord\n" +
