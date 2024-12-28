@@ -238,8 +238,8 @@ public class ProductCustomRepository extends BaseRepository {
             parameters.put("brand", "%" + request.getBrand().toLowerCase() + "%");
         }
         if (request.getStatus() != null) {
-            searchCondition += " and lower(p.status) = :status";
-            parameters.put("status", request.getStatus().name().toLowerCase());
+            searchCondition += " and p.status = :status";
+            parameters.put("status", request.getStatus().name());
         }
 
         query = query.replace("{{search_condition}}", searchCondition);

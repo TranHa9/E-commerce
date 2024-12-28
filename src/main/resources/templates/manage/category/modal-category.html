@@ -1,0 +1,36 @@
+<div th:fragment="category-modal" class="modal fade"
+     id="category-modal" tabindex="-1"
+     aria-labelledby="book-creation-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Tạo danh mục mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="category-form">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row gx-3">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="name" class="form-label">Tên danh mục*</label>
+                                    <input class="form-control" id="name" name="name" type="text"
+                                           placeholder="Điện thoại">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="description" class="form-label">Mô tả</label>
+                                    <textarea class="form-control" id="description" name="description"
+                                              type="text" rows="10"
+                                              placeholder="....."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-save-category">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>

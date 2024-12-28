@@ -116,11 +116,21 @@ public class SecurityConfig {
                         //Shop end
 
                         //Category start
-                        .requestMatchers("api/v1/categories").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.POST, "api/v1/categories").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.PUT, "api/v1/categories/{id}").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.DELETE, "api/v1/categories/{id}").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.PATCH, "api/v1/categories//{id}/status").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.GET, "api/v1/categories/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/categories/active").permitAll()
                         //Category end
 
                         //Product start
-                        .requestMatchers("api/v1/products").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.GET, "api/v1/products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/products/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/products/shop/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/v1/products").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.PUT, "api/v1/products/{id}").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.PATCH, "api/v1/products/{id}/status").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
                         //Product end
 
                         .requestMatchers("api/v1/product-attributes").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())

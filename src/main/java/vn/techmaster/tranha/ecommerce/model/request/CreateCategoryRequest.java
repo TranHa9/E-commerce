@@ -14,6 +14,5 @@ public class CreateCategoryRequest {
     @Size(max = 150, message = "Tên không được vượt quá 150 ký tự")
     String name;
 
-    @NotBlank(message = "Mô tả không được để trống")
     String description;
 }

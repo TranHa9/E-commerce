@@ -10,4 +10,5 @@ public class CategorySearchResponse {
     Long id;
     String name;
     String description;
+    String status;
 }

@@ -77,9 +77,15 @@ $(document).ready(function () {
                                     >
                                         <i class="material-icons md-edit"></i>
                                     Sửa</button>
-<!--                                <button-->
-<!--                                    class="btn btn-sm font-sm btn-light rounded" ><i-->
-<!--                                    class="material-icons md-delete_forever"></i>Xóa</button>-->
+                        <div class="btn-group">
+                             <button
+                                class="btn btn-sm font-sm btn-light rounded" type="button" data-bs-toggle="dropdown"><i
+                                                class="material-icons md-more_horiz"></i></button>
+                             <ul class="dropdown-menu">
+                                <li><p class="dropdown-item inactive" data-id="${product.id}" >Ngừng bán</p></li>
+                                 <li><p class="dropdown-item outOfStock" data-id="${product.id}" >Hết hàng</p></li>
+                             </ul>
+                         </div>
                 </td>
             </tr>`;
 
@@ -88,9 +94,10 @@ $(document).ready(function () {
         renderPagination(data.totalPage, data.pageInfo.pageNumber);
     }
 
+    //Phân trang
     function renderPagination(totalPage, currentPage) {
         const pagination = $(".pagination-area .pagination");
-
+        pagination.empty();
         pagination.append(`
             <li class="page-item previous-page"><a class="page-link" href="#"><i class="material-icons md-chevron_left"></i></a></li>
         `);
@@ -142,6 +149,39 @@ $(document).ready(function () {
         $("#form-search")[0].reset();
         pageIndex = 0;
         getProductData({});
+    });
+
+
+    $(document).on("click", ".inactive", function () {
+        const productId = $(this).data("id");
+        $.ajax({
+            url: `/api/v1/products/${productId}/status`,
+            type: "PATCH",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify("INACTIVE"),
+            success: function () {
+                showToast("Thành công", "success");
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+        })
+    });
+
+    $(document).on("click", ".outOfStock", function () {
+        const productId = $(this).data("id");
+        $.ajax({
+            url: `/api/v1/products/${productId}/status`,
+            type: "PATCH",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify("OUT_OF_STOCK"),
+            success: function () {
+                showToast("Thành công", "success");
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+        })
     });
 
 })

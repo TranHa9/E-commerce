@@ -55,7 +55,7 @@ public class ProductResource {
         return productService.updateProduct(id, request);
     }
 
-    @PatchMapping("/status/{id}")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<?> updateProductStatus(@PathVariable Long id, @RequestBody ProductStatus status) {
         try {
             productService.updateProductStatus(id, status);

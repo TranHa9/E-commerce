@@ -383,15 +383,15 @@ $(document).ready(function () {
 
     function fetchCategoriesData() {
         $.ajax({
-            url: '/api/v1/categories',
+            url: '/api/v1/categories/active',
             type: 'GET',
             contentType: "application/json; charset=utf-8",
             success: function (data) {
-                if (!data && data?.data.length === 0) {
+                if (!data && data.length === 0) {
                     $('#update-categoryId').append($('<option></option>').text("Chưa có dữ liệu"));
                 }
                 $('#update-categoryId').empty();
-                data?.data.forEach(category => {
+                data?.forEach(category => {
                     const option = $('<option></option>')
                         .val(category.id)
                         .text(category.name);

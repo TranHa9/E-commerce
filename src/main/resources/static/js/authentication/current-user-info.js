@@ -18,8 +18,8 @@ $(document).ready(function () {
         if (user?.role && user?.role === "ADMIN") {
             dropdownMenu += `<li><a href="/admin/users">Quản lý tài khoản</a></li>`;
         }
-        if (user?.role && user?.role === "ADMIN" || user?.role === "SHOP") {
-            dropdownMenu += `<li><a href="/admin/products">Quản lý sản phẩm</a></li>`;
+        if (user?.role && user?.role === "SHOP") {
+            dropdownMenu += `<li><a href="/shop/products">Quản lý sản phẩm</a></li>`;
         }
         if (user?.role && user?.role !== "SHOP") {
             dropdownMenu += `<li><a href="/shops">Mở shop</a></li>`;

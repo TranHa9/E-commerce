@@ -7,4 +7,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class CategorySearchRequest extends BaseSearchRequest {
     String name;
+    String status;
 }
