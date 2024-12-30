@@ -15,28 +15,25 @@ $(document).ready(function () {
                         <div class="card-grid-style-3">
                             <div class="card-grid-inner">
                                 <div class="tools">
-                                    <a class="btn btn-trend btn-tooltip mb-10" href="#" aria-label="Trend" data-bs-placement="left"></a>
-                                    <a class="btn btn-wishlist btn-tooltip mb-10" href="shop-wishlist.html" aria-label="Add To Wishlist"></a>
-                                    <a class="btn btn-compare btn-tooltip mb-10" href="shop-compare.html" aria-label="Compare"></a>
                                     <a class="btn btn-quickview btn-tooltip" aria-label="Quick view" href="#ModalQuickview" data-bs-toggle="modal"></a>
                                 </div>
                                 <div class="image-box">
                                     <span class="label bg-brand-2">${product.discount ? `-${product.discount}%` : ''}</span>
-                                    <a href="#"><img src="api/v1/files/product/${product.productImages[0]}" alt="${product.productImages[0]}"></a>
+                                    <a href="/detail-product/${product.id}"><img src="api/v1/files/product/${product.productImages[0]}" alt="${product.productImages[0]}"></a>
                                 </div>
                                 <div class="info-right">
                                     <a class="font-xs color-gray-500" href="#">${product.shopName}</a><br>
-                                    <a class="color-brand-3 font-sm-bold" href="#">${product.productName}</a>
+                                    <a class="color-brand-3 font-sm-bold" href="/detail-product/${product.id}">${product.productName}</a>
                                     <div class="rating">
                                         ${Array(product.averageRating).fill('<img src="/img/template/icons/star.svg" alt="Ecom">').join('')}
                                         <span class="font-xs color-gray-500">(${product.averageRating})</span>
                                     </div>
                                     <div class="price-info">
-                                        <strong class="font-lg-bold color-brand-3 price-main">${product.minPrice}vnđ</strong>
+                                        <strong class="font-lg-bold color-brand-3 price-main">${product.minPrice}đ</strong>
     
                                     </div>
                                     <div class="mt-20 box-btn-cart">
-                                        <a class="btn btn-cart" href="#">Add To Cart</a>
+                                        <a class="btn btn-cart" href="#">Thêm vào giỏ hàng</a>
                                     </div>
                                 </div>
                             </div>
