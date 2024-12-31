@@ -23,6 +23,8 @@ public class Shop extends BaseEntity {
 
     String logo;
 
+    String address;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     User user;

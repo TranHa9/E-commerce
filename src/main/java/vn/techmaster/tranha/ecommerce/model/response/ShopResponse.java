@@ -16,4 +16,6 @@ public class ShopResponse {
     String logo;
     String email;
     String phone;
+    String address;
+    UserResponse user;
 }

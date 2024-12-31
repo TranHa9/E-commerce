@@ -8746,6 +8746,11 @@ a.text-brand-3:hover {
     text-align: center;
 }
 
+.box-quantity .input-quantity input[disabled] {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
 .box-quantity .input-quantity .minus-cart {
     position: absolute;
     top: 0px;
@@ -8764,6 +8769,13 @@ a.text-brand-3:hover {
     width: 18px;
     cursor: pointer;
     background: url(../img/page/product/plus.svg) no-repeat 0px 7px;
+}
+
+.box-quantity .input-quantity .minus-cart.disabled,
+.plus-cart.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
 .box-quantity .button-buy {

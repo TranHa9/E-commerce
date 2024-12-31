@@ -26,6 +26,7 @@ public class ProductDetailResponse {
     Integer productStockQuantity;
     Integer soldQuantity;
     String categoryName;
+    Long shopId;
     String shopName;
     List<ProductVariantDto> variants;
 }

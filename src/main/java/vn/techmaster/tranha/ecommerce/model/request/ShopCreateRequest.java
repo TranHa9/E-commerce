@@ -9,4 +9,5 @@ import lombok.experimental.FieldDefaults;
 public class ShopCreateRequest {
     String name;
     String description;
+    String address;
 }

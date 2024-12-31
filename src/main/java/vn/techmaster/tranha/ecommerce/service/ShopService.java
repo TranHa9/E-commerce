@@ -67,6 +67,7 @@ public class ShopService {
                 .description(request.getDescription())
                 .rating(0.0)
                 .user(user)
+                .address(request.getAddress())
                 .build();
         shopRepository.save(shop);
 
@@ -78,6 +79,7 @@ public class ShopService {
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .logo(shop.getLogo())
+                .address(shop.getAddress())
                 .build();
 
         return ResponseEntity.ok(response);

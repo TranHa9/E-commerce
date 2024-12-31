@@ -301,7 +301,7 @@ public class ProductCustomRepository extends BaseRepository {
 
     public SearchProductAllDto getProductById(Long id) {
         String query = "select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
-                "                p.origin,p.brand,p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.id as categoryId, categories.name as category_name, s.name as shop_name," +
+                "                p.origin,p.brand,p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.id as categoryId, categories.name as category_name, s.id as shopId, s.name as shop_name," +
                 "    JSON_ARRAYAGG(\n" +
                 "            JSON_OBJECT(\n" +
                 "                'id', pv.id,\n" +
@@ -348,6 +348,7 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setSoldQuantity(rs.getInt("sold_quantity"));
             dto.setCategoryId(rs.getLong("categoryId"));
             dto.setCategoryName(rs.getString("category_name"));
+            dto.setShopId(rs.getLong("shopId"));
             dto.setShopName(rs.getString("shop_name"));
             dto.setStatus(rs.getString("status"));
 

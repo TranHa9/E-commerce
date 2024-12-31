@@ -16,7 +16,7 @@ public class ShopCustomRepository extends BaseRepository {
 
     public List<SearchShopDto> searchShop(ShopSearchRequest request) {
         String query = "with raw_data as(\n" +
-                "\tselect s.id, s.name, s.logo, s.rating, s.description, s.user_id, u.name as user_name, u.email\n" +
+                "\tselect s.id, s.name, s.logo, s.rating, s.address, s.description, s.user_id, u.name as user_name, u.email\n" +
                 "    from shops s\n" +
                 "    join users u on s.user_id = u.id\n" +
                 "    where 1 = 1\n" +

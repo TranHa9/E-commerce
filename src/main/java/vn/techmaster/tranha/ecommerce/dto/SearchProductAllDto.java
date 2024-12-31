@@ -30,6 +30,7 @@ public class SearchProductAllDto {
     Integer productStockQuantity;
     Integer soldQuantity;
     String categoryName;
+    Long shopId;
     String shopName;
     String status;
     List<ProductVariantDto> variants;
