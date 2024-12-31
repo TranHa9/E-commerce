@@ -46,6 +46,9 @@ public class Product extends BaseEntity {
 
     String imageUrls;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductVariant> variants;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;

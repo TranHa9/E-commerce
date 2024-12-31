@@ -137,6 +137,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "api/v1/products/{id}/status").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
                         //Product end
 
+                        //Cart start
+                        .requestMatchers(HttpMethod.POST, "api/v1/carts/{userId}").authenticated()
+                        //Cart end
+
                         .requestMatchers("api/v1/product-attributes").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
 
                         .requestMatchers("api/v1/product-variants").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())

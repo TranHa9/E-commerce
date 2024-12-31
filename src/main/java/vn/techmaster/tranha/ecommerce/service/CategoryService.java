@@ -89,7 +89,7 @@ public class CategoryService {
     public void updateCategoryStatus(Long id, CategoryStatus status) throws Exception {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isEmpty()) {
-            throw new Exception("Product not found");
+            throw new Exception("Category not found");
         }
         Category category = categoryOptional.get();
 

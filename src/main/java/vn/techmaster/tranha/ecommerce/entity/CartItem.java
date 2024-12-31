@@ -1,10 +1,7 @@
 package vn.techmaster.tranha.ecommerce.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -27,6 +24,7 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = "product_id")
     Product product;
 
+    @Lob
     String variants;
 
     int quantity;
