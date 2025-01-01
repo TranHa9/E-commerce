@@ -7,18 +7,22 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.techmaster.tranha.ecommerce.dto.CartDto;
 import vn.techmaster.tranha.ecommerce.entity.*;
 import vn.techmaster.tranha.ecommerce.model.request.CreateCartRequest;
+import vn.techmaster.tranha.ecommerce.model.response.CartItemResponse;
 import vn.techmaster.tranha.ecommerce.model.response.CartResponse;
+import vn.techmaster.tranha.ecommerce.model.response.UserResponse;
 import vn.techmaster.tranha.ecommerce.repository.CartItemRepository;
 import vn.techmaster.tranha.ecommerce.repository.CartRepository;
 import vn.techmaster.tranha.ecommerce.repository.ProductRepository;
 import vn.techmaster.tranha.ecommerce.repository.UserRepository;
-import vn.techmaster.tranha.ecommerce.statics.CategoryStatus;
+import vn.techmaster.tranha.ecommerce.repository.custom.CartCustomRepository;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,7 +33,16 @@ public class CartService {
     UserRepository userRepository;
     ProductRepository productRepository;
     CartItemRepository cartItemRepository;
+    CartCustomRepository cartCustomRepository;
     ObjectMapper objectMapper;
+
+    public CartDto getCartByUserId(Long id) throws Exception {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new Exception("User not found");
+        }
+        return cartCustomRepository.getCartWithItemsByUser(id);
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public CartResponse createCart(Long id, CreateCartRequest request) throws Exception {
@@ -107,10 +120,8 @@ public class CartService {
 
     // Phương thức tìm biến thể dựa trên các thuộc tính người dùng nhập vào
     private Optional<ProductVariant> findProductVariantByAttributes(Product product, List<CreateCartRequest.Attributes> attributes) {
-        // Duyệt qua tất cả các biến thể của sản phẩm
         for (ProductVariant variant : product.getVariants()) {
             boolean match = true;
-            // Duyệt qua tất cả các thuộc tính được nhập vào
             for (CreateCartRequest.Attributes attribute : attributes) {
                 // Kiểm tra xem biến thể có chứa thuộc tính này hay không
                 boolean attributeMatch = variant.getAttributes().stream()
@@ -127,4 +138,5 @@ public class CartService {
         }
         return Optional.empty();
     }
+
 }

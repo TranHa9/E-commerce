@@ -6,9 +6,11 @@ import vn.techmaster.tranha.ecommerce.entity.Cart;
 import vn.techmaster.tranha.ecommerce.entity.CartItem;
 import vn.techmaster.tranha.ecommerce.entity.Product;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+
     Optional<CartItem> findByCartAndProduct(Cart cart, Product product);
 
     @Query("SELECT SUM(c.quantity) FROM CartItem c WHERE c.cart.id = :cartId")

@@ -138,6 +138,7 @@ public class SecurityConfig {
                         //Product end
 
                         //Cart start
+                        .requestMatchers(HttpMethod.GET, "api/v1/carts/{userId}").authenticated()
                         .requestMatchers(HttpMethod.POST, "api/v1/carts/{userId}").authenticated()
                         //Cart end
 
