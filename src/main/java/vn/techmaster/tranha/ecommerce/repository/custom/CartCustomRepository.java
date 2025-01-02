@@ -29,6 +29,8 @@ public class CartCustomRepository extends BaseRepository {
                 "    JSON_ARRAYAGG(\n" +
                 "        JSON_OBJECT(\n" +
                 "            'id', ci.id,\n" +
+                "            'isUpdated', ci.is_updated,\n" +
+                "            'isInactive', ci.is_inactive,\n" +
                 "            'quantity', ci.quantity,\n" +
                 "            'unitPrice', ci.unit_price,\n" +
                 "            'totalPrice', ci.total_price,\n" +
@@ -38,7 +40,31 @@ public class CartCustomRepository extends BaseRepository {
                 "                'name', p.name,\n" +
                 "                'prices', JSON_EXTRACT(p.prices, '$'),\n" +
                 "                'imageUrls', JSON_EXTRACT(p.image_urls, '$')\n" +
-                "            )\n" +
+                "            ),\n" +
+                "             'maxQuantity', (\n" +
+                "                SELECT pv.stock_quantity\n" +
+                "                FROM product_variants pv\n" +
+                "                JOIN product_attributes pa ON pv.id = pa.product_variant_id\n" +
+                "                WHERE pv.product_id = p.id\n" +
+                "                  AND NOT EXISTS (\n" +
+                "                      SELECT 1\n" +
+                "                      FROM JSON_TABLE(\n" +
+                "                          JSON_EXTRACT(ci.variants, '$'),\n" +
+                "                          '$[*]' COLUMNS (\n" +
+                "                              `name` VARCHAR(255) PATH '$.name',\n" +
+                "                              `value` VARCHAR(255) PATH '$.value'\n" +
+                "                          )\n" +
+                "                      ) AS v\n" +
+                "                      WHERE NOT EXISTS (\n" +
+                "                          SELECT 1\n" +
+                "                          FROM product_attributes\n" +
+                "                          WHERE product_attributes.name = v.name\n" +
+                "                            AND product_attributes.value = v.value\n" +
+                "                            AND product_attributes.product_variant_id = pv.id\n" +
+                "                      )\n" +
+                "                  )\n" +
+                "                   LIMIT 1 \n  " +
+                "              )\n" +
                 "        )\n" +
                 "    ) AS cartItems\n" +
                 "FROM carts c\n" +

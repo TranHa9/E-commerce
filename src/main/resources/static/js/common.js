@@ -149,4 +149,9 @@ function setRefreshTimer() {
     }
 }
 
+//Định dạng giá Việt
+function formatCurrency(value) {
+    return value.toLocaleString('vi-VN');
+}
+
 

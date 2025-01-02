@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
+    List<CartItem> findByProductId(Long id);
+
     Optional<CartItem> findByCartAndProduct(Cart cart, Product product);
 
     @Query("SELECT SUM(c.quantity) FROM CartItem c WHERE c.cart.id = :cartId")

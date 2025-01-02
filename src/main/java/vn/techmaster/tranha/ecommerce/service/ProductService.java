@@ -31,6 +31,7 @@ public class ProductService {
     ProductCustomRepository productCustomRepository;
     ProductVariantRepository productVariantRepository;
     ProductAttributeRepository productAttributeRepository;
+    CartItemRepository cartItemRepository;
     ObjectMapper objectMapper;
 
 
@@ -240,6 +241,12 @@ public class ProductService {
         }
         productRepository.save(product);
 
+        List<CartItem> cartItems = cartItemRepository.findByProductId(product.getId());
+        for (CartItem cartItem : cartItems) {
+            cartItem.setIsUpdated(true);
+        }
+        cartItemRepository.saveAll(cartItems);
+
         List<CreateProductRequest.Prices> productVariants = objectMapper.readValue(product.getPrices(), new TypeReference<List<CreateProductRequest.Prices>>() {
         });
         List<String> imageUrls = objectMapper.readValue(product.getImageUrls(), new TypeReference<List<String>>() {
@@ -307,5 +314,20 @@ public class ProductService {
             variant.setStatus(status);
         }
         productVariantRepository.saveAll(variants);
+
+        // Cập nhật trường isDeleted của các CartItem nếu trạng thái là INACTIVE
+        if (status == ProductStatus.INACTIVE) {
+            List<CartItem> cartItems = cartItemRepository.findByProductId(productId); // Gọi phương thức mới
+            for (CartItem cartItem : cartItems) {
+                cartItem.setIsInactive(true);
+            }
+            cartItemRepository.saveAll(cartItems);
+        } else {
+            List<CartItem> cartItems = cartItemRepository.findByProductId(productId); // Gọi phương thức mới
+            for (CartItem cartItem : cartItems) {
+                cartItem.setIsInactive(false);
+            }
+            cartItemRepository.saveAll(cartItems);
+        }
     }
 }

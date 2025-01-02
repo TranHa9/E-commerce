@@ -29,7 +29,7 @@ $(document).ready(function () {
                                         <span class="font-xs color-gray-500">(${product.averageRating})</span>
                                     </div>
                                     <div class="price-info">
-                                        <strong class="font-lg-bold color-brand-3 price-main">${product.minPrice}đ</strong>
+                                        <strong class="font-lg-bold color-brand-3 price-main">${formatCurrency(product.minPrice)}đ</strong>
     
                                     </div>
                                     <div class="mt-20 box-btn-cart">

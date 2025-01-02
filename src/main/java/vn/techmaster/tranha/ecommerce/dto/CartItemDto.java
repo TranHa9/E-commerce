@@ -16,6 +16,9 @@ public class CartItemDto {
     int quantity;
     Double unitPrice;
     Double totalPrice;
+    int maxQuantity;
+    Boolean isUpdated;
+    Boolean isInactive;
     List<Attributes> variants;
     ProductDto product;
 

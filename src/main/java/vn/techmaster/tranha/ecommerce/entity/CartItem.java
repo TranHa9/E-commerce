@@ -32,4 +32,10 @@ public class CartItem extends BaseEntity {
     Double unitPrice;
 
     Double totalPrice;
+
+    @Column(name = "is_updated", columnDefinition = "BOOLEAN DEFAULT false")
+    Boolean isUpdated = false;
+
+    @Column(name = "is_inactive", columnDefinition = "BOOLEAN DEFAULT false")
+    Boolean isInactive = false;
 }

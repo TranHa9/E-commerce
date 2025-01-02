@@ -21,6 +21,8 @@ public class Product extends BaseEntity {
 
     String name;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     String description;
 
     Double minPrice; // Giá thấp nhất cho sản phẩm (các biến thể khác nhau)

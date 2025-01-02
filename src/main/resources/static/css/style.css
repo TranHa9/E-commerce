@@ -9370,6 +9370,16 @@ a:hover span {
     align-items: center;
 }
 
+/* Để làm mờ sản phẩm */
+.disabled {
+    opacity: 0.5;
+    pointer-events: none; /* Chặn tất cả hành động trừ nút xóa */
+}
+
+.disabled .wishlist-remove {
+    pointer-events: auto; /* Đảm bảo nút xóa vẫn hoạt động */
+}
+
 .item-wishlist .wishlist-cb {
     width: 4%;
     max-width: 25px;
