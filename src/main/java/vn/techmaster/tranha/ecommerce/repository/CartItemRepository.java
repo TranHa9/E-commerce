@@ -20,4 +20,6 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     @Query("SELECT SUM(c.totalPrice) FROM CartItem c WHERE c.cart.id = :cartId")
     Double findTotalPriceByCartId(Long cartId);
+
+    List<CartItem> findByCart(Cart cart);
 }

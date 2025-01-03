@@ -23,8 +23,10 @@ public class RegistrationRequest {
 
     @NotBlank(message = "Mật khẩu không được để trống")
     @Size(min = 6, max = 16, message = "Mật khẩu phải có từ 6 đến 16 ký tự")
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[A-Za-z\\d]{6,16}$",
-            message = "Mật khẩu phải chứa cả chữ cái và số")
+    @Pattern(
+            regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,16}$",
+            message = "Mật khẩu phải chứa cả chữ cái, số và ký tự đặc biệt"
+    )
     String password;
 
     @NotBlank(message = "Số điện thoại không được để trống")

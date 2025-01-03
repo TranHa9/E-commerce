@@ -219,16 +219,27 @@ $(document).ready(async function () {
             quantity: parseInt(quantity),
             unitPrice: unitPrice,
             totalPrice: totalPrice,
-            attributes: []
+            variants: []
         };
         // Thêm thuộc tính vào giỏ hàng
         if (selectedColor) {
-            cartItem.attributes.push({name: firstAttribute, value: selectedColor});
+            cartItem.variants.push({name: firstAttribute, value: selectedColor});
         }
         if (selectedSize) {
-            cartItem.attributes.push({name: endAttribute, value: selectedSize});
+            cartItem.variants.push({name: endAttribute, value: selectedSize});
         }
         console.log("Thêm vào giỏ hàng:", cartItem);
+        const user = JSON.parse(localStorage.getItem("user"));
+        $.ajax({
+            url: `/api/v1/carts/${user.id}`,
+            method: "POST",
+            data: JSON.stringify(cartItem),
+            contentType: "application/json",
+            success: function (data) {
+                showToast("Đã thêm vào giỏ hàng", "success");
+                console.log(data)
+            }
+        });
     });
 
     // Mua ngay

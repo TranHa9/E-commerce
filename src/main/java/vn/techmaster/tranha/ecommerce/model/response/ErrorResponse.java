@@ -12,5 +12,6 @@ public class ErrorResponse {
 
     String code;
     String message;
+    int errorCode;
 
 }

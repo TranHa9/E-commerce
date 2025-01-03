@@ -219,16 +219,24 @@ $(document).ready(function () {
             type: 'GET',
             contentType: "application/json; charset=utf-8",
             success: function (data) {
-                if (!data && data.length === 0) {
-                    $('#categoryId').append($('<option></option>').text("Chưa có dữ liệu"));
-                }
                 $('#categoryId').empty();
-                data?.forEach(category => {
-                    const option = $('<option></option>')
-                        .val(category.id)
-                        .text(category.name);
-                    $('#categoryId').append(option);
-                });
+                const createNewLink = $('<a></a>')
+                    .attr('href', '/categories')
+                    .text('+ Thêm danh mục')
+                $('#categoryId').after(createNewLink);
+                if (data && data.length === 0) {
+                    $('#categoryId').append($('<option></option>').text("Chưa có dữ liệu"));
+                } else {
+                    data?.forEach(category => {
+                        const option = $('<option></option>')
+                            .val(category.id)
+                            .text(category.name);
+                        $('#categoryId').append(option);
+                    });
+                    const createNewLink = $('<a></a>')
+                        .attr('href', '/categories')
+                        .text('+ Thêm danh mục')
+                }
             },
         });
     }
@@ -509,5 +517,13 @@ $(document).ready(function () {
         fileInput.val('');
         previewImage.hide();
         button.hide();
+    });
+
+    $('#create-product-modal').on('hidden.bs.modal', function () {
+        // Reset các trường input trong modal
+        $(this).find('input, textarea, select').val('');
+        $(this).find('img').attr('src', '').hide();  // Ẩn ảnh nếu có
+        $(this).find('.error').text('');  // Xóa tất cả thông báo lỗi
+        $(".image-preview.create-image-product").remove();  // Xóa ảnh đã preview
     });
 })

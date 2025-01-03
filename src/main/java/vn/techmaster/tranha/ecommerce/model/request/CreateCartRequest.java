@@ -32,7 +32,7 @@ public class CreateCartRequest {
     @NotNull(message = "Danh sách thuộc tính không được để trống")
     @Size(min = 1, message = "Danh sách thuộc tính phải chứa ít nhất 1 mục")
     @Valid
-    List<Attributes> attributes;
+    List<Attributes> variants;
 
     @Data
     public static class Attributes {

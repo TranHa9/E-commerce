@@ -9370,14 +9370,16 @@ a:hover span {
     align-items: center;
 }
 
-/* Để làm mờ sản phẩm */
-.disabled {
+/* Đặt độ mờ cho toàn bộ phần tử khi bị vô hiệu hóa */
+.item-wishlist.disabled {
     opacity: 0.5;
-    pointer-events: none; /* Chặn tất cả hành động trừ nút xóa */
+    pointer-events: none; /* Chặn hành động trên phần tử */
 }
 
-.disabled .wishlist-remove {
-    pointer-events: auto; /* Đảm bảo nút xóa vẫn hoạt động */
+/* Đảm bảo nút xóa không bị mờ và hoạt động bình thường */
+.item-wishlist.disabled .wishlist-remove {
+    opacity: 1 !important; /* Xóa độ mờ của nút */
+    pointer-events: auto; /* Kích hoạt sự kiện chuột cho nút xóa */
 }
 
 .item-wishlist .wishlist-cb {

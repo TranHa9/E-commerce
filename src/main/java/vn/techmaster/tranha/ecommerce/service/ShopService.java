@@ -46,9 +46,9 @@ public class ShopService {
     ObjectMapper objectMapper;
 
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> createShop(Long id, @Valid ShopCreateRequest request) {
+    public ResponseEntity<?> createShop(Long id, @Valid ShopCreateRequest request) throws ObjectNotFoundException {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("User not found"));
 
         boolean isShop = user.getRoles().stream()
                 .anyMatch(role -> role.getName().equals(Roles.SHOP));

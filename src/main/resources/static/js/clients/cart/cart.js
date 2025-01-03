@@ -5,7 +5,7 @@ $(document).ready(function () {
 
     function fetchCartItems() {
         $.ajax({
-            url: `/api/v1/carts/${user.id}`,
+            url: `/api/v1/cartItems/${user.id}`,
             type: 'GET',
             dataType: 'json',
             success: function (response) {
@@ -13,8 +13,9 @@ $(document).ready(function () {
                 // Xóa nội dung cũ
                 $('#cart-items').empty();
                 // Kiểm tra nếu có sản phẩm
-                if (response.cartItems && response.cartItems.length > 0) {
-                    response.cartItems.forEach(cartItem => {
+                const cartItems = response.data
+                if (cartItems && cartItems?.length > 0) {
+                    cartItems.forEach(cartItem => {
                         let variantsHTML = '';
                         if (cartItem.variants && cartItem.variants.length > 0) {
                             cartItem.variants.forEach(variant => {
@@ -46,11 +47,11 @@ $(document).ready(function () {
                                 <div class="wishlist-product">
                                     <div class="product-wishlist">
                                         <div class="product-image">
-                                            <a href="#"><img src="${fileUrl}${cartItem.product.imageUrls[0]}" alt="${cartItem.product.name}"></a>
+                                            <a href="/detail-product/${cartItem.productId}"><img src="${fileUrl}${cartItem.imageUrls[0]}" alt="${cartItem.productName}"></a>
                                         </div>
                                         <div class="product-info">
-                                            <a href="#">
-                                                <h6 class="color-brand-3">${cartItem.product.name}</h6>
+                                            <a href="/detail-product/${cartItem.productId}">
+                                                <h6 class="color-brand-3">${cartItem.productName}</h6>
                                             </a>
                                              <div class="rating">
                                                 ${variantsHTML}
@@ -74,7 +75,7 @@ $(document).ready(function () {
                                     <h4 class="color-brand-3">${formatCurrency(cartItem.totalPrice)}đ</h4>
                                 </div>
                                 <div class="wishlist-remove">
-                                    <a class="btn btn-delete" href="#" data-id="${cartItem.id}">Xóa</a>
+                                    <a class="btn btn-delete" href="#" data-id="${cartItem.id}"></a>
                                 </div>                              
                             </div>
                             ${updatedMessage}
@@ -84,15 +85,13 @@ $(document).ready(function () {
                 } else {
                     $('#cart-items').append('<p>Giỏ hàng của bạn đang trống.</p>');
                 }
-            },
-            error: function (error) {
-                console.error('Lỗi khi tải dữ liệu giỏ hàng:', error);
             }
         });
     }
 
     // Gọi hàm khi trang tải xong
     fetchCartItems();
+
 
     // Thêm sự kiện cho nút "Tải lại"
     $('.update-cart').on('click', function (e) {
@@ -186,6 +185,22 @@ $(document).ready(function () {
         if (_parent.find(".cb-select").is(":checked")) {
             totalPrice += _unitPrice;
             $(".summary-cart h4").text(`${formatCurrency(totalPrice)}đ`);
+        }
+    });
+
+    $("#cart-items").on("click", ".btn-delete", function (e) {
+        e.preventDefault();
+        const cartItemId = $(this).data("id");
+
+        if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?")) {
+            $.ajax({
+                url: `/api/v1/cartItems/${cartItemId}`,
+                type: "DELETE",
+                success: function () {
+                    showToast("Xóa sản phẩm khỏi giỏ hàng thành công!", "success");
+                    fetchCartItems();
+                }
+            });
         }
     });
 })

@@ -179,8 +179,8 @@ $(document).ready(function () {
     }
 
     $('#category-modal').on('hidden.bs.modal', function () {
-        // Reset giá trị các trường trong form khi modal đóng
         $('#category-form')[0].reset();
+        categoryId = null;
     });
 
     $(document).on("click", ".active-status", function () {
@@ -247,4 +247,5 @@ $(document).ready(function () {
         pageIndex = 0;
         getCategoryData({});
     });
+
 })

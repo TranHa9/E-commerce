@@ -86,18 +86,18 @@ function parseJwt(token) {
 
 const accessToken = localStorage.getItem("accessToken");
 const ajaxSetupObj = {
-    error: function (jqXHR) {
-        if (jqXHR.status === 401) {
+    error: function (data) {
+        if (data.responseJSON.code === 401) {
             showToast("Phiên làm việc hết hạn, vui lòng đăng nhập lại.", "error");
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("user");
             window.location.href = "/logins";
-        } else if (jqXHR.status === 404) {
+        } else if (data.responseJSON.code === 404) {
             showToast("Trang không tồn tại.", "warning");
             window.location.href = "/not-founds";
         } else {
-            showToast(`Có lỗi`, "error");
+            showToast(`Đã có lỗi`, "error");
         }
     }
 }

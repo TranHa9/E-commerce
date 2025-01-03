@@ -1,26 +1,23 @@
 package vn.techmaster.tranha.ecommerce.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.techmaster.tranha.ecommerce.dto.CartDto;
 import vn.techmaster.tranha.ecommerce.entity.*;
 import vn.techmaster.tranha.ecommerce.model.request.CreateCartRequest;
 import vn.techmaster.tranha.ecommerce.model.response.CartItemResponse;
 import vn.techmaster.tranha.ecommerce.model.response.CartResponse;
-import vn.techmaster.tranha.ecommerce.model.response.UserResponse;
 import vn.techmaster.tranha.ecommerce.repository.CartItemRepository;
 import vn.techmaster.tranha.ecommerce.repository.CartRepository;
 import vn.techmaster.tranha.ecommerce.repository.ProductRepository;
 import vn.techmaster.tranha.ecommerce.repository.UserRepository;
-import vn.techmaster.tranha.ecommerce.repository.custom.CartCustomRepository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,16 +30,7 @@ public class CartService {
     UserRepository userRepository;
     ProductRepository productRepository;
     CartItemRepository cartItemRepository;
-    CartCustomRepository cartCustomRepository;
     ObjectMapper objectMapper;
-
-    public CartDto getCartByUserId(Long id) throws Exception {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isEmpty()) {
-            throw new Exception("User not found");
-        }
-        return cartCustomRepository.getCartWithItemsByUser(id);
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public CartResponse createCart(Long id, CreateCartRequest request) throws Exception {
@@ -53,7 +41,7 @@ public class CartService {
         Product product = productOptional.get();
 
         // Tìm biến thể sản phẩm tương ứng với các thuộc tính người dùng nhập vào
-        Optional<ProductVariant> productVariantOptional = findProductVariantByAttributes(product, request.getAttributes());
+        Optional<ProductVariant> productVariantOptional = findProductVariantByAttributes(product, request.getVariants());
 
         if (productVariantOptional.isEmpty()) {
             throw new Exception("Product variant not found with the given attributes");
@@ -83,8 +71,7 @@ public class CartService {
                 });
 
         Optional<CartItem> existingCartItem = cartItemRepository.findByCartAndProduct(cart, product);
-        String attributeJson = objectMapper.writeValueAsString(request.getAttributes());
-        System.out.println(attributeJson);
+        String attributeJson = objectMapper.writeValueAsString(request.getVariants());
         if (existingCartItem.isPresent()) {
             // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng và tổng giá trị
             CartItem cartItem = existingCartItem.get();
@@ -101,11 +88,40 @@ public class CartService {
                     .variants(attributeJson)
                     .unitPrice(request.getUnitPrice())
                     .totalPrice(request.getUnitPrice() * request.getQuantity())
+                    .isUpdated(false)
+                    .isInactive(false)
                     .build();
             cartItemRepository.save(cartItem);
         }
         updateCart(cart);
-        return objectMapper.convertValue(cart, CartResponse.class);
+        CartResponse response = new CartResponse();
+        response.setId(cart.getId());
+        response.setUserId(user.getId());
+        response.setQuantity(cart.getQuantity());
+        response.setTotalPrice(cart.getTotalPrice());
+        response.setCartItems(cart.getCartItems().stream()
+                .map(cartItem -> {
+                    CartItemResponse itemResponse = new CartItemResponse();
+                    itemResponse.setId(cartItem.getId());
+                    itemResponse.setProductId(cartItem.getProduct().getId());
+                    itemResponse.setQuantity(cartItem.getQuantity());
+                    itemResponse.setUnitPrice(cartItem.getUnitPrice());
+                    itemResponse.setTotalPrice(cartItem.getTotalPrice());
+                    List<CartItemResponse.Attributes> variants = null;
+                    try {
+                        variants = objectMapper.readValue(cartItem.getVariants(), new TypeReference<List<CartItemResponse.Attributes>>() {
+                        });
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                    itemResponse.setVariants(variants);
+                    itemResponse.setIsUpdated(cartItem.getIsUpdated());
+                    itemResponse.setIsInactive(cartItem.getIsInactive());
+                    itemResponse.setMaxQuantity(productVariant.getStockQuantity());
+                    return itemResponse;
+                })
+                .collect(Collectors.toList()));
+        return response;
     }
 
     private void updateCart(Cart cart) {
@@ -119,10 +135,10 @@ public class CartService {
     }
 
     // Phương thức tìm biến thể dựa trên các thuộc tính người dùng nhập vào
-    private Optional<ProductVariant> findProductVariantByAttributes(Product product, List<CreateCartRequest.Attributes> attributes) {
+    private Optional<ProductVariant> findProductVariantByAttributes(Product product, List<CreateCartRequest.Attributes> variants) {
         for (ProductVariant variant : product.getVariants()) {
             boolean match = true;
-            for (CreateCartRequest.Attributes attribute : attributes) {
+            for (CreateCartRequest.Attributes attribute : variants) {
                 // Kiểm tra xem biến thể có chứa thuộc tính này hay không
                 boolean attributeMatch = variant.getAttributes().stream()
                         .anyMatch(attr -> attr.getName().equals(attribute.getName()) && attr.getValue().equals(attribute.getValue()));

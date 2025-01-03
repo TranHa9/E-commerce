@@ -11,9 +11,9 @@ $(document).ready(function () {
     $.validator.addMethod(
         "passwordPattern",
         function (value, element) {
-            return this.optional(element) || /^(?=.*[a-zA-Z])(?=.*\d)/.test(value);
+            return this.optional(element) || /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$/.test(value);
         },
-        "Mật khẩu phải chứa cả chữ và số"
+        "Mật khẩu phải từ 6 đến 16 ký tự, có ít nhất một chữ cái, một chữ số và một ký tự đặc biệt (@$!%*?&)"
     );
 
     $("#register-form").validate({
@@ -56,6 +56,7 @@ $(document).ready(function () {
                 required: "Mật khẩu bắt buộc nhập",
                 minlength: "Mật khẩu phải có ít nhất 6 ký tự",
                 maxlength: "Mật khẩu tối đa 16 ký tự",
+                passwordPattern: "Mật khẩu phải có ít nhất một chữ cái, một chữ số và một ký tự đặc biệt (@$!%*?&)"
             },
             "phone": {
                 required: "Số điện thoại bắt buộc nhập",
@@ -96,7 +97,11 @@ $(document).ready(function () {
             error: function (data) {
                 $("#success").remove();
                 $("#error").remove();
-                showToast(data.responseJSON.message, "error");
+                if (data.responseJSON.errorCode === 1001) {
+                    showToast("Tài khoản đã tồn tại", "error");
+                } else {
+                    showToast(data.responseJSON.messages, "error");
+                }
                 const errorHtml = `
                     <div id="error" class="form-group text-danger">
                         <p>Đăng ký thất bại! Kiểm tra lại email và mật khẩu.</p>

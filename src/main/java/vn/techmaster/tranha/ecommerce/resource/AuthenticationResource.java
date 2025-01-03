@@ -1,6 +1,7 @@
 package vn.techmaster.tranha.ecommerce.resource;
 
 import org.springframework.security.authentication.BadCredentialsException;
+import vn.techmaster.tranha.ecommerce.exception.AuthenticationException;
 import vn.techmaster.tranha.ecommerce.exception.ExistedUserException;
 import vn.techmaster.tranha.ecommerce.exception.InvalidRefreshTokenException;
 import vn.techmaster.tranha.ecommerce.exception.ObjectNotFoundException;
@@ -34,7 +35,7 @@ public class AuthenticationResource {
             JwtResponse response = authenticateService.authenticate(request);
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new AuthenticationException("Invalid credentials, please check your email and password.");
         }
     }
 

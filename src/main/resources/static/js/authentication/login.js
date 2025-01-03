@@ -1,12 +1,4 @@
 $(document).ready(function () {
-    $.validator.addMethod(
-        "passwordPattern",
-        function (value, element) {
-            return this.optional(element) || /^(?=.*[a-zA-Z])(?=.*\d)/.test(value);
-        },
-        "Mật khẩu phải chứa cả chữ và số"
-    );
-
     $("#login-form").validate({
         onfocusout: false,
         onkeyup: false,
@@ -20,8 +12,7 @@ $(document).ready(function () {
             "password": {
                 required: true,
                 minlength: 6,
-                maxlength: 16,
-                passwordPattern: true
+                maxlength: 16
             },
 
         },
@@ -68,9 +59,11 @@ $(document).ready(function () {
                     window.location.href = "/";
                 }, 1000);
             },
-            error: function (jqXHR) {
-                if (jqXHR.status === 401) {
-                    showToast("Thông tin tài khoản mật khẩu không chỉnh xác", "error");
+            error: function (data) {
+                if (data.responseJSON.errorCode === 1007) {
+                    showToast("Tài khoản mật khẩu không chính xác", "error");
+                } else {
+                    showToast(data.responseJSON.messages, "error");
                 }
             }
         });

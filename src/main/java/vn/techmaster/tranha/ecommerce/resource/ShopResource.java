@@ -35,7 +35,7 @@ public class ShopResource {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<?> create(@PathVariable Long id, @RequestBody @Valid ShopCreateRequest request) {
+    public ResponseEntity<?> create(@PathVariable Long id, @RequestBody @Valid ShopCreateRequest request) throws ObjectNotFoundException {
         return shopService.createShop(id, request);
 
     }

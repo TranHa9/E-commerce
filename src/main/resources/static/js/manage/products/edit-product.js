@@ -387,16 +387,17 @@ $(document).ready(function () {
             type: 'GET',
             contentType: "application/json; charset=utf-8",
             success: function (data) {
-                if (!data && data.length === 0) {
-                    $('#update-categoryId').append($('<option></option>').text("Chưa có dữ liệu"));
-                }
                 $('#update-categoryId').empty();
-                data?.forEach(category => {
-                    const option = $('<option></option>')
-                        .val(category.id)
-                        .text(category.name);
-                    $('#update-categoryId').append(option);
-                });
+                if (data && data.length === 0) {
+                    $('#update-categoryId').append($('<option></option>').text("Chưa có dữ liệu"));
+                } else {
+                    data?.forEach(category => {
+                        const option = $('<option></option>')
+                            .val(category.id)
+                            .text(category.name);
+                        $('#update-categoryId').append(option);
+                    });
+                }
             },
         });
     }
@@ -637,5 +638,31 @@ $(document).ready(function () {
         row.find('.image-preview').attr('src', '').hide();
         row.find('.clear-button').hide();
         row.find('input[name="imageUrl"]').val('');
+    });
+
+    $("#edit-product-modal").on('hidden.bs.modal', function () {
+        // Reset các trường input trong form
+        $('#form-edit-product')[0].reset();
+        $('#form-edit-info')[0].reset();
+
+        // Xóa các phần nội dung động
+        $('#update-attribute-section').empty();
+        $('#update-variant-body').empty();
+        $('#update-variant-header').empty();
+
+        // Xóa tất cả các ảnh đã tải lên và hiện lại icon "fas-icon"
+        $(".image-container .image-placeholder").empty();
+        $("#fas-icon").show();
+
+        // Reset các thông báo lỗi validation
+        $('#update-image-error').text('');
+        $('#update-categoryId').empty(); // Xóa danh sách các danh mục
+        $('#update-categoryId').append($('<option></option>').text("Chưa có dữ liệu"));
+
+        // Xóa các lỗi hiển thị trên form
+        $('.error').text('');
+
+        // Thêm sự kiện xóa ảnh lại nếu cần
+        $(".delete-btn").off('click'); // Xóa sự kiện click hiện tại, tránh sự kiện bị trùng lặp
     });
 })

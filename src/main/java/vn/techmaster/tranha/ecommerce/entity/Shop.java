@@ -17,6 +17,8 @@ public class Shop extends BaseEntity {
 
     String name;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     String description;
 
     Double rating;
