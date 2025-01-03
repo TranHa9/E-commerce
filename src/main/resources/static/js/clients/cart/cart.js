@@ -4,44 +4,46 @@ $(document).ready(function () {
     let totalPrice = 0;
 
     function fetchCartItems() {
-        $.ajax({
-            url: `/api/v1/cartItems/${user.id}`,
-            type: 'GET',
-            dataType: 'json',
-            success: function (response) {
-                console.log(response)
-                // Xóa nội dung cũ
-                $('#cart-items').empty();
-                // Kiểm tra nếu có sản phẩm
-                const cartItems = response.data
-                if (cartItems && cartItems?.length > 0) {
-                    cartItems.forEach(cartItem => {
-                        let variantsHTML = '';
-                        if (cartItem.variants && cartItem.variants.length > 0) {
-                            cartItem.variants.forEach(variant => {
-                                variantsHTML += `
+        if (!user || !user.id) {
+            window.location.href = '/logins';
+        } else {
+            $.ajax({
+                url: `/api/v1/cartItems/${user.id}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response)
+                    // Xóa nội dung cũ
+                    $('#cart-items').empty();
+                    // Kiểm tra nếu có sản phẩm
+                    if (response && response?.length > 0) {
+                        response.forEach(cartItem => {
+                            let variantsHTML = '';
+                            if (cartItem.variants && cartItem.variants.length > 0) {
+                                cartItem.variants.forEach(variant => {
+                                    variantsHTML += `
                                         <div class="d-flex align-items-center gap-1 mb-5">
                                             <span>${variant.name}:</span>
                                             <span>${variant.value}</span>
                                         </div>
                                 `;
-                            });
-                        }
+                                });
+                            }
 
-                        // Tạo thông báo nếu sản phẩm bị sửa hoặc ngừng bán
-                        let updatedMessage = cartItem.isUpdated ? `<p class="alert alert-warning">Sản phẩm đã bị sửa. Vui lòng chọn lại sản phẩm.</p>` : '';
-                        let inactiveMessage = cartItem.isInactive ? `<p class="alert alert-danger">Sản phẩm đã ngừng bán. Vui lòng chọn sản phẩm khác.</p>` : '';
-                        // Kiểm tra nếu sản phẩm có thông báo, áp dụng lớp disabled
-                        let isDisabledClass = cartItem.isUpdated || cartItem.isInactive ? 'disabled' : '';
-                        let checkboxHTML = '';
-                        if (!cartItem.isUpdated && !cartItem.isInactive) {
-                            checkboxHTML += `
+                            // Tạo thông báo nếu sản phẩm bị sửa hoặc ngừng bán
+                            let updatedMessage = cartItem.isUpdated ? `<p class="alert alert-warning">Sản phẩm đã bị sửa. Vui lòng chọn lại sản phẩm.</p>` : '';
+                            let inactiveMessage = cartItem.isInactive ? `<p class="alert alert-danger">Sản phẩm đã ngừng bán. Vui lòng chọn sản phẩm khác.</p>` : '';
+                            // Kiểm tra nếu sản phẩm có thông báo, áp dụng lớp disabled
+                            let isDisabledClass = cartItem.isUpdated || cartItem.isInactive ? 'disabled' : '';
+                            let checkboxHTML = '';
+                            if (!cartItem.isUpdated && !cartItem.isInactive) {
+                                checkboxHTML += `
                                 <div class="wishlist-cb">
                                     <input class="cb-layout cb-select" type="checkbox">
                                 </div>
                             `
-                        }
-                        $('#cart-items').append(`
+                            }
+                            $('#cart-items').append(`
                             <div class="item-wishlist ${isDisabledClass}" data-maxQuantity="${cartItem.maxQuantity}">
                                 ${checkboxHTML}
                                 <div class="wishlist-product">
@@ -81,12 +83,18 @@ $(document).ready(function () {
                             ${updatedMessage}
                             ${inactiveMessage}
                         `);
-                    });
-                } else {
-                    $('#cart-items').append('<p>Giỏ hàng của bạn đang trống.</p>');
+                        });
+                    } else {
+                        $('#cart-items').append(`
+                             <div class="d-flex align-items-center" style="height: 100px">
+                                    <p>Giỏ hàng của bạn đang trống!</p>
+                             </div>
+                            `);
+
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     // Gọi hàm khi trang tải xong
@@ -184,6 +192,38 @@ $(document).ready(function () {
         // Nếu checkbox được chọn, cập nhật tổng giá trị
         if (_parent.find(".cb-select").is(":checked")) {
             totalPrice += _unitPrice;
+            $(".summary-cart h4").text(`${formatCurrency(totalPrice)}đ`);
+        }
+    });
+    $("#cart-items").on("input", ".input-quantity input", function () {
+        var _parent = $(this).parents(".item-wishlist");
+        var _currentInput = $(this);
+        var _unitPrice = parseFloat(_parent.find(".wishlist-price h4").text().replace(/\./g, "").replace("đ", ""));
+        var _totalPriceElement = _parent.find(".wishlist-action h4");
+
+        // Lấy giá trị mới từ input
+        var _number = parseInt(_currentInput.val()) || 1; // Nếu không hợp lệ, mặc định là 1
+        var maxQuantity = parseInt(_parent.attr("data-maxQuantity"));
+
+        // Kiểm tra số lượng không vượt quá maxQuantity
+        if (_number > maxQuantity) {
+            alert(`Số lượng sản phẩm không thể vượt quá ${maxQuantity}.`);
+            _number = maxQuantity;
+            _currentInput.val(_number);
+        } else if (_number < 1) {
+            _number = 1;
+            _currentInput.val(_number);
+        }
+
+        // Cập nhật tổng giá sản phẩm
+        var _totalPrice = _unitPrice * _number;
+        _totalPriceElement.text(`${formatCurrency(_totalPrice)}đ`);
+
+        // Nếu checkbox được chọn, cập nhật tổng giá trị
+        if (_parent.find(".cb-select").is(":checked")) {
+            var _prevTotalPrice = parseFloat(_parent.find(".wishlist-action h4").text().replace(/\./g, "").replace("đ", ""));
+            totalPrice -= _prevTotalPrice; // Loại bỏ giá trị cũ
+            totalPrice += _totalPrice;    // Thêm giá trị mới
             $(".summary-cart h4").text(`${formatCurrency(totalPrice)}đ`);
         }
     });

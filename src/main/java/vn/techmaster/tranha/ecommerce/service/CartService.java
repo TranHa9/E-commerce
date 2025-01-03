@@ -17,6 +17,7 @@ import vn.techmaster.tranha.ecommerce.repository.CartRepository;
 import vn.techmaster.tranha.ecommerce.repository.ProductRepository;
 import vn.techmaster.tranha.ecommerce.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,6 +67,7 @@ public class CartService {
                             .user(user)
                             .quantity(request.getQuantity())
                             .totalPrice(request.getTotalPrice())
+                            .cartItems(new ArrayList<>())
                             .build();
                     return cartRepository.save(newCart);
                 });

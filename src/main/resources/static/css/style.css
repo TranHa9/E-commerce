@@ -2498,6 +2498,16 @@ a.text-brand-3:hover {
     margin-top: 10px;
 }
 
+a.color-brand-3.font-sm-bold.product-name {
+    display: -webkit-box; /* Sử dụng hộp flex */
+    -webkit-box-orient: vertical; /* Đặt hướng dọc */
+    overflow: hidden; /* Ẩn phần tràn */
+    text-overflow: ellipsis; /* Thay bằng dấu "..." */
+    -webkit-line-clamp: 2; /* Giới hạn số dòng là 2 */
+    line-height: 1.5em; /* Chiều cao dòng (tùy chỉnh để phù hợp thiết kế) */
+    max-height: 3em; /* Tổng chiều cao (line-height * số dòng) */
+}
+
 .card-grid-style-3 .card-grid-inner .price-info .price-line {
     text-decoration: line-through;
     font-size: 16px;
@@ -9253,6 +9263,20 @@ a:hover span {
     padding: 0px;
 }
 
+#text-description p {
+    white-space: pre-wrap; /* Giữ nguyên xuống dòng và khoảng trắng */
+    word-wrap: break-word; /* Tự động xuống dòng nếu nội dung quá dài */
+    margin: 0 0 1em; /* Thêm khoảng cách giữa các đoạn văn */
+    line-height: 1.5; /* Đặt khoảng cách dòng dễ đọc hơn */
+}
+
+#tab-vendor p {
+    white-space: pre-wrap; /* Giữ nguyên xuống dòng và khoảng trắng */
+    word-wrap: break-word; /* Tự động xuống dòng nếu nội dung quá dài */
+    margin: 0 0 1em; /* Thêm khoảng cách giữa các đoạn văn */
+    line-height: 1.5; /* Đặt khoảng cách dòng dễ đọc hơn */
+}
+
 .contact-infor li {
     color: #425A8B;
 }
@@ -9366,6 +9390,7 @@ a:hover span {
 
 .item-wishlist {
     display: flex;
+    gap: 15px;
     width: 100%;
     align-items: center;
 }
@@ -9453,6 +9478,16 @@ a:hover span {
 .product-wishlist .product-info a {
     display: block;
     margin-bottom: 5px;
+}
+
+.product-wishlist .product-info a h6.color-brand-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    line-height: 1.5em;
+    max-height: 3em;
 }
 
 .product-wishlist .product-info .rating {

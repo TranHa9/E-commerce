@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.techmaster.tranha.ecommerce.dto.CartItemDto;
 import vn.techmaster.tranha.ecommerce.entity.*;
+import vn.techmaster.tranha.ecommerce.exception.ObjectNotFoundException;
 import vn.techmaster.tranha.ecommerce.model.request.CreateCartRequest;
 import vn.techmaster.tranha.ecommerce.model.response.CartItemResponse;
 import vn.techmaster.tranha.ecommerce.repository.CartItemRepository;
@@ -18,6 +19,7 @@ import vn.techmaster.tranha.ecommerce.repository.ProductRepository;
 import vn.techmaster.tranha.ecommerce.repository.UserRepository;
 import vn.techmaster.tranha.ecommerce.repository.custom.CartItemCustomRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,11 +38,11 @@ public class CartItemService {
     public List<CartItemDto> getCartItemByUserId(Long userId) throws Exception {
         Optional<Cart> cartOptional = cartRepository.findByUserId(userId);
         if (cartOptional.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         List<CartItemDto> cartItems = cartItemCustomRepository.getItemsByUser(userId);
         if (cartItems.isEmpty()) {
-            return List.of();
+            return new ArrayList<>();
         }
         return cartItems;
     }

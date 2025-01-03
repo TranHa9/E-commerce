@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.techmaster.tranha.ecommerce.dto.CartItemDto;
+import vn.techmaster.tranha.ecommerce.exception.ObjectNotFoundException;
 import vn.techmaster.tranha.ecommerce.model.response.CartItemResponse;
 import vn.techmaster.tranha.ecommerce.service.CartItemService;
 
@@ -23,24 +24,8 @@ public class CartItemResource {
     CartItemService cartItemService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getCartItemByUserId(@PathVariable Long userId) throws Exception {
-
-        List<CartItemDto> response = cartItemService.getCartItemByUserId(userId);
-        Map<String, Object> result = new HashMap<>();
-        if (response == null) {
-            result.put("message", "Cart not found for user with ID " + userId);
-            result.put("data", response);
-            return ResponseEntity.ok(result);
-        }
-        if (response.isEmpty()) {
-            result.put("message", "Cart is empty for user with ID " + userId);
-            result.put("data", response);
-            return ResponseEntity.ok(result);
-        }
-
-        result.put("status", "success");
-        result.put("data", response);
-        return ResponseEntity.ok(result);
+    public List<CartItemDto> getCartItemByUserId(@PathVariable Long userId) throws Exception {
+        return cartItemService.getCartItemByUserId(userId);
     }
 
     @DeleteMapping("/{cartItemId}")

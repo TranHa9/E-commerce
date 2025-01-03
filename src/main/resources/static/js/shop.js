@@ -226,10 +226,10 @@
         var _btn_short = $(".btn-expand-more");
         if (_div_short.height() == 125) {
             _div_short.css("height", "auto");
-            _btn_short.html("Less");
+            _btn_short.html("Ẩn bớt");
         } else {
             _div_short.css("height", "");
-            _btn_short.html("More Details");
+            _btn_short.html("Xem thêm");
         }
     });
 

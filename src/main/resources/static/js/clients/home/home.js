@@ -23,18 +23,19 @@ $(document).ready(function () {
                                 </div>
                                 <div class="info-right">
                                     <a class="font-xs color-gray-500" href="#">${product.shopName}</a><br>
-                                    <a class="color-brand-3 font-sm-bold" href="/detail-product/${product.id}">${product.productName}</a>
+                                    <a class="color-brand-3 font-sm-bold product-name" href="/detail-product/${product.id}">${product.productName}</a>
                                     <div class="rating">
                                         ${Array(product.averageRating).fill('<img src="/img/template/icons/star.svg" alt="Ecom">').join('')}
                                         <span class="font-xs color-gray-500">(${product.averageRating})</span>
                                     </div>
                                     <div class="price-info">
                                         <strong class="font-lg-bold color-brand-3 price-main">${formatCurrency(product.minPrice)}đ</strong>
-    
                                     </div>
-                                    <div class="mt-20 box-btn-cart">
-                                        <a class="btn btn-cart" href="#">Thêm vào giỏ hàng</a>
-                                    </div>
+<!--                                    <ul class="contact-infor mb-50">-->
+<!--                                        <li><img src="/img/page/product/icon-location.svg"-->
+<!--                                            alt=""><strong>Đia chỉ: </strong><span id="info-address"></span>-->
+<!--                                        </li>-->
+<!--                                    </ul>-->
                                 </div>
                             </div>
                         </div>`;
