@@ -174,6 +174,19 @@ $(document).ready(async function () {
         _currentInput.val(_number);
     });
 
+    $("#quantity").on("change", function () {
+        var _input = $(this);
+        var _number = parseInt(_input.val());
+        var stockQuantity = parseInt($("#stock-quantity").text().replace(/[^0-9]/g, ""));
+        if (_number > stockQuantity) {
+            alert(`Không thể nhập số lượng vượt quá ${stockQuantity}.`);
+            _input.val(1); // Đặt lại giá trị
+        } else if (_number < 1 || isNaN(_number)) {
+            alert("Số lượng phải lớn hơn 0.");
+            _input.val(1); // Đặt lại giá trị
+        }
+    });
+
     // Thêm vào giỏ hàng
     $(".button-buy .btn-cart").click(function () {
         if (!selectedColor && !selectedSize) {
@@ -237,6 +250,7 @@ $(document).ready(async function () {
             contentType: "application/json",
             success: function (data) {
                 showToast("Đã thêm vào giỏ hàng", "success");
+                updateCartItemCount(user.id)
                 console.log(data)
             }
         });

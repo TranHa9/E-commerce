@@ -62,7 +62,7 @@ $(document).ready(function () {
                                     </div>
                                 </div>
                                 <div class="wishlist-price">
-                                    <h4 class="color-brand-3">${formatCurrency(cartItem.unitPrice)}đ</h4>
+                                    <h6 class="color-brand-3">${formatCurrency(cartItem.unitPrice)}đ</h6>
                                 </div>
                                 <div class="wishlist-status">
                                     <div class="box-quantity">
@@ -74,7 +74,7 @@ $(document).ready(function () {
                                     </div>
                                 </div>
                                 <div class="wishlist-action">
-                                    <h4 class="color-brand-3">${formatCurrency(cartItem.totalPrice)}đ</h4>
+                                    <h6 class="color-brand-3">${formatCurrency(cartItem.totalPrice)}đ</h6>
                                 </div>
                                 <div class="wishlist-remove">
                                     <a class="btn btn-delete" href="#" data-id="${cartItem.id}"></a>
@@ -243,6 +243,7 @@ $(document).ready(function () {
                 success: function () {
                     showToast("Xóa sản phẩm khỏi giỏ hàng thành công!", "success");
                     fetchCartItems();
+                    updateCartItemCount(user.id)
                 }
             });
         }

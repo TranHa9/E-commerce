@@ -154,4 +154,16 @@ function formatCurrency(value) {
     return value.toLocaleString('vi-VN');
 }
 
+//Lấy số lượng sản phẩm trong giỏ
+function updateCartItemCount(userId) {
+    $.ajax({
+        url: `/api/v1/cartItems/${userId}`,
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            $("#cart-item-count").text(data.length);
+        }
+    });
+}
+
 

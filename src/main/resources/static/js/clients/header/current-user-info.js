@@ -65,6 +65,9 @@ $(document).ready(function () {
         });
     });
 
+    if (user && user.id) {
+        updateCartItemCount(user.id)
+    }
 
     setRefreshTimer();
 })
