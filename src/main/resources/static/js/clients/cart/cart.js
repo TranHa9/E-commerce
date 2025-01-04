@@ -152,12 +152,13 @@ $(document).ready(function () {
         var _currentInput = _parent.find(".input-quantity input");
         var _unitPrice = parseFloat(_parent.find(".wishlist-price h4").text().replace(/\./g, "").replace("đ", ""));
         var _totalPriceElement = _parent.find(".wishlist-action h4");
+        const cartItemId = _parent.find(".btn-delete").data("id");
 
         var _number = parseInt(_currentInput.val());
         if (_number > 1) {
             _number = _number - 1;
             _currentInput.val(_number);
-
+            handleQuantityChange(cartItemId, _number);
             // Cập nhật tổng giá
             var _totalPrice = (_unitPrice * _number);
             _totalPriceElement.text(`${formatCurrency(_totalPrice)}đ`);
@@ -174,6 +175,7 @@ $(document).ready(function () {
         var _currentInput = _parent.find(".input-quantity input");
         var _unitPrice = parseFloat(_parent.find(".wishlist-price h4").text().replace(/\./g, "").replace("đ", ""));
         var _totalPriceElement = _parent.find(".wishlist-action h4");
+        const cartItemId = _parent.find(".btn-delete").data("id");
 
         // Lấy số lượng hiện tại và maxQuantity
         var _number = parseInt(_currentInput.val());
@@ -185,7 +187,7 @@ $(document).ready(function () {
         }
         _number = _number + 1;
         _currentInput.val(_number);
-
+        handleQuantityChange(cartItemId, _number);
         // Cập nhật tổng giá
         var _totalPrice = (_unitPrice * _number);
         _totalPriceElement.text(`${formatCurrency(_totalPrice)}đ`);
@@ -200,6 +202,7 @@ $(document).ready(function () {
         var _currentInput = $(this);
         var _unitPrice = parseFloat(_parent.find(".wishlist-price h4").text().replace(/\./g, "").replace("đ", ""));
         var _totalPriceElement = _parent.find(".wishlist-action h4");
+        const cartItemId = _parent.find(".btn-delete").data("id");
 
         // Lấy giá trị mới từ input
         var _number = parseInt(_currentInput.val()) || 1; // Nếu không hợp lệ, mặc định là 1
@@ -215,6 +218,7 @@ $(document).ready(function () {
             _currentInput.val(_number);
         }
 
+        handleQuantityChange(cartItemId, _number);
         // Cập nhật tổng giá sản phẩm
         var _totalPrice = _unitPrice * _number;
         _totalPriceElement.text(`${formatCurrency(_totalPrice)}đ`);
@@ -243,4 +247,27 @@ $(document).ready(function () {
             });
         }
     });
+
+    let debounceTimeout;
+
+    // Hàm gọi API cập nhật số lượng
+    function updateCartItemQuantity(cartItemId, quantity) {
+        $.ajax({
+            url: `/api/v1/cartItems/${cartItemId}`,
+            type: "PATCH",
+            contentType: "application/json",
+            data: JSON.stringify(quantity),
+            success: function () {
+                // showToast("Cập nhật số lượng thành công", "success")
+            }
+        })
+    }
+
+    // Thêm debounce khi xử lý số lượng
+    function handleQuantityChange(cartItemId, quantity) {
+        clearTimeout(debounceTimeout); // Xóa timeout cũ nếu có
+        debounceTimeout = setTimeout(() => {
+            updateCartItemQuantity(cartItemId, quantity); // Gọi API sau 2 giây
+        }, 2000);
+    }
 })

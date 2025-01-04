@@ -32,4 +32,9 @@ public class CartItemResource {
     public void deleteCartItem(@PathVariable Long cartItemId) {
         cartItemService.deleteCartItem(cartItemId);
     }
+
+    @PatchMapping("/{cartItemId}")
+    public void updateCartItemQuantity(@PathVariable Long cartItemId, @RequestBody int quantity) throws Exception {
+        cartItemService.updateCartItemQuantity(cartItemId, quantity);
+    }
 }

@@ -144,6 +144,8 @@ public class SecurityConfig {
 
                         //CartItem start
                         .requestMatchers(HttpMethod.GET, "api/v1/cartItems/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "api/v1/cartItems/{cartItemId}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/v1/cartItems/{cartItemId}").authenticated()
                         //CartItem end
 
                         .requestMatchers("api/v1/product-attributes").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())

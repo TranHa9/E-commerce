@@ -73,5 +73,45 @@ public class CartItemService {
         cartRepository.save(cart);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void updateCartItemQuantity(Long cartItemId, int newQuantity) throws ObjectNotFoundException {
+        Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+        if (cartItemOptional.isEmpty()) {
+            throw new ObjectNotFoundException("Cart item not found");
+        }
+        CartItem cartItem = cartItemOptional.get();
+        // Kiểm tra tồn kho
+        ProductVariant productVariant = cartItem.getProduct().getVariants().stream()
+                .filter(variant -> {
+                    try {
+                        List<CreateCartRequest.Attributes> cartItemAttributes = objectMapper.readValue(
+                                cartItem.getVariants(), new TypeReference<List<CreateCartRequest.Attributes>>() {
+                                });
+                        // So sánh từng thuộc tính
+                        for (CreateCartRequest.Attributes cartAttr : cartItemAttributes) {
+                            boolean match = variant.getAttributes().stream()
+                                    .anyMatch(attr -> attr.getName().equals(cartAttr.getName())
+                                            && attr.getValue().equals(cartAttr.getValue()));
+                            if (!match) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error parsing cart item attributes", e);
+                    }
+                })
+                .findFirst()
+                .orElseThrow(() -> new ObjectNotFoundException("Product variant not found for the cart item"));
 
+        if (newQuantity > productVariant.getStockQuantity()) {
+            throw new IllegalArgumentException("Not enough stock for the requested quantity");
+        }
+        // Cập nhật số lượng và tổng giá cho mục giỏ hàng
+        cartItem.setQuantity(newQuantity);
+        cartItem.setTotalPrice(cartItem.getUnitPrice() * newQuantity);
+        cartItemRepository.save(cartItem);
+        // Cập nhật giỏ hàng
+        updateCart(cartItem.getCart());
+    }
 }
