@@ -43,4 +43,10 @@ public class ProductSearchRequest extends BaseSearchRequest {
     String shopName;
 
     ProductStatus status;
+
+    Long categoryId;
+
+    Long shopId;
+
+    String sortBy;
 }

@@ -3507,7 +3507,7 @@ a.color-brand-3.font-sm-bold.product-name {
 }
 
 .header .main-header .header-left .header-search {
-    width: 45%;
+    width: 55%;
 }
 
 .header .main-header .header-left .header-search .box-header-search {
@@ -3521,7 +3521,23 @@ a.color-brand-3.font-sm-bold.product-name {
 }
 
 .header .main-header .header-left .header-search .box-header-search .box-keysearch {
+    width: 65%;
+}
+
+.header .main-header .header-left .header-search .box-header-search .box-search-button {
+    width: 15%;
+}
+
+.header .main-header .header-left .header-search .box-header-search .box-search-button .btn-search {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: bold;
+    color: #425A8B;
+    border-left: 1px solid #425A8B;
+    border-radius: 0px;
     width: 100%;
+    text-align: center;
+    padding: 5px 10px;
 }
 
 .header .main-header .header-left .header-search .box-header-search .box-keysearch input {
@@ -3559,7 +3575,7 @@ a.color-brand-3.font-sm-bold.product-name {
 }
 
 .header .main-header .header-left .header-shop {
-    width: 30%;
+    width: 15%;
     text-align: right;
 }
 

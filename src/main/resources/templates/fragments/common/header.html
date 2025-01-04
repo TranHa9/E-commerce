@@ -2,29 +2,24 @@
     <div class="container">
         <div class="main-header">
             <div class="header-left">
-                <div class="header-logo"><a class="d-flex" href="/"><img alt="Ecom"
-                                                                         src="/img/template/logo.svg"></a>
+                <div class="header-logo">
+                    <a class="d-flex" href="/"><img alt="Ecom" src="/img/template/logo.svg"></a>
                 </div>
                 <div class="header-search">
                     <div class="box-header-search">
-                        <form class="form-search" method="post" action="#">
+                        <form class="form-search">
                             <div class="box-category">
-                                <select class="select-active select2-hidden-accessible" id="category-select">
+                                <select class="select-active select2-hidden-accessible" id="category-select"
+                                        name="categoryId">
                                     <option>Tất cả</option>
-                                    <!--                                    <option value="Computers Accessories">Computers Accessories</option>-->
-                                    <!--                                    <option value="Cell Phones">Cell Phones</option>-->
-                                    <!--                                    <option value="Gaming Gatgets">Gaming Gatgets</option>-->
-                                    <!--                                    <option value="Smart watches">Smart watches</option>-->
-                                    <!--                                    <option value="Wired Headphone">Wired Headphone</option>-->
-                                    <!--                                    <option value="Mouse &amp; Keyboard">Mouse Keyboard</option>-->
-                                    <!--                                    <option value="Headphone">Headphone</option>-->
-                                    <!--                                    <option value="Bluetooth devices">Bluetooth devices</option>-->
-                                    <!--                                    <option value="Cloud Software">Cloud Software</option>-->
                                 </select>
                             </div>
                             <div class="box-keysearch">
-                                <input class="form-control font-xs" type="text" value=""
+                                <input class="form-control font-xs" type="text" name="productName"
                                        placeholder="Tìm kiếm sản phẩm">
+                            </div>
+                            <div class="box-search-button">
+                                <button type="button" id="search-button" class="btn btn-search">Tìm kiếm</button>
                             </div>
                         </form>
                     </div>
@@ -48,15 +43,12 @@
                         <div class="dropdown-account">
                         </div>
                     </div>
-                    <a class="font-lg icon-list icon-wishlist" href="shop-wishlist.html"><span>Wishlist</span><span
-                            class="number-item font-xs">5</span></a>
                     <div class="d-inline-block box-dropdown-cart">
                         <a href="/carts">
                             <span class="font-lg icon-list icon-cart"><span>Giỏ</span><span
                                     class="number-item font-xs" id="cart-item-count">2</span></span>
                         </a>
                     </div>
-                    <a class="font-lg icon-list icon-compare" href="shop-compare.html"><span>Compare</span></a>
                 </div>
             </div>
         </div>

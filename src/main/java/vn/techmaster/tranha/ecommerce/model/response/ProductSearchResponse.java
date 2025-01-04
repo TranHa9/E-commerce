@@ -23,7 +23,7 @@ public class ProductSearchResponse {
     List<String> productImages;
     Double maxPrice;
     Double minPrice;
-    //    List<CreateProductRequest.Price> prices;
+    List<CreateProductRequest.Prices> prices;
     String origin;
     String brand;
     String expiryDate;

@@ -6,10 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Repository;
 import vn.techmaster.tranha.ecommerce.dto.ProductVariantDto;
-import vn.techmaster.tranha.ecommerce.dto.SearchProductAllDto;
+import vn.techmaster.tranha.ecommerce.dto.SearchProductDto;
 import vn.techmaster.tranha.ecommerce.model.request.CreateProductRequest;
 import vn.techmaster.tranha.ecommerce.model.request.ProductSearchRequest;
 import vn.techmaster.tranha.ecommerce.repository.BaseRepository;
+import vn.techmaster.tranha.ecommerce.statics.ProductStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +24,12 @@ public class ProductCustomRepository extends BaseRepository {
 
     ObjectMapper objectMapper;
 
-    public List<SearchProductAllDto> searchProductAll(ProductSearchRequest request) {
+    public List<SearchProductDto> searchProducts(ProductSearchRequest request) {
         String query = "with raw_data as (\n" +
-                "         select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
-                "                p.origin,p.brand, p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.name as category_name, s.name as shop_name," +
+                "         select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description,\n" +
+                "                p.image_urls as product_images, p.max_price, p.min_price, \n" +
+                "                p.origin,p.brand, p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, \n" +
+                "                p.sold_quantity, categories.name as category_name, s.name as shop_name, p.created_at," +
                 "    JSON_ARRAYAGG(\n" +
                 "            JSON_OBJECT(\n" +
                 "                'id', pv.id,\n" +
@@ -51,6 +54,7 @@ public class ProductCustomRepository extends BaseRepository {
                 "    left join product_variants pv on pv.product_id = p.id\n" +
                 "    join shops s on s.id = p.shop_id\n" +
                 "    where 1 = 1 \n" +
+                "        and p.status = :status\n" +
                 "   {{search_condition}}\n" +
                 "    group by p.id, p.name, p.prices, p.average_rating, p.description, p.image_urls, p.max_price, p.min_price, p.origin,p.brand, p.status, \n" +
                 "             p.expiry_date, p.stock_quantity, p.sold_quantity, categories.name, s.name\n" +
@@ -60,19 +64,33 @@ public class ProductCustomRepository extends BaseRepository {
                 ")\n" +
                 "select r.*, c.totalRecord\n" +
                 "from raw_data r, count_data c\n" +
+                "{{order_by_clause}}\n" +
                 "limit :p_page_size\n" +
                 "offset :p_offset";
         Map<String, Object> parameters = new HashMap<>();
+        parameters.put("status", "ACTIVE");
         String searchCondition = "";
+        String orderByClause = "";
         if (request.getProductName() != null && !request.getProductName().trim().isEmpty()) {
             searchCondition += " and lower(p.name) like :name";
             parameters.put("name", "%" + request.getProductName().toLowerCase() + "%");
         }
-        if (request.getMinPrice() != null && request.getMinPrice() >= 0) {
+        if (request.getCategoryId() != null) {
+            searchCondition += " and p.category_id = :categoryId";
+            parameters.put("categoryId", request.getCategoryId());
+        }
+        if (request.getShopId() != null) {
+            searchCondition += " and p.shop_id = :shopId";
+            parameters.put("shopId", request.getShopId());
+        }
+        if (request.getMinPrice() != null && request.getMaxPrice() != null) {
+            searchCondition += " and p.min_price >= :minPrice and p.max_price <= :maxPrice";
+            parameters.put("minPrice", request.getMinPrice());
+            parameters.put("maxPrice", request.getMaxPrice());
+        } else if (request.getMinPrice() != null) {
             searchCondition += " and p.min_price >= :minPrice";
             parameters.put("minPrice", request.getMinPrice());
-        }
-        if (request.getMaxPrice() != null && request.getMaxPrice() >= 0) {
+        } else if (request.getMaxPrice() != null) {
             searchCondition += " and p.max_price <= :maxPrice";
             parameters.put("maxPrice", request.getMaxPrice());
         }
@@ -80,6 +98,7 @@ public class ProductCustomRepository extends BaseRepository {
             searchCondition += " and p.stock_quantity >= :stockQuantity";
             parameters.put("stockQuantity", request.getStockQuantity());
         }
+
         if (request.getAverageRating() != null && request.getAverageRating() > 0) {
             searchCondition += " and p.average_rating >= :averageRating";
             parameters.put("averageRating", request.getAverageRating());
@@ -100,18 +119,23 @@ public class ProductCustomRepository extends BaseRepository {
             searchCondition += " and lower(p.brand) like :brand";
             parameters.put("brand", "%" + request.getBrand().toLowerCase() + "%");
         }
-        if (request.getStatus() != null) {
-            searchCondition += " and lower(p.status) = :status";
-            parameters.put("status", request.getStatus().name().toLowerCase());
-        }
 
+        // Xử lý tiêu chí lọc
+        if ("newest".equalsIgnoreCase(request.getSortBy())) {
+            orderByClause = "order by r.created_at desc";
+        } else if ("priceAsc".equalsIgnoreCase(request.getSortBy())) {
+            orderByClause = "order by r.min_price asc";
+        } else if ("priceDesc".equalsIgnoreCase(request.getSortBy())) {
+            orderByClause = "order by r.min_price desc";
+        } else if ("bestSelling".equalsIgnoreCase(request.getSortBy())) {
+            orderByClause = "order by r.sold_quantity desc";
+        }
         query = query.replace("{{search_condition}}", searchCondition);
+        query = query.replace("{{order_by_clause}}", orderByClause);
         parameters.put("p_page_size", request.getPageSize());
         parameters.put("p_offset", request.getPageSize() * request.getPageIndex());
-
-//        return getNamedParameterJdbcTemplate().query(query, parameters, new BeanPropertyRowMapper<>(SearchProductDto.class));
-        List<SearchProductAllDto> result = getNamedParameterJdbcTemplate().query(query, parameters, (rs, rowNum) -> {
-            SearchProductAllDto dto = new SearchProductAllDto();
+        List<SearchProductDto> result = getNamedParameterJdbcTemplate().query(query, parameters, (rs, rowNum) -> {
+            SearchProductDto dto = new SearchProductDto();
             dto.setId(rs.getLong("id"));
             dto.setProductName(rs.getString("product_name"));
             dto.setAverageRating(rs.getDouble("average_rating"));
@@ -162,7 +186,7 @@ public class ProductCustomRepository extends BaseRepository {
         return result;
     }
 
-    public List<SearchProductAllDto> searchProductByShop(Long id, ProductSearchRequest request) {
+    public List<SearchProductDto> searchProductByShop(Long id, ProductSearchRequest request) {
         String query = "with raw_data as (\n" +
                 "         select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
                 "                p.origin,p.brand, p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.name as category_name, s.name as shop_name," +
@@ -247,8 +271,8 @@ public class ProductCustomRepository extends BaseRepository {
         parameters.put("p_offset", request.getPageSize() * request.getPageIndex());
 
 //        return getNamedParameterJdbcTemplate().query(query, parameters, new BeanPropertyRowMapper<>(SearchProductDto.class));
-        List<SearchProductAllDto> result = getNamedParameterJdbcTemplate().query(query, parameters, (rs, rowNum) -> {
-            SearchProductAllDto dto = new SearchProductAllDto();
+        List<SearchProductDto> result = getNamedParameterJdbcTemplate().query(query, parameters, (rs, rowNum) -> {
+            SearchProductDto dto = new SearchProductDto();
             dto.setId(rs.getLong("id"));
             dto.setProductName(rs.getString("product_name"));
             dto.setAverageRating(rs.getDouble("average_rating"));
@@ -299,7 +323,7 @@ public class ProductCustomRepository extends BaseRepository {
         return result;
     }
 
-    public SearchProductAllDto getProductById(Long id) {
+    public SearchProductDto getProductById(Long id) {
         String query = "select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
                 "                p.origin,p.brand,p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.id as categoryId, categories.name as category_name, s.id as shopId, s.name as shop_name," +
                 "    JSON_ARRAYAGG(\n" +
@@ -334,7 +358,7 @@ public class ProductCustomRepository extends BaseRepository {
 
 //        return getNamedParameterJdbcTemplate().query(query, parameters, new BeanPropertyRowMapper<>(SearchProductDto.class));
         return getNamedParameterJdbcTemplate().queryForObject(query, parameters, (rs, rowNum) -> {
-            SearchProductAllDto dto = new SearchProductAllDto();
+            SearchProductDto dto = new SearchProductDto();
             dto.setId(rs.getLong("id"));
             dto.setProductName(rs.getString("product_name"));
             dto.setAverageRating(rs.getDouble("average_rating"));
@@ -384,4 +408,5 @@ public class ProductCustomRepository extends BaseRepository {
             return dto;
         });
     }
+
 }

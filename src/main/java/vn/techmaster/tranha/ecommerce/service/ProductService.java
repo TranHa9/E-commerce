@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.techmaster.tranha.ecommerce.dto.SearchProductAllDto;
+import vn.techmaster.tranha.ecommerce.dto.SearchProductDto;
 import vn.techmaster.tranha.ecommerce.entity.*;
 import vn.techmaster.tranha.ecommerce.model.request.*;
 import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
@@ -35,8 +35,8 @@ public class ProductService {
     ObjectMapper objectMapper;
 
 
-    public CommonSearchResponse<?> searchProductAll(ProductSearchRequest request) {
-        List<SearchProductAllDto> result = productCustomRepository.searchProductAll(request);
+    public CommonSearchResponse<?> searchProducts(ProductSearchRequest request) {
+        List<SearchProductDto> result = productCustomRepository.searchProducts(request);
         Long totalRecord = 0L;
         List<ProductSearchResponse> productResponses = new ArrayList<>();
         if (!result.isEmpty()) {
@@ -55,7 +55,7 @@ public class ProductService {
                 .pageInfo(new CommonSearchResponse.CommonPagingResponse(request.getPageSize(), request.getPageIndex()))
                 .build();
     }
-
+    
     @Transactional(rollbackFor = Exception.class)
     public ProductResponse createProduct(CreateProductRequest request) throws Exception {
         Optional<Category> categoryOptional = categoryRepository.findById(request.getCategoryId());
@@ -271,7 +271,7 @@ public class ProductService {
     }
 
     public CommonSearchResponse<?> searchProductByShop(Long id, ProductSearchRequest request) {
-        List<SearchProductAllDto> result = productCustomRepository.searchProductByShop(id, request);
+        List<SearchProductDto> result = productCustomRepository.searchProductByShop(id, request);
         Long totalRecord = 0L;
         List<ProductSearchResponse> productResponses = new ArrayList<>();
         if (!result.isEmpty()) {
@@ -292,7 +292,7 @@ public class ProductService {
     }
 
     public ProductDetailResponse getProductById(Long id) {
-        SearchProductAllDto result = productCustomRepository.getProductById(id);
+        SearchProductDto result = productCustomRepository.getProductById(id);
         return objectMapper.convertValue(result, ProductDetailResponse.class);
     }
 
@@ -330,4 +330,6 @@ public class ProductService {
             cartItemRepository.saveAll(cartItems);
         }
     }
+
+
 }
