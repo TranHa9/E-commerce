@@ -72,8 +72,12 @@ public class CartService {
                     return cartRepository.save(newCart);
                 });
 
-        Optional<CartItem> existingCartItem = cartItemRepository.findByCartAndProduct(cart, product);
+        // Chuyển đổi thuộc tính biến thể sang JSON để lưu trữ
         String attributeJson = objectMapper.writeValueAsString(request.getVariants());
+
+        // Tìm mục giỏ hàng dựa trên giỏ hàng, sản phẩm, và biến thể
+        Optional<CartItem> existingCartItem = cartItemRepository.findByCartAndProductAndVariants(cart, product, attributeJson);
+        
         if (existingCartItem.isPresent()) {
             // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng và tổng giá trị
             CartItem cartItem = existingCartItem.get();
