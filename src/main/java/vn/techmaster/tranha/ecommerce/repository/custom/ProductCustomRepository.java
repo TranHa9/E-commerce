@@ -122,13 +122,13 @@ public class ProductCustomRepository extends BaseRepository {
 
         // Xử lý tiêu chí lọc
         if ("newest".equalsIgnoreCase(request.getSortBy())) {
-            orderByClause = "order by r.created_at desc";
+            orderByClause = "order by r.created_at desc"; //sắp xếp theo trường "created_at" giảm dần (mới nhất trước)
         } else if ("priceAsc".equalsIgnoreCase(request.getSortBy())) {
-            orderByClause = "order by r.min_price asc";
+            orderByClause = "order by r.min_price asc"; // sắp xếp theo trường "min_price" tăng dần
         } else if ("priceDesc".equalsIgnoreCase(request.getSortBy())) {
-            orderByClause = "order by r.min_price desc";
+            orderByClause = "order by r.min_price desc"; // sắp xếp theo trường "min_price" giảm dần
         } else if ("bestSelling".equalsIgnoreCase(request.getSortBy())) {
-            orderByClause = "order by r.sold_quantity desc";
+            orderByClause = "order by r.sold_quantity desc"; // sắp xếp theo trường "sold_quantity" giảm dần
         }
         query = query.replace("{{search_condition}}", searchCondition);
         query = query.replace("{{order_by_clause}}", orderByClause);

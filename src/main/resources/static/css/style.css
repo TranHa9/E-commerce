@@ -1054,6 +1054,10 @@ h6 {
     margin-bottom: 20px;
 }
 
+.pagination .page-item {
+    cursor: pointer;
+}
+
 .opacity-100 {
     opacity: 1 !important;
 }
@@ -4106,6 +4110,7 @@ a.color-brand-3.font-sm-bold.product-name {
 .dropdown-item {
     font-size: 14px;
     color: #425A8B;
+    cursor: pointer;
 }
 
 .dropdown-item.active, .dropdown-item:active, .dropdown-item:hover {
@@ -10304,6 +10309,7 @@ a:hover span {
 .list-nav-arrow li {
     margin: 0px 0px 15px 0px;
     transition-duration: 0.2s;
+    cursor: pointer;
 }
 
 .list-nav-arrow li:hover {
@@ -10315,6 +10321,18 @@ a:hover span {
     background-color: #FD9636;
     color: #fff;
     transition-duration: 0.2s;
+}
+
+.list-nav-arrow .shop-item {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.list-nav-arrow .shop-item.active {
+    background-color: #dadae0;
+    font-weight: bold;
 }
 
 .list-nav-arrow li a {
@@ -10358,6 +10376,19 @@ a:hover span {
     font-size: 14px;
     line-height: 18px;
     font-weight: 500;
+    cursor: pointer;
+}
+
+/*.list-checkbox li {*/
+/*    */
+/*    padding: 5px;*/
+/*    border-radius: 3px;*/
+/*    transition: background-color 0.3s;*/
+/*}*/
+
+.list-checkbox li.active {
+    background-color: #dadae0; /* Màu nền khi active */
+    font-weight: bold; /* Tô đậm chữ */
 }
 
 .list-checkbox li .number-item {

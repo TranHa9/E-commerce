@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    sessionStorage.removeItem('searchData');
+
     // Hàm gọi API và render nội dung
     function loadProducts(tabId, apiUrl) {
         $.ajax({
