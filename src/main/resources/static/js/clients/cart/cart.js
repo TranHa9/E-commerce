@@ -116,7 +116,7 @@ $(document).ready(function () {
             $(".cb-select").each(function () {
                 const itemTotalPrice = parseFloat(
                     $(this).closest(".item-wishlist")
-                        .find(".wishlist-action h4")
+                        .find(".wishlist-action h6")
                         .text()
                         .replace(/\./g, "")
                         .replace("đ", "")
@@ -131,9 +131,8 @@ $(document).ready(function () {
     $("#cart-items").on("change", ".cb-select", function () {
         const _parent = $(this).closest(".item-wishlist");
         const itemTotalPrice = parseFloat(
-            _parent.find(".wishlist-action h4").text().replace(/\./g, "").replace("đ", "")
+            _parent.find(".wishlist-action h6").text().replace(/\./g, "").replace("đ", "")
         );
-
         if ($(this).is(":checked")) {
             totalPrice += itemTotalPrice;
         } else {
