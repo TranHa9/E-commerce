@@ -122,8 +122,6 @@ $(document).ready(function () {
             response.forEach(function (category) {
                 categorySelect.append(`<option value="${category.id}">${category.name}</option>`);
             });
-            // Cập nhật lại select2 (nếu bạn đang dùng select2)
-            categorySelect.select2();
             // Gán giá trị nếu đang ở trang /search
             if (window.location.pathname === '/search' && searchData?.categoryId) {
                 categorySelect.val(searchData.categoryId).trigger('change');
@@ -195,13 +193,26 @@ $(document).ready(function () {
     }
 
     $("#btn-search-price").on('click', function () {
-        data.minPrice = $("#price-from").val();
-        data.maxPrice = $("#price-to").val();
-        getProductData(data);
+        const priceFrom = $("#price-from").val().trim();
+        const priceTo = $("#price-to").val().trim();
+        $("#price-error").hide();
+        if (!priceFrom || !priceTo) {
+            $("#price-error").show();
+        } else {
+            data.minPrice = priceFrom;
+            data.maxPrice = priceTo;
+            getProductData(data);
+        }
     })
     $("#btn-search-brand").on('click', function () {
-        data.brand = $("#brand-search").val().trim()
-        getProductData(data);
+        const brand = $("#brand-search").val().trim();
+        $("#brand-error").hide();
+        if (!brand) {
+            $("#brand-error").show();
+        } else {
+            data.brand = brand;
+            getProductData(data);
+        }
     })
 
     $(".list-checkbox li").on('click', function () {
@@ -224,6 +235,8 @@ $(document).ready(function () {
             categoryId: categoryId,
             productName: name
         };
+        $("#price-error").hide();
+        $("#brand-error").hide();
         $(".list-checkbox li").removeClass("active");
         $(".shop-item").removeClass("active");
         $("#price-from").val('');
