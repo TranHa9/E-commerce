@@ -8,6 +8,7 @@ import vn.techmaster.tranha.ecommerce.statics.AppliedType;
 import vn.techmaster.tranha.ecommerce.statics.DiscountType;
 import vn.techmaster.tranha.ecommerce.statics.OwnerType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -45,7 +46,7 @@ public class Voucher extends BaseEntity {
     OwnerType ownerType;
 
     @Column(name = "end_date")
-    LocalDateTime endDate;
+    LocalDate endDate;
 
     int usageLimit;
 }

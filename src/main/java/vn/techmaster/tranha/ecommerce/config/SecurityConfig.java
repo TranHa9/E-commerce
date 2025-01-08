@@ -148,6 +148,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "api/v1/cartItems/{cartItemId}").authenticated()
                         //CartItem end
 
+                        //Voucher start
+                        .requestMatchers(HttpMethod.GET, "api/v1/vouchers/shop/{shopId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "api/v1/vouchers").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        //Voucher end
+
                         .requestMatchers("api/v1/product-attributes").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
 
                         .requestMatchers("api/v1/product-variants").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
