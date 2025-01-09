@@ -43,4 +43,10 @@ public class VoucherResource {
     public VoucherResponse updateVoucher(@PathVariable Long id, @RequestBody UpdateVoucherRequest request) throws Exception {
         return voucherService.updateVoucher(id, request);
     }
+
+//    @PostMapping("/validate")
+//    public ResponseEntity<?> validateVoucher(@RequestBody ValidateVoucherRequest request) {
+//        VoucherResponse response = voucherService.validateVoucher(request);
+//        return ResponseEntity.ok(response);
+//    }
 }

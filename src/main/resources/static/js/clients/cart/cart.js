@@ -17,35 +17,49 @@ $(document).ready(function () {
                     $('#cart-items').empty();
                     // Kiểm tra nếu có sản phẩm
                     if (response && response?.length > 0) {
-                        response.forEach(cartItem => {
-                            let variantsHTML = '';
-                            if (cartItem.variants && cartItem.variants.length > 0) {
-                                cartItem.variants.forEach(variant => {
-                                    variantsHTML += `
+                        const groupedByShop = response.reduce((acc, item) => {
+                            const shopName = item.shopName || "Shop không xác định";
+                            if (!acc[shopName]) acc[shopName] = [];
+                            acc[shopName].push(item);
+                            return acc;
+                        }, {});
+                        // Render từng shop
+                        for (const [shopName, items] of Object.entries(groupedByShop)) {
+                            let shopHTML = `
+                                <div class="shop-group">
+                                    <h5 class="shop-title" data-shopId="${items[0].shopId}">${shopName}</h5>
+                                <div class="shop-products">
+                                `;
+                            console.log("items", items)
+                            items.forEach(cartItem => {
+                                let variantsHTML = '';
+                                if (cartItem.variants && cartItem.variants.length > 0) {
+                                    cartItem.variants.forEach(variant => {
+                                        variantsHTML += `
                                         <div class="d-flex align-items-center gap-1 mb-5">
                                             <span>${variant.name}:</span>
                                             <span>${variant.value}</span>
                                         </div>
-                                `;
-                                });
-                            }
+                                        `;
+                                    });
+                                }
 
-                            // Tạo thông báo nếu sản phẩm bị sửa hoặc ngừng bán
-                            let updatedMessage = cartItem.isUpdated ? `<p class="alert alert-warning">Sản phẩm đã bị sửa. Vui lòng chọn lại sản phẩm.</p>` : '';
-                            let inactiveMessage = cartItem.isInactive ? `<p class="alert alert-danger">Sản phẩm đã ngừng bán. Vui lòng chọn sản phẩm khác.</p>` : '';
-                            // Kiểm tra nếu sản phẩm có thông báo, áp dụng lớp disabled
-                            let isDisabledClass = cartItem.isUpdated || cartItem.isInactive ? 'disabled' : '';
-                            let checkboxHTML = '';
-                            if (!cartItem.isUpdated && !cartItem.isInactive) {
-                                checkboxHTML += `
-                                <div class="wishlist-cb">
-                                    <input class="cb-layout cb-select" type="checkbox">
-                                </div>
-                            `
-                            }
-                            $('#cart-items').append(`
-                            <div class="item-wishlist ${isDisabledClass}" data-maxQuantity="${cartItem.maxQuantity}">
-                                ${checkboxHTML}
+                                // Tạo thông báo nếu sản phẩm bị sửa hoặc ngừng bán
+                                let updatedMessage = cartItem.isUpdated ? `<p class="alert alert-warning">Sản phẩm đã bị sửa. Vui lòng chọn lại sản phẩm.</p>` : '';
+                                let inactiveMessage = cartItem.isInactive ? `<p class="alert alert-danger">Sản phẩm đã ngừng bán. Vui lòng chọn sản phẩm khác.</p>` : '';
+                                // Kiểm tra nếu sản phẩm có thông báo, áp dụng lớp disabled
+                                let isDisabledClass = cartItem.isUpdated || cartItem.isInactive ? 'disabled' : '';
+                                let checkboxHTML = '';
+                                if (!cartItem.isUpdated && !cartItem.isInactive) {
+                                    checkboxHTML += `
+                                        <div class="wishlist-cb">
+                                            <input class="cb-layout cb-select" type="checkbox">
+                                        </div>
+                                        `;
+                                }
+                                shopHTML += `
+                                <div class="item-wishlist ${isDisabledClass}" data-maxQuantity="${cartItem.maxQuantity}">
+                                    ${checkboxHTML}
                                 <div class="wishlist-product">
                                     <div class="product-wishlist">
                                         <div class="product-image">
@@ -82,8 +96,23 @@ $(document).ready(function () {
                             </div>
                             ${updatedMessage}
                             ${inactiveMessage}
-                        `);
-                        });
+                            `;
+                            });
+                            // Thêm input mã giảm giá vào shop
+                            shopHTML += `
+                                </div>
+                                <div class="shop-discount">
+                                    <h6 class="font-md-bold">Mã giảm giá cho ${shopName}</h6>
+                                    <div class="form-group d-flex">
+                                        <input class="form-control mr-15" placeholder="Nhập mã giảm giá">
+                                        <button class="btn btn-buy w-auto">Áp dụng</button>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+
+                            $('#cart-items').append(shopHTML);
+                        }
                     } else {
                         $('#cart-items').append(`
                              <div class="d-flex align-items-center" style="height: 100px">
@@ -92,6 +121,7 @@ $(document).ready(function () {
                             `);
 
                     }
+
                 }
             });
         }
@@ -149,8 +179,8 @@ $(document).ready(function () {
     $("#cart-items").on("click", ".minus-cart", function () {
         var _parent = $(this).parents(".item-wishlist");
         var _currentInput = _parent.find(".input-quantity input");
-        var _unitPrice = parseFloat(_parent.find(".wishlist-price h4").text().replace(/\./g, "").replace("đ", ""));
-        var _totalPriceElement = _parent.find(".wishlist-action h4");
+        var _unitPrice = parseFloat(_parent.find(".wishlist-price h6").text().replace(/\./g, "").replace("đ", ""));
+        var _totalPriceElement = _parent.find(".wishlist-action h6");
         const cartItemId = _parent.find(".btn-delete").data("id");
 
         var _number = parseInt(_currentInput.val());
@@ -172,8 +202,8 @@ $(document).ready(function () {
     $("#cart-items").on("click", ".plus-cart", function () {
         var _parent = $(this).parents(".item-wishlist");
         var _currentInput = _parent.find(".input-quantity input");
-        var _unitPrice = parseFloat(_parent.find(".wishlist-price h4").text().replace(/\./g, "").replace("đ", ""));
-        var _totalPriceElement = _parent.find(".wishlist-action h4");
+        var _unitPrice = parseFloat(_parent.find(".wishlist-price h6").text().replace(/\./g, "").replace("đ", ""));
+        var _totalPriceElement = _parent.find(".wishlist-action h6");
         const cartItemId = _parent.find(".btn-delete").data("id");
 
         // Lấy số lượng hiện tại và maxQuantity
@@ -199,8 +229,8 @@ $(document).ready(function () {
     $("#cart-items").on("input", ".input-quantity input", function () {
         var _parent = $(this).parents(".item-wishlist");
         var _currentInput = $(this);
-        var _unitPrice = parseFloat(_parent.find(".wishlist-price h4").text().replace(/\./g, "").replace("đ", ""));
-        var _totalPriceElement = _parent.find(".wishlist-action h4");
+        var _unitPrice = parseFloat(_parent.find(".wishlist-price h6").text().replace(/\./g, "").replace("đ", ""));
+        var _totalPriceElement = _parent.find(".wishlist-action h6");
         const cartItemId = _parent.find(".btn-delete").data("id");
 
         // Lấy giá trị mới từ input
@@ -224,7 +254,7 @@ $(document).ready(function () {
 
         // Nếu checkbox được chọn, cập nhật tổng giá trị
         if (_parent.find(".cb-select").is(":checked")) {
-            var _prevTotalPrice = parseFloat(_parent.find(".wishlist-action h4").text().replace(/\./g, "").replace("đ", ""));
+            var _prevTotalPrice = parseFloat(_parent.find(".wishlist-action h6").text().replace(/\./g, "").replace("đ", ""));
             totalPrice -= _prevTotalPrice; // Loại bỏ giá trị cũ
             totalPrice += _totalPrice;    // Thêm giá trị mới
             $(".summary-cart h4").text(`${formatCurrency(totalPrice)}đ`);
@@ -270,4 +300,59 @@ $(document).ready(function () {
             updateCartItemQuantity(cartItemId, quantity); // Gọi API sau 2 giây
         }, 2000);
     }
+
+    $("#cart-items").on("click", ".shop-discount button", function () {
+        const shopElement = $(this).closest(".shop-group");
+        const shopId = shopElement.find(".shop-title").data("shopid");
+        const discountCode = shopElement.find(".shop-discount input").val().trim();
+
+        if (!discountCode) {
+            alert("Vui lòng nhập mã giảm giá.");
+            return;
+        }
+
+        // $.ajax({
+        //     url: `/api/v1/discounts/validate`,
+        //     type: "POST",
+        //     contentType: "application/json",
+        //     data: JSON.stringify({shopId, code: discountCode}),
+        //     success: function (response) {
+        //         if (response.isValid) {
+        //             const discountValue = response.discountValue;
+        //             const discountType = response.discountType;
+        //             let totalShopPrice = 0;
+        //
+        //             // Tính tổng giá trị sản phẩm của shop
+        //             shopElement.find(".item-wishlist").each(function () {
+        //                 const itemPrice = parseFloat(
+        //                     $(this).find(".wishlist-action h6").text().replace(/\./g, "").replace("đ", "")
+        //                 );
+        //                 totalShopPrice += itemPrice;
+        //             });
+        //
+        //             // Tính toán giá trị giảm giá
+        //             let discountAmount = 0;
+        //             if (discountType === "PERCENTAGE") {
+        //                 discountAmount = totalShopPrice * (discountValue / 100);
+        //             } else if (discountType === "FIXED") {
+        //                 discountAmount = discountValue;
+        //             }
+        //             discountAmount = Math.min(discountAmount, totalShopPrice); // Giảm giá không vượt quá tổng tiền
+        //
+        //             // Hiển thị thông báo giảm giá và cập nhật tổng tiền
+        //             shopElement.find(".shop-discount").append(`
+        //             <p class="text-success">Mã giảm giá được áp dụng: Giảm ${formatCurrency(discountAmount)}đ</p>
+        //         `);
+        //
+        //             const updatedTotal = totalShopPrice - discountAmount;
+        //             shopElement.find(".shop-total-price").text(`${formatCurrency(updatedTotal)}đ`);
+        //         } else {
+        //             alert(response.message || "Mã giảm giá không hợp lệ.");
+        //         }
+        //     },
+        //     error: function () {
+        //         alert("Không thể kiểm tra mã giảm giá. Vui lòng thử lại sau.");
+        //     }
+        // });
+    });
 })

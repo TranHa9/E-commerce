@@ -35,7 +35,8 @@ public class CartItemCustomRepository extends BaseRepository {
                 "    ci.is_inactive,\n" +
                 "    p.name,\n" +
                 "    p.image_urls,\n" +
-                "    ci.variants,\n" +
+                "    ci.variants, s.id AS shop_id,\n" +
+                "    s.name AS shop_name,\n" +
                 "    (\n" +
                 "        SELECT pv.stock_quantity\n" +
                 "        FROM product_variants pv\n" +
@@ -46,6 +47,7 @@ public class CartItemCustomRepository extends BaseRepository {
                 "    ) AS maxQuantity\n" +
                 "FROM cart_items ci\n" +
                 "JOIN products p on p.id = ci.product_id\n" +
+                "JOIN shops s ON s.id = p.shop_id\n" +
                 "JOIN carts c on c.id = ci.cart_id\n" +
                 "where c.user_id = :userId\n" +
                 "ORDER BY ci.created_at DESC;";
@@ -64,6 +66,8 @@ public class CartItemCustomRepository extends BaseRepository {
                 dto.setIsInactive(rs.getBoolean("is_inactive"));
                 dto.setMaxQuantity(rs.getInt("maxQuantity"));
                 dto.setProductName(rs.getString("name"));
+                dto.setShopId(rs.getLong("shop_id"));
+                dto.setShopName(rs.getString("shop_name"));
 
                 String imageJson = rs.getString("image_urls");
                 if (imageJson != null) {

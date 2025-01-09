@@ -23,6 +23,8 @@ public class CartItemDto {
     String productName;
     List<String> imageUrls;
     List<Attributes> variants;
+    private Long shopId;
+    private String shopName;
 
     @Data
     public static class Attributes {
