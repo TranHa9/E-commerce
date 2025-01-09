@@ -48,6 +48,10 @@ async function fetchShopData() {
     const user = JSON.parse(localStorage.getItem("user"));
     const accessToken = localStorage.getItem("accessToken");
     let shop = null;
+    if (!accessToken || !user) {
+        showToast("Phiên làm việc hết hạn, vui lòng đăng nhập lại.", "error");
+        window.location.href = "/logins";
+    }
     await $.ajax({
         url: `/api/v1/shops/user/${user?.id}`,
         type: 'GET',

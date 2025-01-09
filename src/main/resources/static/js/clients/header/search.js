@@ -75,16 +75,16 @@ $(document).ready(function () {
         const pagination = $(".pagination");
         pagination.empty();
         pagination.append(`
-            <li class="page-item"><a href="" class="page-link page-prev"></a></li>
+            <li class="page-item"><a class="page-link page-prev"></a></li>
         `);
 
         for (let i = 1; i <= totalPage; i++) {
             const isActive = i === currentPage + 1 ? "active" : "";
-            pagination.append(`<li class="page-item" page="${i - 1}"><a href="" class="page-link ${isActive}">${i}</a></li>`);
+            pagination.append(`<li class="page-item" page="${i - 1}"><a class="page-link ${isActive}">${i}</a></li>`);
         }
 
         pagination.append(`
-            <li class="page-item"><a href="" class="page-link page-next"></a></li>
+            <li class="page-item"><a class="page-link page-next"></a></li>
         `);
 
         // Xử lý sự kiện chuyển trang

@@ -151,6 +151,7 @@ public class SecurityConfig {
                         //Voucher start
                         .requestMatchers(HttpMethod.GET, "api/v1/vouchers/shop/{shopId}").authenticated()
                         .requestMatchers(HttpMethod.POST, "api/v1/vouchers").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
+                        .requestMatchers(HttpMethod.PUT, "api/v1/vouchers/{id}").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
                         //Voucher end
 
                         .requestMatchers("api/v1/product-attributes").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())

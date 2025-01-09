@@ -37,16 +37,11 @@ public class Voucher extends BaseEntity {
     @Column(name = "min_order_value")
     Double minOrderValue; // Giá trị đơn hàng tối thiểu để áp dụng mã
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "applied_type")
-    AppliedType appliedType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "owner_type")
-    OwnerType ownerType;
+    @Column(name = "start_date")
+    LocalDateTime startDate;
 
     @Column(name = "end_date")
-    LocalDate endDate;
+    LocalDateTime endDate;
 
     int usageLimit;
 }

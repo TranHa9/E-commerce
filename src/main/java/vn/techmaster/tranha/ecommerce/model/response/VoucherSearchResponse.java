@@ -4,16 +4,21 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import vn.techmaster.tranha.ecommerce.entity.Shop;
+import vn.techmaster.tranha.ecommerce.statics.AppliedType;
 import vn.techmaster.tranha.ecommerce.statics.DiscountType;
+import vn.techmaster.tranha.ecommerce.statics.OwnerType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class VoucherResponse {
+public class VoucherSearchResponse {
     Long id;
+    
+    Long shopId;
 
-    Shop shop;
+    String shopName;
 
     String code;
 

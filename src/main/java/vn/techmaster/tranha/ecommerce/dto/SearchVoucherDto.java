@@ -1,19 +1,20 @@
-package vn.techmaster.tranha.ecommerce.model.response;
+package vn.techmaster.tranha.ecommerce.dto;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import vn.techmaster.tranha.ecommerce.entity.Shop;
 import vn.techmaster.tranha.ecommerce.statics.DiscountType;
 
 import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class VoucherResponse {
+public class SearchVoucherDto {
     Long id;
 
-    Shop shop;
+    Long shopId;
+
+    String shopName;
 
     String code;
 
@@ -28,4 +29,6 @@ public class VoucherResponse {
     LocalDateTime endDate; //Ngày hết hạn của voucher.
 
     int usageLimit; //Giới hạn số lần sử dụng
+
+    Long totalRecord;
 }

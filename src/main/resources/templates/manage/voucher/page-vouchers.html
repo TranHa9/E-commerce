@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/common/manage/head :: html_head(pageTitle='Ecom - Ecom Marketplace Template')}">
+<body>
+<div class="screen-overlay"></div>
+<div th:insert="fragments/common/manage/dashboard :: dashboard"></div>
+<main class="main-wrap">
+    <div th:insert="fragments/common/manage/header :: manage-header"></div>
+    <section class="content-main">
+        <div class="card mb-4">
+            <div class="card-body">
+                <header class="card-header">
+                    <form id="form-search">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row gx-3">
+                                    <div class="col-6 mb-3">
+                                        <label for="searchCode" class="form-label">Mã giảm giá</label>
+                                        <input class="form-control" id="searchCode" name="searchCode" type="text"
+                                               placeholder="M1234">
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <label for="searchDiscountType" class="form-label">Loại mã</label>
+                                        <select class="form-select" id="searchDiscountType" name="searchDiscountType">
+                                            <option selected></option>
+                                            <option value="PERCENTAGE">Phần trăm</option>
+                                            <option value="AMOUNT">Giá cố định</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label for="searchVoucherValue" class="form-label">Giá trị</label>
+                                        <input class="form-control" id="searchVoucherValue" name="searchVoucherValue"
+                                               type="text"
+                                               placeholder="10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </form>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button class="btn btn-primary" id="btn-search" type="button">Tìm kiếm</button>
+                        <button class="btn btn-secondary" id="btn-reset" type="button">Tải lại</button>
+                    </div>
+                </header>
+                <div class="table-responsive">
+                    <div>
+                        <button
+                                class="btn float-end btn-primary btn-sm rounded font-md d-flex align-items-center gap-1"
+                                data-bs-toggle="modal"
+                                data-bs-target="#voucher-modal"
+                        >
+                            <i class="material-icons md-plus"></i>
+                            Tạo mới
+                        </button>
+                    </div>
+                    <table class="table table-hover" id="voucher-list">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Mã</th>
+                            <th>Giá trị</th>
+                            <th>Loại mã</th>
+                            <th>Tối thiểu</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end">Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="pagination-area mt-30 mb-50">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-start">
+                </ul>
+            </nav>
+        </div>
+    </section>
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>document.write(new Date().getFullYear())</script> &copy;, Ecom - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+    <div th:insert="~{manage/voucher/modal-voucher :: voucher-modal}"></div>
+</main>
+<div th:insert="fragments/common/manage/scripts" :: scripts></div>
+<script src="/js/manage/voucher/voucher.js"></script>
+</body>
+</html>

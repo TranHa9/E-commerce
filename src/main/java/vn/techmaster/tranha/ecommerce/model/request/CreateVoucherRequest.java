@@ -26,11 +26,9 @@ public class CreateVoucherRequest {
 
     Double minOrderValue; // Giá trị đơn hàng tối thiểu để áp dụng mã
 
-    AppliedType appliedType; //Kiểu áp dụng voucher (ví dụ: cho từng sản phẩm, toàn bộ đơn hàng, v.v.).
+    LocalDateTime startDate;
 
-    OwnerType ownerType; //Của shop||system
-
-    LocalDate endDate; //Ngày hết hạn của voucher.
+    LocalDateTime endDate; //Ngày hết hạn của voucher.
 
     int usageLimit; //Giới hạn số lần sử dụng
 }

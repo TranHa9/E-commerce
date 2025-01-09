@@ -1,19 +1,20 @@
-package vn.techmaster.tranha.ecommerce.model.response;
+package vn.techmaster.tranha.ecommerce.model.request;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import vn.techmaster.tranha.ecommerce.entity.Shop;
+import vn.techmaster.tranha.ecommerce.statics.AppliedType;
 import vn.techmaster.tranha.ecommerce.statics.DiscountType;
+import vn.techmaster.tranha.ecommerce.statics.OwnerType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class VoucherResponse {
-    Long id;
+public class UpdateVoucherRequest {
 
-    Shop shop;
+    Long shopId;
 
     String code;
 

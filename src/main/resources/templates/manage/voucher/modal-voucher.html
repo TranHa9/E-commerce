@@ -1,0 +1,56 @@
+<div th:fragment="voucher-modal" class="modal fade"
+     id="voucher-modal" tabindex="-1"
+     aria-labelledby="book-creation-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Tạo voucher</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="voucher-form">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row gx-3">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="code" class="form-label">Mã giảm giá*</label>
+                                    <input class="form-control" id="code" name="code" type="text"
+                                           placeholder="M1234">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="discountType" class="form-label">Loại mã</label>
+                                    <select class="form-select" id="discountType" name="discountType">
+                                        <option selected></option>
+                                        <option value="PERCENTAGE">Phần trăm</option>
+                                        <option value="AMOUNT">Giá cố định</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="voucherValue" class="form-label">Giá trị*</label>
+                                    <input class="form-control" id="voucherValue" name="voucherValue" type="text"
+                                           placeholder="10 hoặc 100000"/>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="minOrderValue" class="form-label">Đơn hàng tối thiểu*</label>
+                                    <input class="form-control" id="minOrderValue" name="minOrderValue" type="text"
+                                           placeholder="200000"/>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="startDate" class="form-label">Thời gian bắt đầu*</label>
+                                    <input class="form-control" id="startDate" name="startDate" type="datetime-local"/>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="endDate" class="form-label">Thời gian kết thúc*</label>
+                                    <input class="form-control" id="endDate" name="endDate" type="datetime-local"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-save-voucher">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
