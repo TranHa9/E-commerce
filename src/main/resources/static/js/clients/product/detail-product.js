@@ -80,7 +80,7 @@ $(document).ready(async function () {
     } else {
         $(".vendor-logo img").attr("src", `/img/page/product/futur.png`);
     }
-    $(".vendor-name h6").html(`<a href="#">${shop.name}</a>`);
+    $(".vendor-name h6").html(`<a href="/shops/detail/${shop.id}">${shop.name}</a>`);
     $("#contact-address").text(shop.address)
     $("#contact-phone").text(shop.user.phone)
     $("#tab-vendor").append(`<p>${shop.description}</p>`)

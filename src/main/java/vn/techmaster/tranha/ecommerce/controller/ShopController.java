@@ -13,8 +13,18 @@ public class ShopController {
         return "authentication/page-register-shop";
     }
 
+    @GetMapping("/profile")
+    public String users() {
+        return "manage/shop/page-shop";
+    }
+
     @GetMapping
     public String shops() {
         return "shop/shop-vendor-list";
+    }
+
+    @GetMapping("/detail/{id}")
+    public String shopDetails() {
+        return "shop/shop-vendor-single";
     }
 }

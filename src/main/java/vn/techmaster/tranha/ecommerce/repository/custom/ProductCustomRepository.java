@@ -29,7 +29,7 @@ public class ProductCustomRepository extends BaseRepository {
                 "         select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description,\n" +
                 "                p.image_urls as product_images, p.max_price, p.min_price, \n" +
                 "                p.origin,p.brand, p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, \n" +
-                "                p.sold_quantity, categories.name as category_name, s.name as shop_name, p.created_at," +
+                "                p.sold_quantity, categories.name as category_name, s.id as shop_id, s.name as shop_name, p.created_at," +
                 "    JSON_ARRAYAGG(\n" +
                 "            JSON_OBJECT(\n" +
                 "                'id', pv.id,\n" +
@@ -148,6 +148,7 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setProductStockQuantity(rs.getInt("product_stock_quantity"));
             dto.setSoldQuantity(rs.getInt("sold_quantity"));
             dto.setCategoryName(rs.getString("category_name"));
+            dto.setShopId(rs.getLong("shop_id"));
             dto.setShopName(rs.getString("shop_name"));
             dto.setStatus(rs.getString("status"));
             dto.setTotalRecord(rs.getLong("totalRecord"));
@@ -325,7 +326,7 @@ public class ProductCustomRepository extends BaseRepository {
 
     public SearchProductDto getProductById(Long id) {
         String query = "select p.id, p.name as product_name, p.prices as product_prices, p.average_rating, p.description, p.image_urls as product_images, p.max_price, p.min_price, \n" +
-                "                p.origin,p.brand,p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.id as categoryId, categories.name as category_name, s.id as shopId, s.name as shop_name," +
+                "                p.origin,p.brand,p.status, p.expiry_date, p.stock_quantity as product_stock_quantity, p.sold_quantity, categories.id as categoryId, categories.name as category_name, s.id as shop_id, s.name as shop_name," +
                 "    JSON_ARRAYAGG(\n" +
                 "            JSON_OBJECT(\n" +
                 "                'id', pv.id,\n" +
@@ -372,7 +373,7 @@ public class ProductCustomRepository extends BaseRepository {
             dto.setSoldQuantity(rs.getInt("sold_quantity"));
             dto.setCategoryId(rs.getLong("categoryId"));
             dto.setCategoryName(rs.getString("category_name"));
-            dto.setShopId(rs.getLong("shopId"));
+            dto.setShopId(rs.getLong("shop_id"));
             dto.setShopName(rs.getString("shop_name"));
             dto.setStatus(rs.getString("status"));
 

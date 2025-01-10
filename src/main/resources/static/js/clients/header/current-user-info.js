@@ -25,7 +25,7 @@ $(document).ready(function () {
             dropdownMenu += `<li><a href="/shops/registers">Mở shop</a></li>`;
         }
         dropdownMenu += `
-            <li><a href="/users">Tài khoản</a></li>
+            <li><a href="/user/profile">Tài khoản</a></li>
             <li><a href="#">Đơn hàng</a></li>
             <li><a href="#" id="logout">Đăng xuất</a></li>
         </ul>

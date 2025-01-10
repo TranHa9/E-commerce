@@ -113,20 +113,26 @@ public class UserService {
     }
 
     public UserResponse updateUser(Long id, MultipartFile avatar, UpdateUserRequest request) throws ObjectNotFoundException, IOException {
-        User user = userRepository.findById(id)
+        User user = userRepository.findUserWithRolesById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("User not found"));
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setGender(request.getGender());
         user.setDob(request.getDob());
+        Roles roleName = user.getRoles().stream()
+                .findFirst()
+                .map(Role::getName)
+                .orElse(null);
 
         if (avatar != null && !avatar.isEmpty()) {
             String fileName = saveAvatar(avatar);
             user.setAvatar(fileName);
         }
         userRepository.save(user);
-        return objectMapper.convertValue(user, UserResponse.class);
+        UserResponse userResponse = objectMapper.convertValue(user, UserResponse.class);
+        userResponse.setRole(roleName);
+        return userResponse;
     }
 
     private String saveAvatar(MultipartFile avatar) throws IOException {

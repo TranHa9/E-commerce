@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping
 public class UserController {
-    @GetMapping("/users")
+    @GetMapping("/user/profile")
     public String users() {
         return "manage/user/page-user";
     }

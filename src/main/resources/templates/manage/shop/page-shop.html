@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/common/manage/head :: html_head(pageTitle='Ecom - Ecom Marketplace Template')}">
+<body>
+<div class="screen-overlay"></div>
+<div th:insert="fragments/common/manage/dashboard :: dashboard"></div>
+<main class="main-wrap">
+    <div th:insert="fragments/common/manage/header :: manage-header"></div>
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">Thông tin cá nhân</h2>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row gx-5">
+                    <div class="col">
+                        <section class="content-body p-xl-4">
+                            <form id="form-info">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="row gx-3">
+                                            <div class="col-6 mb-3">
+                                                <label for="name" class="form-label">Tên shop</label>
+                                                <input class="form-control" id="name" name="name" type="text"
+                                                       placeholder="SHOPDT">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="address" class="form-label">Địa chỉ</label>
+                                                <input class="form-control" id="address" name="address" type="address"
+                                                       placeholder="Doãn Kế Thiện, Cầu Giấy, Hà Nội" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="description" class="form-label">Mô tả</label>
+                                                <textarea class="form-control" type="text" id="description"
+                                                          placeholder="Mô tả...." rows="10"
+                                                          name="description"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <aside class="col-lg-4">
+                                        <figure class="text-lg-center"><img class="img-lg mb-3 img-avatar"
+                                                                            src="/img/people/avatar-default.jpg"
+                                                                            alt="User Photo">
+                                            <figcaption>
+                                                <input type="file" hidden="hidden" id="logo-input" name="logo"
+                                                       accept="image/jpeg, image/png, image/gif, image/webp"/>
+                                                <button id="change-logo-btn" class="btn btn-sm btn-secondary">
+                                                    Tải ảnh
+                                                </button>
+                                                <p id="logo-error" class="error" for="logo"></p>
+                                            </figcaption>
+                                        </figure>
+                                    </aside>
+                                </div>
+                                <br>
+                            </form>
+                            <button class="btn btn-primary" id="btn-shop-save" type="button">Lưu</button>
+                            <hr class="my-5">
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>document.write(new Date().getFullYear())</script> &copy;, Ecom - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+</main>
+<div th:insert="fragments/common/manage/scripts" :: scripts></div>
+<script src="/js/manage/shops/shop.js"></script>
+</body>
+</html>

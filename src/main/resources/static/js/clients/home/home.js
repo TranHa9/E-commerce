@@ -24,7 +24,7 @@ $(document).ready(function () {
                                     <a href="/detail-product/${product.id}"><img src="api/v1/files/product/${product.productImages[0]}" alt="${product.productImages[0]}"></a>
                                 </div>
                                 <div class="info-right">
-                                    <a class="font-xs color-gray-500" href="#">${product.shopName}</a><br>
+                                    <a class="font-xs color-gray-500" href="/shops/detail/${product.shopId}">${product.shopName}</a><br>
                                     <a class="color-brand-3 font-sm-bold product-name" href="/detail-product/${product.id}">${product.productName}</a>
                                     <div class="rating">
                                         ${Array(product.averageRating).fill('<img src="/img/template/icons/star.svg" alt="Ecom">').join('')}

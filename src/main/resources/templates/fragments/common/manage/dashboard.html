@@ -10,13 +10,13 @@
         <ul class="menu-aside">
             <!--            <li class="menu-item active"><a class="menu-link" href="index.html"><i-->
             <!--                    class="icon material-icons md-home"></i><span class="text">Dashboard</span></a></li>-->
-            <li class="menu-item"><a class="menu-link" href="/shop/products"><i
+            <li class="menu-item" data-role="SHOP"><a class="menu-link" href="/shop/products"><i
                     class="icon material-icons md-shopping_bag"></i><span class="text">Sản phẩm</span></a>
             </li>
-            <li class="menu-item"><a class="menu-link" href="/categories"><i
+            <li class="menu-item" data-role="SHOP,ADMIN"><a class="menu-link" href="/categories"><i
                     class="icon material-icons md-shopping_bag"></i><span class="text">Danh mục</span></a>
             </li>
-            <li class="menu-item"><a class="menu-link" href="/vouchers"><i
+            <li class="menu-item" data-role="SHOP"><a class="menu-link" href="/vouchers"><i
                     class="icon material-icons md-monetization_on"></i><span class="text">Mã giảm giá</span></a>
             </li>
             <!--            <li class="menu-item has-submenu"><a class="menu-link" href="page-orders-1.html"><i-->
@@ -40,9 +40,12 @@
             <!--                        href="page-transactions-2.html">Transaction 2</a><a href="page-transactions-details.html">Transaction-->
             <!--                    Details</a></div>-->
             <!--            </li>-->
-            <li class="menu-item"><a class="menu-link" href="/admin/users"><i
+            <li class="menu-item" data-role="ADMIN"><a class="menu-link" href="/admin/users"><i
                     class="icon material-icons md-person"></i><span class="text">Tài khoản</span></a>
-            </li>
+            <li class="menu-item" data-role="USER,ADMIN,SHOP"><a class="menu-link" href="/user/profile"><i
+                    class="icon material-icons md-person"></i><span class="text">Trang cá nhân</span></a></li>
+            <li class="menu-item" data-role="SHOP"><a class="menu-link" href="/shops/profile"><i
+                    class="icon material-icons md-person"></i><span class="text">Hồ sơ shop</span></a></li>
             <!--            <li class="menu-item has-submenu"><a class="menu-link" href="#"><i-->
             <!--                    class="icon material-icons md-person"></i><span class="text">Tài khoản</span></a>-->
             <!--                <div class="submenu"><a href="page-account-login.html">User login</a><a-->
