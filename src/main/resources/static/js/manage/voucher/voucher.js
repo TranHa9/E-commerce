@@ -216,6 +216,7 @@ $(document).ready(function () {
                 $("#minOrderValue").val(voucher.minOrderValue);
                 $("#startDate").val(voucher.startDate);
                 $("#endDate").val(voucher.endDate);
+                $("#usageLimit").val(voucher.usageLimit);
                 $("#modal-title").text('Sửa mã giảm giá');
             }
         });
@@ -228,11 +229,12 @@ $(document).ready(function () {
         $("#minOrderValue").val('');
         $("#startDate").val('');
         $("#endDate").val('');
+        $("#usageLimit").val('');
     }
 
     $('#voucher-modal').on('hidden.bs.modal', function () {
         resetForm()
-        categoryId = null;
+        voucherId = null;
     });
     $.validator.addMethod("pattern", function (value, element, param) {
         return this.optional(element) || param.test(value);
@@ -284,6 +286,10 @@ $(document).ready(function () {
                 required: true,
                 date: true,
                 greaterThanStartDate: true // Custom method kiểm tra lớn hơn startDate
+            },
+            usageLimit: {
+                required: true,
+                number: true
             }
         },
         messages: {
@@ -321,6 +327,10 @@ $(document).ready(function () {
                 required: "Vui lòng chọn ngày kết thúc.",
                 date: "Ngày không hợp lệ.",
                 greaterThanStartDate: "Ngày kết thúc phải lớn hơn ngày bắt đầu."
+            },
+            usageLimit: {
+                required: "Vui lòng nhập số lượng mã",
+                number: "Gía trị phải là số"
             }
         }
     });

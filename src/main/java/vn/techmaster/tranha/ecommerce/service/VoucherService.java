@@ -14,10 +14,8 @@ import vn.techmaster.tranha.ecommerce.entity.Voucher;
 import vn.techmaster.tranha.ecommerce.model.request.CreateVoucherRequest;
 import vn.techmaster.tranha.ecommerce.model.request.SearchVoucherRequest;
 import vn.techmaster.tranha.ecommerce.model.request.UpdateVoucherRequest;
-import vn.techmaster.tranha.ecommerce.model.response.CategorySearchResponse;
-import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
-import vn.techmaster.tranha.ecommerce.model.response.VoucherResponse;
-import vn.techmaster.tranha.ecommerce.model.response.VoucherSearchResponse;
+import vn.techmaster.tranha.ecommerce.model.request.ValidateVoucherRequest;
+import vn.techmaster.tranha.ecommerce.model.response.*;
 import vn.techmaster.tranha.ecommerce.repository.ShopRepository;
 import vn.techmaster.tranha.ecommerce.repository.VoucherRepository;
 import vn.techmaster.tranha.ecommerce.repository.custom.VoucherCustomRepository;
@@ -110,5 +108,56 @@ public class VoucherService {
         Voucher voucher = voucherRepository.findById(id)
                 .orElseThrow(() -> new Exception("Voucher not found"));
         return objectMapper.convertValue(voucher, VoucherResponse.class);
+    }
+
+    public ValidateVoucherResponse validateVoucher(ValidateVoucherRequest request) {
+        Optional<Voucher> optionalVoucher = voucherRepository.findByCodeAndShopId(request.getCode(), request.getShopId());
+        if (optionalVoucher.isEmpty()) {
+            return ValidateVoucherResponse.builder()
+                    .isValid(false)
+                    .message("Mã giảm giá không tồn tại")
+                    .voucher(new VoucherResponse())
+                    .build();
+        }
+        Voucher voucher = optionalVoucher.get();
+
+        // Kiểm tra ngày hiệu lực
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(voucher.getStartDate()) || now.isAfter(voucher.getEndDate())) {
+            return ValidateVoucherResponse.builder()
+                    .isValid(false)
+                    .message("Mã giảm giá đã hết hạn")
+                    .voucher(objectMapper.convertValue(voucher, VoucherResponse.class))
+                    .build();
+        }
+        // Kiểm tra giá trị đơn hàng tối thiểu
+        if (request.getOrderValue() < voucher.getMinOrderValue()) {
+            return ValidateVoucherResponse.builder()
+                    .isValid(false)
+                    .message("Đơn hàng phải đạt tối thiểu " + voucher.getMinOrderValue() + "đ để áp dụng mã giảm giá")
+                    .voucher(objectMapper.convertValue(voucher, VoucherResponse.class))
+                    .build();
+        }
+        // Kiểm tra giới hạn sử dụng
+        if (voucher.getUsageLimit() <= 0) {
+            return ValidateVoucherResponse.builder()
+                    .isValid(false)
+                    .message("Mã giảm giá đã hết lượt sử dụng")
+                    .voucher(objectMapper.convertValue(voucher, VoucherResponse.class))
+                    .build();
+        }
+        // Tính toán giá trị giảm giá
+        double discountValue = 0;
+        if (voucher.getDiscountType() == DiscountType.PERCENTAGE) {
+            discountValue = (voucher.getVoucherValue() / 100) * request.getOrderValue();
+        } else if (voucher.getDiscountType() == DiscountType.AMOUNT) {
+            discountValue = voucher.getVoucherValue();
+        }
+        return ValidateVoucherResponse.builder()
+                .isValid(true)
+                .discountValue(Math.min(discountValue, request.getOrderValue()))
+                .message("Mã giảm giá hợp lệ")
+                .voucher(objectMapper.convertValue(voucher, VoucherResponse.class))
+                .build();
     }
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VoucherSearchResponse {
     Long id;
-    
+
     Long shopId;
 
     String shopName;
@@ -24,7 +24,7 @@ public class VoucherSearchResponse {
 
     DiscountType discountType; //Loại giảm giá
 
-    String voucherValue; // Giá trị giảm giá
+    Double voucherValue; // Giá trị giảm giá
 
     Double minOrderValue; // Giá trị đơn hàng tối thiểu để áp dụng mã
 

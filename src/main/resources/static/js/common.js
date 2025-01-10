@@ -50,7 +50,9 @@ async function fetchShopData() {
     let shop = null;
     if (!accessToken || !user) {
         showToast("Phiên làm việc hết hạn, vui lòng đăng nhập lại.", "error");
-        window.location.href = "/logins";
+        setTimeout(() => {
+            window.location.href = "/logins";
+        }, 1000);
     }
     await $.ajax({
         url: `/api/v1/shops/user/${user?.id}`,

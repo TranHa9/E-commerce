@@ -243,6 +243,12 @@ $(document).ready(async function () {
         }
         console.log("Thêm vào giỏ hàng:", cartItem);
         const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            showToast("Vui lòng đăng nhập trước", "warning");
+            setTimeout(() => {
+                window.location.href = "/logins";
+            }, 1000);
+        }
         $.ajax({
             url: `/api/v1/carts/${user.id}`,
             method: "POST",

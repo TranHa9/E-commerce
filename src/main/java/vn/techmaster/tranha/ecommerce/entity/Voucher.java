@@ -32,7 +32,7 @@ public class Voucher extends BaseEntity {
     @Column(name = "discount_type")
     DiscountType discountType;
 
-    String voucherValue; // Giá trị giảm giá
+    Double voucherValue; // Giá trị giảm giá
 
     @Column(name = "min_order_value")
     Double minOrderValue; // Giá trị đơn hàng tối thiểu để áp dụng mã

@@ -13,16 +13,12 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     List<CartItem> findByProductId(Long id);
 
-    Optional<CartItem> findByCartAndProduct(Cart cart, Product product);
-
     @Query("SELECT c FROM CartItem c WHERE c.cart = :cart AND c.product = :product AND c.variants = :variants")
     Optional<CartItem> findByCartAndProductAndVariants(Cart cart, Product product, String variants);
 
-    @Query("SELECT SUM(c.quantity) FROM CartItem c WHERE c.cart.id = :cartId")
+    @Query("SELECT COALESCE(SUM(c.quantity),0) FROM CartItem c WHERE c.cart.id = :cartId")
     Integer findTotalQuantityByCartId(Long cartId);
 
-    @Query("SELECT SUM(c.totalPrice) FROM CartItem c WHERE c.cart.id = :cartId")
+    @Query("SELECT COALESCE(SUM(c.totalPrice),0) FROM CartItem c WHERE c.cart.id = :cartId")
     Double findTotalPriceByCartId(Long cartId);
-
-    List<CartItem> findByCart(Cart cart);
 }

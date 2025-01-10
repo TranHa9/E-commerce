@@ -102,7 +102,9 @@ $(document).ready(function () {
                             shopHTML += `
                                 </div>
                                 <div class="shop-discount">
-                                    <h6 class="font-md-bold">Mã giảm giá cho ${shopName}</h6>
+                                    <h6 class="font-md-bold">Mã giảm giá cho ${shopName}
+                                        <span class="voucher-info"></span>
+                                    </h6>
                                     <div class="form-group d-flex">
                                         <input class="form-control mr-15" placeholder="Nhập mã giảm giá">
                                         <button class="btn btn-buy w-auto">Áp dụng</button>
@@ -142,6 +144,7 @@ $(document).ready(function () {
         $(".cb-select").prop("checked", isChecked);
 
         totalPrice = 0; // Reset tổng tiền
+        totalDiscount = 0; // Reset tổng giảm giá
         if (isChecked) {
             $(".cb-select").each(function () {
                 const itemTotalPrice = parseFloat(
@@ -154,12 +157,23 @@ $(document).ready(function () {
                 totalPrice += itemTotalPrice;
             });
         }
-
-        $(".summary-cart h4").text(`${formatCurrency(totalPrice)}đ`);
+        // Reset mã giảm giá và thông tin hiển thị cho tất cả các shop
+        $(".shop-discount input").val(""); // Xóa tất cả input mã giảm giá
+        $(".shop-discount .voucher-info").text(""); // Xóa tất cả thông tin mã giảm giá
+        // Cập nhật lại tổng giá trị
+        $(".summary-cart #subtotalValue").text(`${formatCurrency(totalPrice)}đ`);
+        $(".summary-cart #voucherValue").text(`-${formatCurrency(totalDiscount)}đ`);
+        // Cập nhật lại tổng giá trị sau khi có giảm giá
+        let updatedTotal = totalPrice - totalDiscount;
+        $(".summary-cart #totalValue").text(`${formatCurrency(updatedTotal)}đ`);
     });
 
     $("#cart-items").on("change", ".cb-select", function () {
         const _parent = $(this).closest(".item-wishlist");
+        const shopElement = $(this).closest(".shop-group");
+        const shopId = shopElement.find(".shop-title").data("shopid");
+        const voucherInput = shopElement.find(".shop-discount input");
+        const voucherInfo = shopElement.find(".shop-discount .voucher-info");
         const itemTotalPrice = parseFloat(
             _parent.find(".wishlist-action h6").text().replace(/\./g, "").replace("đ", "")
         );
@@ -168,12 +182,32 @@ $(document).ready(function () {
         } else {
             totalPrice -= itemTotalPrice;
         }
+        // Loại bỏ mã giảm giá của shop ngay lập tức
+        if (shopDiscounts[shopId]) {
+            totalDiscount -= shopDiscounts[shopId];
+            delete shopDiscounts[shopId];
+        }
+
+        // Reset input mã giảm giá và thông tin hiển thị
+        voucherInput.val(""); // Xóa giá trị input mã giảm giá
+        voucherInfo.text(""); // Xóa thông tin mã giảm giá
+
+        // Cập nhật lại tổng giá trị
+        $(".summary-cart #voucherValue").text(`-${formatCurrency(totalDiscount)}đ`);
+        let subtotalValue = parseInt(
+            $(".summary-cart #subtotalValue")
+                .text()
+                .replace(/\./g, "")
+                .replace("đ", "")
+        );
+        let updatedTotal = subtotalValue - totalDiscount;
+        $(".summary-cart #totalValue").text(`${formatCurrency(updatedTotal)}đ`);
 
         // Cập nhật trạng thái checkbox tất cả
         const allChecked = $(".cb-select").length === $(".cb-select:checked").length;
         $(".cb-all").prop("checked", allChecked);
 
-        $(".summary-cart h4").text(`${formatCurrency(totalPrice)}đ`);
+        $(".summary-cart #subtotalValue").text(`${formatCurrency(totalPrice)}đ`);
     });
 
     $("#cart-items").on("click", ".minus-cart", function () {
@@ -301,58 +335,81 @@ $(document).ready(function () {
         }, 2000);
     }
 
+    let totalDiscount = 0;
+    let shopDiscounts = {};
     $("#cart-items").on("click", ".shop-discount button", function () {
         const shopElement = $(this).closest(".shop-group");
         const shopId = shopElement.find(".shop-title").data("shopid");
-        const discountCode = shopElement.find(".shop-discount input").val().trim();
+        const voucherCode = shopElement.find(".shop-discount input").val().trim();
+        const titleVoucher = shopElement.find(".shop-discount .voucher-info");
+        const orderValue = calculateOrderValue(shopElement);
 
-        if (!discountCode) {
+        // Kiểm tra nếu không có sản phẩm nào được chọn trong shop
+        const checkedItems = shopElement.find(".cb-select:checked");
+        if (checkedItems.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để áp dụng mã giảm giá.");
+            return;
+        }
+
+        if (!voucherCode) {
             alert("Vui lòng nhập mã giảm giá.");
             return;
         }
 
-        // $.ajax({
-        //     url: `/api/v1/discounts/validate`,
-        //     type: "POST",
-        //     contentType: "application/json",
-        //     data: JSON.stringify({shopId, code: discountCode}),
-        //     success: function (response) {
-        //         if (response.isValid) {
-        //             const discountValue = response.discountValue;
-        //             const discountType = response.discountType;
-        //             let totalShopPrice = 0;
-        //
-        //             // Tính tổng giá trị sản phẩm của shop
-        //             shopElement.find(".item-wishlist").each(function () {
-        //                 const itemPrice = parseFloat(
-        //                     $(this).find(".wishlist-action h6").text().replace(/\./g, "").replace("đ", "")
-        //                 );
-        //                 totalShopPrice += itemPrice;
-        //             });
-        //
-        //             // Tính toán giá trị giảm giá
-        //             let discountAmount = 0;
-        //             if (discountType === "PERCENTAGE") {
-        //                 discountAmount = totalShopPrice * (discountValue / 100);
-        //             } else if (discountType === "FIXED") {
-        //                 discountAmount = discountValue;
-        //             }
-        //             discountAmount = Math.min(discountAmount, totalShopPrice); // Giảm giá không vượt quá tổng tiền
-        //
-        //             // Hiển thị thông báo giảm giá và cập nhật tổng tiền
-        //             shopElement.find(".shop-discount").append(`
-        //             <p class="text-success">Mã giảm giá được áp dụng: Giảm ${formatCurrency(discountAmount)}đ</p>
-        //         `);
-        //
-        //             const updatedTotal = totalShopPrice - discountAmount;
-        //             shopElement.find(".shop-total-price").text(`${formatCurrency(updatedTotal)}đ`);
-        //         } else {
-        //             alert(response.message || "Mã giảm giá không hợp lệ.");
-        //         }
-        //     },
-        //     error: function () {
-        //         alert("Không thể kiểm tra mã giảm giá. Vui lòng thử lại sau.");
-        //     }
-        // });
+        $.ajax({
+            url: `/api/v1/vouchers/validate`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                shopId: shopId,
+                code: voucherCode,
+                orderValue: orderValue
+            }),
+            success: function (response) {
+                console.log(response)
+                if (response.valid) {
+                    const discountValue = response.discountValue;
+                    // Nếu shop đã có giảm giá, trừ giảm giá cũ trước
+                    if (shopDiscounts[shopId]) {
+                        totalDiscount -= shopDiscounts[shopId];
+                    }
+                    // Cập nhật giảm giá mới cho shop
+                    shopDiscounts[shopId] = discountValue;
+                    totalDiscount += discountValue;
+
+                    titleVoucher.text(`
+                        - Mã: ${response.voucher.code} giảm: ${response.voucher.voucherValue <= 100
+                        ? response.voucher.voucherValue + "%" : formatCurrency(response.voucher.voucherValue) + "đ"}
+                    `)
+                    $(".summary-cart #voucherValue").text(`-${formatCurrency(totalDiscount)}đ`);
+
+                    let subtotalValue = parseInt(
+                        $(".summary-cart #subtotalValue")
+                            .text()
+                            .replace(/\./g, "")
+                            .replace("đ", "")
+                    );
+                    let updatedTotal = subtotalValue - totalDiscount;
+                    $(".summary-cart #totalValue").text(`${formatCurrency(updatedTotal)}đ`);
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
     });
+
+    function calculateOrderValue(shopElement) {
+        let totalValue = 0;
+        // Lấy tất cả các sản phẩm trong shop
+        const checkedItems = shopElement.find(".cb-select:checked");
+        // Duyệt qua từng sản phẩm được chọn
+        checkedItems.each(function () {
+            const itemElement = $(this).closest(".item-wishlist");
+            const itemTotalPrice = parseFloat(
+                itemElement.find(".wishlist-action h6").text().replace(/\./g, "").replace("đ", "")
+            );
+            totalValue += itemTotalPrice; // Cộng giá trị của từng sản phẩm
+        });
+        return totalValue; // Trả về tổng giá trị
+    }
 })

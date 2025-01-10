@@ -4,11 +4,14 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.techmaster.tranha.ecommerce.model.request.CreateVoucherRequest;
 import vn.techmaster.tranha.ecommerce.model.request.SearchVoucherRequest;
 import vn.techmaster.tranha.ecommerce.model.request.UpdateVoucherRequest;
+import vn.techmaster.tranha.ecommerce.model.request.ValidateVoucherRequest;
 import vn.techmaster.tranha.ecommerce.model.response.CommonSearchResponse;
+import vn.techmaster.tranha.ecommerce.model.response.ValidateVoucherResponse;
 import vn.techmaster.tranha.ecommerce.model.response.VoucherResponse;
 import vn.techmaster.tranha.ecommerce.service.VoucherService;
 
@@ -44,9 +47,9 @@ public class VoucherResource {
         return voucherService.updateVoucher(id, request);
     }
 
-//    @PostMapping("/validate")
-//    public ResponseEntity<?> validateVoucher(@RequestBody ValidateVoucherRequest request) {
-//        VoucherResponse response = voucherService.validateVoucher(request);
-//        return ResponseEntity.ok(response);
-//    }
+    @PostMapping("/validate")
+    public ResponseEntity<?> validateVoucher(@RequestBody ValidateVoucherRequest request) {
+        ValidateVoucherResponse response = voucherService.validateVoucher(request);
+        return ResponseEntity.ok(response);
+    }
 }

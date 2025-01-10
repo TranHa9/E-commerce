@@ -22,7 +22,7 @@ public class CreateVoucherRequest {
 
     DiscountType discountType; //Loại giảm giá
 
-    String voucherValue; // Giá trị giảm giá
+    Double voucherValue; // Giá trị giảm giá
 
     Double minOrderValue; // Giá trị đơn hàng tối thiểu để áp dụng mã
 

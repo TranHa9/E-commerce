@@ -22,7 +22,7 @@ $(document).ready(function () {
             dropdownMenu += `<li><a href="/shop/products">Quản lý sản phẩm</a></li>`;
         }
         if (user?.role && user?.role !== "SHOP") {
-            dropdownMenu += `<li><a href="/shops">Mở shop</a></li>`;
+            dropdownMenu += `<li><a href="/shops/registers">Mở shop</a></li>`;
         }
         dropdownMenu += `
             <li><a href="/users">Tài khoản</a></li>
