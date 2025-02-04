@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserAddressResponse {
     Long id;
+    String name;
     String address;
     String phone;
     boolean defaultAddress;

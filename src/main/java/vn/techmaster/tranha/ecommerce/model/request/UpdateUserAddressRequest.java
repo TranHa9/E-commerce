@@ -8,10 +8,13 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateUserAddressRequest {
-    @NotBlank(message = "Address không được để trống")
+    @NotBlank(message = "Tên không được để trống")
+    String name;
+
+    @NotBlank(message = "Địa chỉ không được để trống")
     String address;
 
-    @NotBlank(message = "Phone không được để trống")
+    @NotBlank(message = "Điện thoại không được để trống")
     String phone;
 
 }

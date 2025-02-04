@@ -41,6 +41,7 @@ public class UserAddressService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         UserAddress userAddress = UserAddress.builder()
+                .name(request.getName())
                 .address(request.getAddress())
                 .phone(request.getPhone())
                 .defaultAddress(false)
@@ -53,6 +54,7 @@ public class UserAddressService {
     public UserAddressResponse update(Long id, UpdateUserAddressRequest request) {
         UserAddress userAddress = userAddressRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserAddress not found"));
+        userAddress.setName(request.getName());
         userAddress.setPhone(request.getPhone());
         userAddress.setAddress(request.getAddress());
         userAddress = userAddressRepository.save(userAddress);
@@ -66,7 +68,7 @@ public class UserAddressService {
     }
 
     public UserAddressResponse updateDefaultAddress(Long id) throws ObjectNotFoundException {
-        
+
         UserAddress userAddress = userAddressRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("UserAddress not found"));
 

@@ -11,6 +11,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateUserAddressRequest {
 
+    @NotBlank(message = "Tên không được để trống")
+    String name;
+
     @NotBlank(message = "Địa chỉ không được để trống")
     String address;
 

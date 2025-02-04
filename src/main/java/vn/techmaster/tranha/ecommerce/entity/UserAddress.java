@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserAddress extends BaseEntity {
 
+    String name;
     String address;
     String phone;
 

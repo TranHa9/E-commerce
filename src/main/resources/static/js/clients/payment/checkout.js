@@ -116,4 +116,23 @@ $(document).ready(function () {
 
     calculateTotal();
 
+    function getUserAddressData() {
+        $.ajax({
+            url: `/api/v1/user-address`,
+            type: 'GET',
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                console.log(response)
+                const defaultAddress = response.find(address => address.defaultAddress === true);
+                if (defaultAddress) {
+                    $("#address-default").text(`${defaultAddress.name} | ${defaultAddress.phone} - ${defaultAddress.address}`);
+                } else {
+                    $("#address-default").text("Chưa có địa chỉ mặc định");
+                }
+            }
+        });
+    }
+
+    getUserAddressData()
+
 })

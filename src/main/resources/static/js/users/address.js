@@ -27,6 +27,7 @@ $(document).ready(function () {
             const row = `
                         <tr>
                             <td>${address.id}</td>
+                            <td>${address.name}</td>
                             <td>${address.phone}</td>
                             <td>${address.address}</td>
                             <td><span class="badge rounded-pill alert-${address.defaultAddress === true ? 'success' : 'danger'}">
@@ -45,6 +46,7 @@ $(document).ready(function () {
                                                 class="material-icons md-more_horiz"></i></button>
                                         <ul class="dropdown-menu">
                                             <li><p class="dropdown-item address-default" style="cursor: pointer" data-id="${address.id}" >Đặt Mặc định</p></li>
+                                            <li><p class="dropdown-item address-remove" style="cursor: pointer" data-id="${address.id}" >Xóa</p></li>
                                         </ul>
                                 </div>
                             </td>
@@ -74,6 +76,7 @@ $(document).ready(function () {
             url: `/api/v1/user-address/${userAddressId}`,
             type: 'GET',
             success: function (userAddress) {
+                $("#name").val(userAddress.name);
                 $("#address").val(userAddress.address);
                 $("#phone").val(userAddress.phone);
                 $("#modal-title").text('Sửa địa chỉ');
@@ -81,8 +84,10 @@ $(document).ready(function () {
         });
     });
 
+
     function createAddress() {
         const address = {
+            name: $("#name").val(),
             address: $("#address").val(),
             phone: $("#phone").val(),
             userId: user.id
@@ -94,6 +99,7 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             success: function () {
                 showToast("Tạo mới thành công", "success");
+                $("#name").val('');
                 $("#address").val('');
                 $("#phone").val('');
                 setTimeout(function () {
@@ -105,6 +111,7 @@ $(document).ready(function () {
 
     function updateAddress(id) {
         const address = {
+            name: $("#name").val(),
             phone: $("#phone").val(),
             address: $("#address").val()
         };
@@ -115,6 +122,7 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             success: function () {
                 showToast("Cập nhật thành công", "success");
+                $("#name").val('');
                 $("#phone").val('');
                 $("#address").val('');
                 setTimeout(function () {
@@ -143,6 +151,23 @@ $(document).ready(function () {
             },
         })
     });
+
+    $(document).on("click", ".address-remove", function () {
+        const userAddressId = $(this).data("id");
+        if (confirm("Bạn có chắc chắn muốn xóa địa chỉ này không?")) {
+            $.ajax({
+                url: `/api/v1/user-address/${userAddressId}`,
+                type: "DELETE",
+                contentType: "application/json; charset=utf-8",
+                success: function () {
+                    showToast("Xóa thành công", "success");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                }
+            });
+        }
+    });
     $.validator.addMethod(
         "phonePattern",
         function (value, element) {
@@ -152,6 +177,11 @@ $(document).ready(function () {
     );
     $("#address-form").validate({
         rules: {
+            name: {
+                required: true,
+                minlength: 3,
+                maxlength: 150,
+            },
             address: {
                 required: true,
                 minlength: 6,
@@ -163,10 +193,15 @@ $(document).ready(function () {
             },
         },
         messages: {
+            name: {
+                required: "Vui lòng nhập tên",
+                minlength: "Tên phải có ít nhất 6 ký tự",
+                maxlength: "Tên không quá 150 ký tự"
+            },
             address: {
                 required: "Vui lòng nhập tên danh mục",
-                minlength: "Tên danh mục phải có ít nhất 6 ký tự",
-                maxlength: "Tên danh mục không quá 150 ký tự"
+                minlength: "Địa chỉ phải có ít nhất 6 ký tự",
+                maxlength: "Địa chỉ không quá 150 ký tự"
             },
             phone: {
                 required: "Số điện thoại bắt buộc nhập",
