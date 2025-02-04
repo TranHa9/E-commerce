@@ -1,0 +1,35 @@
+<div th:fragment="address-modal" class="modal fade"
+     id="address-modal" tabindex="-1"
+     aria-labelledby="book-creation-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Tạo địa chỉ mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="address-form">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row gx-3">
+                                <div class="col-lg-12 mb-3">
+                                    <label for="address" class="form-label">Địa chỉ*</label>
+                                    <input class="form-control" id="address" name="address" type="text"
+                                           placeholder="số nhà/đường, Phường/Xã, Quận/Huyện, Tỉnh/TP">
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <label for="phone" class="form-label">Số điện thoại*</label>
+                                    <input class="form-control" id="phone" name="phone" type="text"
+                                           placeholder="số điện thoại">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-save-address">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -67,12 +67,12 @@ public class CategoryService {
     public CategoryResponse getDetail(Long id) throws ObjectNotFoundException {
         return categoryRepository.findById(id)
                 .map(category -> objectMapper.convertValue(category, CategoryResponse.class))
-                .orElseThrow(() -> new ObjectNotFoundException("User not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("Category not found"));
     }
 
     public CategoryResponse updateCategory(Long id, UpdateCategoryRequest request) throws ObjectNotFoundException {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("User not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("Category not found"));
 
         category.setName(request.getName());
         category.setDescription(request.getDescription());

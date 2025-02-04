@@ -119,6 +119,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "api/v1/shops/user/{userId}").permitAll()
                         //Shop end
 
+                        //UserAddress start
+                        .requestMatchers(HttpMethod.GET, "api/v1/user-address").authenticated()
+                        .requestMatchers(HttpMethod.GET, "api/v1/user-address/{id}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "api/v1/user-address").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "api/v1/user-address/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "api/v1/user-address/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/v1/user-address/{id}/set-default").authenticated()
+                        //UserAddress end
+
                         //Category start
                         .requestMatchers(HttpMethod.POST, "api/v1/categories").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())
                         .requestMatchers(HttpMethod.PUT, "api/v1/categories/{id}").hasAnyAuthority(Roles.ADMIN.toString(), Roles.SHOP.toString())

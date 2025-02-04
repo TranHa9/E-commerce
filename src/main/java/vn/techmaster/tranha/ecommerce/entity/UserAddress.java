@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 public class UserAddress extends BaseEntity {
 
     String address;
-    String street;
+    String phone;
 
     @Column(columnDefinition = "boolean default false")
     boolean defaultAddress;

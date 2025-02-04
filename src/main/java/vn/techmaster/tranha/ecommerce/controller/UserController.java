@@ -12,6 +12,11 @@ public class UserController {
         return "manage/user/page-user";
     }
 
+    @GetMapping("/user/address")
+    public String userAddress() {
+        return "manage/user/page-address";
+    }
+
     @GetMapping("/admin/users")
     public String managementUsers() {
         return "manage/user/user-management";
